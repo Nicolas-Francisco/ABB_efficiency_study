@@ -1,2 +1,7 @@
 # ABB_efficiency_study
-implementation and comparison of ABBs variants
+Implementation and comparison of ABBs variants, Design and Analysis of Algorithms assignment.
+
+## Authors
+- **Javier Lavados Jillbert** - [JavierLavados](https://github.com/JavierLavados)
+- **Lung Wang** - [doragonUni](https://github.com/doragonUni)
+- **Nicolás García Ríos** - [Nicolas-Francisco](https://github.com/Nicolas-Francisco)
