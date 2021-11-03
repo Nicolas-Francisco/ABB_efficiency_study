@@ -1,107 +1,100 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-typedef struct nodo {
-    int info;
-    struct nodo *izq;
-    struct nodo *der;
-}Nodo;
 
-typedef Nodo *Arbol;
 
-void insertar(Nodo **nodo,int info)
-{
-    Nodo *a = *nodo;
+typedef struct node {
+    int value;
+    struct node *left;
+    struct node *right;
+}Node;
+
+Node* newNode(int value){
+    Node *node = malloc(sizeof(Node));
+    node->value = value;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+ 
+
+void insert(Node **node,int value){
+    Node *a = *node;
     if (a==NULL){
-        Nodo *p = malloc(sizeof(Nodo));
-        p->info = info;
-        p->izq = NULL;
-        p->der = NULL;
-        *nodo=p;
+        *node=newNode(value);
     }
-    else if (info > a->info) {
-        if (a->der == NULL) {
-            Nodo *p = malloc(sizeof(Nodo));
-            p->info = info;
-            p->izq = NULL;
-            p->der = NULL;
-            a->der = p;
+    else if (value > a->value) {
+        if (a->right == NULL) {
+            a->right = newNode(value);
         } else {
-            insertar(&(a->der), info);
+            insert(&(a->right), value);
         }
     } else {
-        if (a->izq == NULL) {
-            Nodo *p = malloc(sizeof(Nodo));
-            p->info = info;
-            p->izq = NULL;
-            p->der = NULL;
-            a->izq = p;
+        if (a->left == NULL) {
+            a->left = newNode(value);
         } else {
-            insertar(&(a->izq), info);
+            insert(&(a->left), value);
         }
     }
 }
 
-void preorden(Nodo **nodo) {
-    Nodo *a = *nodo;
-    if (a != NULL) {
-        printf("%d,", a->info);
-        preorden(&(a->izq));
-        preorden(&(a->der));
-    }
-}
-
-
-void inorden(Nodo **nodo) {
-    Nodo *a = *nodo;
-    if (a != NULL) {
-        inorden(&(a->izq));
-        printf("%d,", a->info);
-        inorden(&(a->der));
-    }
-}
-
-
-void postorden(Nodo **nodo) {
-    Nodo *a = *nodo;
-    if (a != NULL) {
-        postorden(&(a->izq));
-        postorden(&(a->der));
-        printf("%d,", a->info);
-    }
-}
-
-Nodo * buscar (Nodo ** nodo, int info){
-    Nodo *a = *nodo;
+Node * search(Node ** node, int value){
+    Node *a = *node;
     if (a == NULL){
         return NULL;
     }else{
-        if (info == a->info){
+        if (value == a->value){
             return a;
         }else{
-            if (info < a->info){
-                return buscar (&(a->izq), info);
+            if (value < a->value){
+                return search(&(a->left), value);
             }else{
-                return buscar (&(a->der), info);
+                return search(&(a->right), value);
             }
         }
     }
 }
 
+////////// Debuging //////////////////
+void preorden(Node **node) {
+    Node *a = *node;
+    if (a != NULL) {
+        printf("%d,", a->value);
+        preorden(&(a->left));
+        preorden(&(a->right));
+    }
+}
+void inorden(Node **node) {
+    Node *a = *node;
+    if (a != NULL) {
+        inorden(&(a->left));
+        printf("%d,", a->value);
+        inorden(&(a->right));
+    }
+}
+void postorden(Node **node) {
+    Node *a = *node;
+    if (a != NULL) {
+        postorden(&(a->left));
+        postorden(&(a->right));
+        printf("%d,", a->value);
+    }
+}
+//////////////////////////////////////
 int main() {
     printf("Hola Mundo");
-    Nodo *raiz = NULL;
-    insertar(&raiz, 28);
-    insertar(&raiz, 11);
-    insertar(&raiz, 96);
+    Node *root = NULL;
+    insert(&root, 28);
+    insert(&root, 11);
+    insert(&root, 96);
     printf("\nImprimiendo preorden\n");
-    preorden(&raiz);
+    preorden(&root);
     printf("\nImprimiendo inorden\n");
-    inorden(&raiz);
+    inorden(&root);
     printf("\nImprimiendo postorden\n");
-    postorden(&raiz);
-    printf("\nSe busca el nodo numero 11\n");
-    Nodo * nodo = buscar(&raiz,11);
-    inorden(&nodo);
+    postorden(&root);
+    printf("\nSe busca el node numero 11\n");
+    Node * node = search(&root,11);
+    inorden(&node);
     printf("\n");
 }
