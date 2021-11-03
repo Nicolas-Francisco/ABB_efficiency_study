@@ -30,7 +30,7 @@ Node* newNode(int value){
 
 // A utility function to right rotate subtree rooted with y
 // See the diagram given above.
-Node *rightRotate(Node **node)
+void *rightRotate(Node **node)
 {
     Node *y = *node;
     Node *x = y->left;
