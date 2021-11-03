@@ -3,6 +3,7 @@ Implementation and comparison of ABBs variants, Design and Analysis of Algorithm
 
 #To run any C file do:
 `gcc filename.c -o excname`
+`./ excname`
 
 ## Authors
 - **Javier Lavados Jillbert** - [JavierLavados](https://github.com/JavierLavados)
