@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define MAX 4
 
 typedef struct nodo {
   int vals[MAX-1];      // Array of values
   int count;            // value counter
-  struct nodo *C[MAX];   // Array of node pointers
+  struct nodo *C[MAX];  // Array of node pointers
   struct nodo *parent;  // We keep trace of the parent node
 }Node;
 
@@ -18,12 +19,52 @@ Node *newNode(int val) {
   return node;
 }
 
+
+void splitNode(Node **node, int median){
+  printf("spliting: %d", median);
+  Node* p = *node;
+  // If we are the main root of the tree
+  if (p->parent == NULL){
+
+    // We create a new root. 
+    Node* new_root = newNode(median);
+    Node* right_son = newNode(median);
+
+    // We save al the values;
+    int i = floor(MAX/2) - 1;
+    int k = 0;
+    right_son->count = 0;
+    for (i; i<=MAX ; i++){
+      if (p->vals[i] > median){
+        right_son->vals[k] = p->vals[i];
+        right_son->C[k] = p->C[i];
+        p->vals[i] = 0;
+        p->C[i] = (Node*) NULL;
+        p->count--;
+        right_son->count++;
+        k++;
+      }
+    }
+
+    // We change the root of the tree.
+    node = &new_root;
+    (*node)->C[0] = p;
+    (*node)->C[1] = right_son;
+    p->parent = *node;
+    right_son->parent = *node;
+    return;
+  }
+  // If we are not the root, we are in the recursive case
+}
+
+
 void insert(Node **node, int val) {
   Node *root = *node;
-
+  
   // If the root is NULL, we just create it
   if (root == NULL) {
-    Node* root = newNode(val);
+    *node = newNode(val);
+    return;
 
   // If the root is not null, we proceed
   } else {
@@ -32,16 +73,17 @@ void insert(Node **node, int val) {
     // saved in the pointer p.
     int i = 0;
     Node* p = root;
-    Node* q = NULL;
-    Node* last_parent = root;
     // While there are still values saved in the node,
     // and the pointer is not null
     while (i < p->count && p != NULL){
       // If the value is smaller, we go to the left son
       if (val < p->vals[i]){
-        last_parent = p;
-        p = p->C[i];
-        i = 0;
+        if (p->C[i] == NULL){
+          break;
+        } else{
+          p = p->C[i];
+          i = 0;
+        }
       // If the value is the same, we founded it.
       } else if (p->vals[i] == val){
         break;
@@ -50,103 +92,27 @@ void insert(Node **node, int val) {
       i++;
     }
     
-    for (int e = val; p; p = p->parent) { 
-      // If the leaf node is empty, add the element
-      if (p == NULL) {
-        p = newNode(e);
+    // If there is space in the parent, we insert it.
+    if (p->count < MAX - 1){
+      while(i <= p->count){
+        int e = p->vals[i];
+        p->vals[i] = val;
+        val = e;
+        i++;
+      }
+      p->count ++;
+      return;
+    } 
+    // If not, we must split the node and go recursively
+    else {
+      int median = p->vals[(int) floor(MAX/2)];
+      if (i == floor(MAX/2)){
+        median = val;
+      } else if (i < (int) floor(MAX/2)){
+        median = p->vals[(int) floor(MAX/2) - 1];
       }
 
-      // If number of filled keys is less than maximum
-      if (p->count < MAX - 1) {
-        int i;
-        for (i = 0; i < p->count; i++) {
-          if (p->vals[i] > e) {
-            for (int j = p->count - 1; j >= i; j--)
-              p->vals[j + 1] = p->vals[j];
-            break;
-          }
-        }
-        p->vals[i] = e;
-        p->count = p->count + 1;
-        return;
-      }
-          
-      // If number of filled keys is equal to maximum 
-      // and it's not root and there is space in the parent
-      if (p->count == MAX - 1 && p->parent && p->parent->count < MAX) {
-        int m;
-        for (int i = 0; i < p->parent->count; i++)
-          if (p->parent->C[i] == p) {
-            m = i;
-            break;
-          }
-                  
-        // If right sibling is possible
-        if (m + 1 <= MAX - 1) {
-          // q is the right sibling
-          q = p->parent->C[m + 1];
-  
-          if (q) {  
-            // If right sibling is full
-            if (q->count == MAX - 1) {
-              Node* r = newNode(val);
-              int z[((2 * MAX) / 3)];
-              int parent1, parent2;
-              int marray[2 * MAX];
-              int i;
-              for (i = 0; i < p->count; i++)
-                marray[i] = p->vals[i];
-              int fege = i;
-              marray[i] = e;
-              marray[i + 1] = p->parent->vals[m];
-              for (int j = i + 2; j < ((i + 2) + (q->count)); j++)
-                marray[j] = q->vals[j - (i + 2)];
-
-              // Put first (2*N-2)/3 elements into keys of p
-              for (int i = 0; i < (2 * MAX - 2) / 3; i++)
-                  p->vals[i] = marray[i];
-              parent1 = marray[(2 * MAX - 2) / 3];
-
-              // Put next (2*N-1)/3 elements into keys of q
-              for (int j = ((2 * MAX - 2) / 3) + 1; j < (4 * MAX) / 3; j++)
-                  q->vals[j - ((2 * MAX - 2) / 3 + 1)] = marray[j];
-              parent2 = marray[(4 * MAX) / 3];
-
-              // Put last (2*N)/3 elements into keys of r
-              for (int f = ((4 * MAX) / 3 + 1); f < 2 * MAX; f++)
-                r->vals[f - ((4 * MAX) / 3 + 1)] = marray[f];
-
-              // Because m=0 and m=1 are children of the same key,
-              // a special case is made for them
-              if (m == 0 || m == 1) {
-                p->parent->vals[0] = parent1;
-                p->parent->vals[1] = parent2;
-                p->parent->C[0] = p;
-                p->parent->C[1] = q;
-                p->parent->C[2] = r;
-                return;
-              } else {
-                p->parent->vals[m - 1] = parent1;
-                p->parent->vals[m] = parent2;
-                p->parent->C[m - 1] = p;
-                p->parent->C[m] = q;
-                p->parent->C[m + 1] = r;
-                return;
-              }
-            }
-          } else {
-            int put;
-            if (m == 0 || m == 1)
-              put = p->parent->vals[0];
-            else
-              put = p->parent->vals[m - 1];
-            for (int j = (q->count) - 1; j >= 1; j--)
-              q->vals[j + 1] = q->vals[j];
-            q->vals[0] = put;
-            p->parent->vals[m == 0 ? m : m - 1] = p->vals[p->count - 1];
-          }
-        }
-      }
+      splitNode(&p, median);
     }
   }
 }
@@ -177,22 +143,37 @@ void inorden(Node **node) {
   if (a != NULL) {
     for (int i = 0; i<a->count ; i++)
       printf("%d,", a->vals[i]);
-    for (int i = 0; i<a->count ; i++)
+      printf("\n");
+    int i = 0;
+    while (a->C[i] != NULL){
       inorden(&(a->C[i]));
+      i++;
+    }
   }
 }
 
 int main() {
   Node *root = NULL;
-  /* Constructing tree given in the above figure */
+
   insert(&root, 10);
   insert(&root, 100);
   insert(&root, 20);
-  insert(&root, 80);
+  insert(&root, 60);
+
+  inorden(&root);
+
+  printf("%d", root->vals[0]);
+  printf("\n");
+
+  /* Constructing tree given in the above figure 
+
   insert(&root, 40);
   insert(&root, 70);
 
-  search(&root, 10);
-  inorden(&root);
+  
+  printf("inserting: %d", val);
+  printf("\n");
+
+  */
   return 0;
 }
