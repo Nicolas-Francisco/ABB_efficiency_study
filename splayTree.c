@@ -2,20 +2,22 @@
 #include<stdlib.h>
 
 
-
+//Structure for Node
 typedef struct node {
     int value;
-    struct node *left;
-    struct node *right;
+    struct node* left;
+    struct node* right;
 }Node;
 
+//Returns a new node
 Node* newNode(int value){
-    Node *node = malloc(sizeof(Node));
+    Node* node = malloc(sizeof(Node));
     node->value = value;
     node->left = NULL;
     node->right = NULL;
     return node;
 }
+
 
 void *rightRotate(Node **node)
 {
@@ -29,20 +31,22 @@ void *rightRotate(Node **node)
     *node = x;
 }
  
-void leftRotate(Node **node)
+void leftRotate(Node** node)
 {
-    Node *x = *node;
-    Node *y = x->right;
-    Node *T2 = y->left;
+    Node* x = *node;
+    Node* y = x->right;
+    Node* T2 = y->left;
 
     y->left = x;
     x->right = T2;
 
     *node = y;
 }
-void splay(Node **node, int value){
-    Node *a=*node;
-    if (a==NULL || a->value == value){
+
+//Splay function does the correct rotation when searching or inserting
+void splay(Node** node, int value){
+    Node* a= *node;
+    if (a == NULL || a->value == value){
         return;
     }
     if (a->value > value){ //si deberia estar en el nodo izq
@@ -69,7 +73,7 @@ void splay(Node **node, int value){
 
     }
     else{
-        if(a->right ==NULL ){
+        if(a->right == NULL){
             return;
         }
         if (a->right->value > value){
@@ -92,9 +96,8 @@ void splay(Node **node, int value){
     }
 }
 
-void insert(Node** node, int value)
-{
-    Node *a = *node;
+void insert(Node** node, int value){
+    Node* a = *node;
     if (a == NULL){
         *node=newNode(value);
         return;
@@ -110,26 +113,83 @@ void insert(Node** node, int value)
 }
 
 
+Node* search(Node** node, int value){
+    Node* a= *node;
+    if (a == NULL){
+        return newNode(-1);
+    }
+    if( a->value == value){
+        return a;
+    }
+
+    if (a->value > value){ //si deberia estar en el nodo izq
+        if(a->left == NULL){ // si es vaci
+            return a;
+        }
+        if(a->left->value > value){
+           a = search(&(a->left->left), value);
+           rightRotate(node);
+        }
+        else if (a->left->value < value){
+            a = search(&(a->left->right),value);
+            if(a->left->right != NULL){
+                leftRotate(&(a->left));
+            }
+        }
+        if (a->left == NULL){
+            return a;
+        }
+        else{
+            rightRotate(node);
+            return a;
+        }
+
+    }
+    else{
+        if(a->right == NULL){
+            return a;
+        }
+        if (a->right->value > value){
+            a = search(&(a->right->left),value);
+            if(a->right->left != NULL){
+                rightRotate(&(a->right));
+            }
+        }
+        else if (a->right->value < value){
+            a = search(&(a->right->right),value);
+            leftRotate(node);
+        }
+        
+        if (a->right == NULL){
+            return a;
+        }
+        else{
+            leftRotate(node);
+        }
+    }
+}
+
+
 
 ////////// Debuging //////////////////
-void preorden(Node **node) {
-    Node *a = *node;
+void preorden(Node** node) {
+    Node* a = *node;
     if (a != NULL) {
         printf("%d,", a->value);
         preorden(&(a->left));
         preorden(&(a->right));
     }
 }
-void inorden(Node **node) {
-    Node *a = *node;
+void inorden(Node** node) {
+    Node* a = *node;
     if (a != NULL) {
         inorden(&(a->left));
         printf("%d,", a->value);
         inorden(&(a->right));
     }
 }
-void postorden(Node **node) {
-    Node *a = *node;
+void postorden(Node** node) {
+    Node* a = *node;
     if (a != NULL) {
         postorden(&(a->left));
         postorden(&(a->right));
@@ -149,6 +209,11 @@ int main()
   insert(&root, 80);
   insert(&root, 120);
   //insert(&root, 70);
+  
+  printf("\nImprimiendo\n");
+  preorden(&root);
+  printf("\nBuscando el 1:\n");
+  printf("%i", search(&root, 1)->value);
   printf("\nImprimiendo\n");
   preorden(&root);
 
