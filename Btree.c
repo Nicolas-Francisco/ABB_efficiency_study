@@ -4,12 +4,14 @@
 
 #define MAX 4
 
+
 typedef struct nodo {
   int vals[MAX-1];      // Array of values
   int count;            // value counter
   struct nodo *C[MAX];  // Array of node pointers
   struct nodo *parent;  // We keep trace of the parent node
 }Node;
+
 
 Node *newNode(int val) {
   Node *node;
@@ -21,7 +23,6 @@ Node *newNode(int val) {
 
 
 void splitNode(Node **node, int median){
-  printf("spliting: %d", median);
   Node* p = *node;
   // If we are the main root of the tree
   if (p->parent == NULL){
@@ -47,14 +48,85 @@ void splitNode(Node **node, int median){
     }
 
     // We change the root of the tree.
-    node = &new_root;
-    (*node)->C[0] = p;
-    (*node)->C[1] = right_son;
-    p->parent = *node;
-    right_son->parent = *node;
+    new_root->C[0] = p;
+    new_root->C[1] = right_son;
+    p->parent = new_root;
+    right_son->parent = new_root;
+    *node = new_root;
     return;
   }
+
   // If we are not the root, we are in the recursive case
+  else {
+    // We create the new right node
+    Node* right_son = newNode(median);
+
+    int i = floor(MAX/2) - 1;
+    int k = 0;
+    right_son->count = 0;
+    for (i; i<=MAX ; i++){
+      if (p->vals[i] > median){
+        right_son->vals[k] = p->vals[i];
+        right_son->C[k] = p->C[i];
+        p->vals[i] = 0;
+        p->C[i] = (Node*) NULL;
+        p->count--;
+        right_son->count++;
+        k++;
+      }
+    }
+
+    Node* father = p->parent;
+
+    // If there is space in the parent, we add it
+    if (father->count <= MAX-1){
+      // We search the position
+      int i = 0;
+      while (i < father->count){
+        if(median < father->vals[i]){
+          break;
+        }
+        i++;
+      }
+
+      int aux_i = i;
+      // we insert the median into the node, with its children
+      while(i <= p->count){
+        int e = p->vals[i];
+        p->vals[i] = median;
+        median = e;
+        i++;
+      }
+
+      // We change the pointers
+      father->count++;
+      father->C[aux_i] = p;
+      father->C[aux_i+1] = right_son;
+      p->parent = father;
+      p->parent = right_son;
+
+    // If there is no space in the father, we go up recursively.
+    } else {
+      // We search the position
+      int i = 0;
+      while (i < father->count){
+        if(median < father->vals[i]){
+          break;
+        }
+        i++;
+      }
+
+      // we calculate the middle value
+      int new_median = p->vals[(int) floor(MAX/2)];
+      if (i == floor(MAX/2)){
+        new_median = median;
+      } else if (i < (int) floor(MAX/2)){
+        new_median = p->vals[(int) floor(MAX/2) - 1];
+      }
+
+      splitNode(&father, new_median);
+    }
+  }
 }
 
 
@@ -138,6 +210,7 @@ Node* search(Node **node, int val) {
   }
 }
 
+
 void inorden(Node **node) {
   Node *a = *node;
   if (a != NULL) {
@@ -152,18 +225,40 @@ void inorden(Node **node) {
   }
 }
 
+
 int main() {
   Node *root = NULL;
 
   insert(&root, 10);
-  insert(&root, 100);
-  insert(&root, 20);
-  insert(&root, 60);
-
   inorden(&root);
-
-  printf("%d", root->vals[0]);
   printf("\n");
+
+  insert(&root, 60);
+  inorden(&root);
+  printf("\n");
+
+  insert(&root, 20);
+  inorden(&root);
+  printf("\n");
+
+  insert(&root, 50);
+  inorden(&root);
+  printf("\n");
+
+  insert(&root, 15);
+  inorden(&root);
+  printf("\n");
+
+  insert(&root, 5);
+  inorden(&root);
+  printf("\n");
+
+
+  printf("%d", root->parent->vals[0]);
+  printf("\n");
+  printf("%d", root->parent->vals[1]);
+  printf("\n");
+  inorden(&root);
 
   /* Constructing tree given in the above figure 
 
@@ -172,6 +267,10 @@ int main() {
 
   
   printf("inserting: %d", val);
+  printf("\n");
+
+
+  printf("%d", root->parent->vals[0]);
   printf("\n");
 
   */
