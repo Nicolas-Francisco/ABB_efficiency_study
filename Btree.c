@@ -22,8 +22,12 @@ Node *newNode(int val) {
 }
 
 
-void splitNode(Node **node, int median){
+void splitNode(Node **node){
   Node* p = *node;
+  int median = p->vals[(int) floor(MAX/2)];
+
+  printf("split con media %d", median);
+  
   // We create a new root. 
   Node* right_son = newNode(median);
 
@@ -60,49 +64,48 @@ void splitNode(Node **node, int median){
   }
 
   // If we are not the root, we are in the recursive case
-  else {
-    Node* father = p->parent;
+  // We have to add the value into the parent
+  Node* father = p->parent;
+  int j = 0;
+  while (father->vals[j] < median){
+    j++;
+  }
 
-    // If there is space in the parent, we add it
-    if (father->count < MAX){
-      // We search the position
-      int i = 0;
-      while (i < father->count){
-        if(median < father->vals[i]){
-          break;
-        }
-        i++;
-      }
+  // we change save the previus value, its next son, and
+  // move the rest of the node.
+  int e = father->vals[j];
+  Node* aux = father->C[j+1];
 
-      int aux_i = i;
-      // we insert the median into the node, with its children
-      while(i <= father->count){
-        int e = father->vals[i];
-        father->vals[i] = median;
-        median = e;
-        i++;
-      }
+  p->parent = father;
+  right_son->parent = father;
+  father->vals[j] = median;
+  father->C[j] = p;
+  father->C[j+1] = right_son;
+  father->count++;
 
-      // We change the pointers
-      father->count++;
-      father->C[aux_i] = p;
-      father->C[aux_i+1] = right_son;
-      p->parent = father;
-      right_son->parent = father;
-      *node = father;
-    }
+  right_son = aux;
+  median = e;
+  j++;
 
-    if (father->count == MAX){
-      int mid_val = p->parent->vals[(int) floor(MAX/2)];
-      splitNode(&(*node)->parent, mid_val);
-    }
+  while (j < father->count){
+    e = father->vals[j];
+    aux = father->C[j+1];
+    right_son->parent = father;
+    father->vals[j] = median;
+    father->C[j+1] = right_son;
+    j++;
+  }
+
+  if (father->count == MAX){
+    int mid_val = p->parent->vals[(int) floor(MAX/2)];
+    splitNode(&(*node)->parent);
   }
 }
 
 
 void insert(Node **node, int val) {
   Node* p = *node;
-  
+  printf("insertamos %d", val);
   // If the root is NULL, we just create it
   if (p == NULL) {
     *node = newNode(val);
@@ -110,45 +113,28 @@ void insert(Node **node, int val) {
 
   // If the root is not null, we proceed
   } else {
-    // We first look for the position that the value
-    // must be in the B-Tree. This position will be 
-    // saved in the pointer p.
+    // We must look for the position where we must insert
     int i = 0;
-    // While there are still values saved in the node,
-    // and the pointer is not null
-    while (i < p->count && p != NULL){
-      // If the value is smaller, we go to the left son
-      if (val < p->vals[i]){
-        if (p->C[i] == NULL){
-          break;
-        } else{
-          p = p->C[i];
-          i = 0;
-        }
-      // If the value is the same, we founded it.
-      } else if (p->vals[i] == val){
+    for (i; i < p->count; i++){
+      if(p->vals[i] > val && p->C[i] != NULL){
+        insert(&(p->C[i]), val);
+        return;
+      } else if (p->vals[i] > val && p->C[i] == NULL){
         break;
       }
-      // Else, we keep looking in the node
-      i++;
     }
     
-    // If there is space in the parent, we insert it.
-    if (p->count < MAX){
-      while(i <= p->count){
-        int e = p->vals[i];
-        p->vals[i] = val;
-        val = e;
-        i++;
-      }
-      p->count ++;
-    } 
+    // Si ya llegamos donde corresponde, entonces insertamos
+    while(i <= p->count){
+      int e = p->vals[i];
+      p->vals[i] = val;
+      val = e;
+      i++;
+    }
+    p->count ++;
 
     if(p->count == MAX){
-      int mid_val = p->vals[(int) floor(MAX/2)];
-      printf("split! median : %d", mid_val);
-      printf("\n");
-      splitNode(&p, mid_val);
+      splitNode(&p);
     }
 
     *node = p;
@@ -180,13 +166,12 @@ Node* search(Node **node, int val) {
 void inorden(Node **node) {
   Node *a = *node;
   if (a != NULL) {
+    printf("(");
     for (int i = 0; i<a->count ; i++)
       printf("%d,", a->vals[i]);
-
-    printf("(%d)", a->count);
+    printf(")");
     printf("\n");
     int i = 0;
-
     while (a->C[i] != NULL){
       inorden(&(a->C[i]));
       i++;
@@ -199,28 +184,39 @@ int main() {
   Node *root = NULL;
 
   insert(&root, 10);
-  inorden(&root);
   printf("\n");
 
   insert(&root, 60);
-  inorden(&root);
   printf("\n");
 
   insert(&root, 20);
-  inorden(&root);
   printf("\n");
 
   insert(&root, 50);
-  inorden(&root);
   printf("\n");
 
   insert(&root, 15);
-  inorden(&root);
   printf("\n");
 
   insert(&root, 5);
-  inorden(&root);
   printf("\n");
+
+  insert(&root, 2);
+  printf("\n");
+
+  insert(&root, 1);
+  printf("\n");
+
+  insert(&root, 4);
+  printf("\n");
+
+
+  inorden(&root);
+
+  insert(&root, 3);
+  printf("\n");
+
+  inorden(&root);
 
   /* Constructing tree given in the above figure 
 
