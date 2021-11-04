@@ -27,6 +27,7 @@ void splitNode(Node **node){
   int median = p->vals[(int) floor(MAX/2)];
 
   printf("split con media %d", median);
+  printf("\n");
   
   // We create a new root. 
   Node* right_son = newNode(median);
@@ -52,7 +53,7 @@ void splitNode(Node **node){
   }
 
   // If we are the main root of the tree
-  if ((*node)->parent == NULL){
+  if (p->parent == NULL){
     Node* new_root = newNode(median);
     // We change the root of the tree.
     p->parent = new_root;
@@ -71,41 +72,45 @@ void splitNode(Node **node){
     j++;
   }
 
-  // we change save the previus value, its next son, and
-  // move the rest of the node.
+  // We save the value saved in the position of j, and
+  // the right son of that value
   int e = father->vals[j];
   Node* aux = father->C[j+1];
 
-  p->parent = father;
-  right_son->parent = father;
-  father->vals[j] = median;
-  father->C[j] = p;
-  father->C[j+1] = right_son;
-  father->count++;
-
-  right_son = aux;
-  median = e;
+  p->parent = father;           // p and right son have a new father
+  right_son->parent = father;   
+  father->vals[j] = median;     // the new value in j is the median
+  father->C[j] = p;             // the left node is p
+  father->C[j+1] = right_son;   // and the right is right_son
+  father->count++;              // We increse the count of the father
+  right_son = aux;              // we reload the values for the next
+  median = e;                   // iterations
   j++;
 
+  // We do the same on the next values of the node.
   while (j < father->count){
     e = father->vals[j];
     aux = father->C[j+1];
     right_son->parent = father;
     father->vals[j] = median;
     father->C[j+1] = right_son;
+    right_son = aux;
+    median = e;
     j++;
   }
 
   if (father->count == MAX){
-    int mid_val = p->parent->vals[(int) floor(MAX/2)];
-    splitNode(&(*node)->parent);
+    splitNode(&father->parent);
   }
+
+  return;
 }
 
 
 void insert(Node **node, int val) {
   Node* p = *node;
   printf("insertamos %d", val);
+  printf("\n");
   // If the root is NULL, we just create it
   if (p == NULL) {
     *node = newNode(val);
@@ -185,38 +190,53 @@ int main() {
 
   insert(&root, 10);
   printf("\n");
+  inorden(&root);
+  printf("\n");
 
   insert(&root, 60);
+  printf("\n");
+  inorden(&root);
   printf("\n");
 
   insert(&root, 20);
   printf("\n");
+  inorden(&root);
+  printf("\n");
 
   insert(&root, 50);
+  printf("\n");
+  inorden(&root);
   printf("\n");
 
   insert(&root, 15);
   printf("\n");
+  inorden(&root);
+  printf("\n");
 
   insert(&root, 5);
+  printf("\n");
+  inorden(&root);
   printf("\n");
 
   insert(&root, 2);
   printf("\n");
+  inorden(&root);
+  printf("\n");
 
   insert(&root, 1);
+  printf("\n");
+  inorden(&root);
   printf("\n");
 
   insert(&root, 4);
   printf("\n");
-
-
   inorden(&root);
+  printf("\n");
 
   insert(&root, 3);
   printf("\n");
-
   inorden(&root);
+  printf("\n");
 
   /* Constructing tree given in the above figure 
 
