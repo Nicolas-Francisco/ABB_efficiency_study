@@ -12,7 +12,7 @@ double cpu_time_used;
 #define bi 2; //busqueda incorrecta
 
 //#define n  1000000 // 10 a la 6
-#define n 10
+#define n 100
 
 #define pi 0.5
 #define pbe 0.33
@@ -39,6 +39,14 @@ int search_in_array(long arreglo[], long busqueda, long ene) {
         if (arreglo[i] == busqueda) return 1;
     }
     return 0;
+}
+
+long get_bigger(float arreglo[], long busqueda, long ene ){
+    for (int i = 0; i < ene; i++) {
+        if (arreglo[i] > busqueda) return i;
+    }
+    return -1;
+
 }
 //genera la secuencia desordena de intrucciones
 void initSecuencia(){
@@ -166,66 +174,65 @@ double sesgada(double (*f)(double)){
     printf("--------------Sesgado-------------------------\n");
     Node *rootABB = NULL;
     long numeros[n/2]; //aca se guarda los numeros insertados
-    long ene = (long)n;
-    long size = pow(2,32)*(ene/2)-(((ene/2)*(ene/2 + 1))/2);
-    printf("el tam max es %lld\n",size);
-    //long numeros_prob[size]; // lista con los numeros probables
-    long pos = 0;  //lugar donde insertar en numeros_prob
-    long * numeros_prob = (long*)malloc(sizeof(long)*n);
-
     long cont = 0;   // cantidad de nodos en el arbol
+
+    float prob[n/2]; //aca se guarda la prob acumulada
+
     long max = pow(2,32); // numero maximo posible
     long random = 0; //numero random
+    
+    float P = 0; // peso total de los  p(x)
+    float p_x = 0; //peso individula
+
     start = clock(); //inicio del timer
-    long P = 0; // peso total de los  p(x)
-    long p_x = 0;
-    numeros_prob[2] = 177;
-    for (int i=0; i < n; i++){
-        numeros_prob[i]=0;
-        printf("a %lld\n",i);
-    }
 
-
-
-    /*
     for (long i=0; i < n; i++){ //recorro mi secuencia
         int operation = secuencia[i];
         if (operation==0){ //insercion en los arboles
-            printf("aca inserto\n");
-            
             do{
                 random = (rand() % max);
             } while (search_in_array(numeros,random,cont));
             numeros[cont]=random;
-            cont++;
-            insert(&rootABB,random);
-            
+
             p_x = f(random); //Obtenemos el peso
             P=P+p_x; // sumamos al peso global
-            long hasta =pos+(long)p_x ;
-            printf("hasta es %lld\n",hasta);
-            //for (long i=0; i <= 10; i++){
-               // printf("acaaaa");
-                // numeros_prob[i]=0;
-            //}
-            pos=pos+(long)p_x;
-            printf("pos es %lld\n",pos);
-
+            prob[cont]=P;
+            printf("P es %f \n",P);
+            cont++;
+            insert(&rootABB,random);
             printf("inserte el %lld\n",random);
         }
         
         else if (operation==1){ //busqueda exitosa
-            printf("aca se busqueda exitosa\n");
+            long range = prob[cont];
+            long index;
+            if (range == 0){
+                index = 0;
+            }
+            else{
+                index = (rand() % range);
+            }
+        
+            
+            int pos = get_bigger(prob,index,cont);
+            random=numeros[pos];
+            printf("pos es %lld\n",pos);
+            Node * node = search(&rootABB,random);
+            
+        
+       printf("busque exitosamente el %lld\n",random);
         }
         else{ //busqueda infructuosa
-            printf("aca se busqueda infructuosa\n");
+            do{
+                random = (rand() % max);
+            } while (search_in_array(numeros,random,cont));
+            Node * node = search(&rootABB,random);
+            printf("busque fallidamente el %lld\n",random);
         }
     }
     end = clock();   
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
     return cpu_time_used;
-    */
-   return 1;
 }
 
 int main(){
