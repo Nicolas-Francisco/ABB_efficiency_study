@@ -18,7 +18,7 @@ Node* newNode(int value){
 }
  
 
-void insert(Node **node,int value){
+void insert(Node **node,long value){
     Node *a = *node;
     if (a==NULL){
         *node=newNode(value);
@@ -38,7 +38,7 @@ void insert(Node **node,int value){
     }
 }
 
-Node * search(Node ** node, int value){
+Node * search(Node ** node, long value){
     Node *a = *node;
     if (a == NULL){
         return NULL;
@@ -81,6 +81,8 @@ void postorden(Node **node) {
     }
 }
 //////////////////////////////////////
+
+/*
 int main() {
     printf("Hola Mundo");
     Node *root = NULL;
@@ -98,3 +100,4 @@ int main() {
     inorden(&node);
     printf("\n");
 }
+*/
