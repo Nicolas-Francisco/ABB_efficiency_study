@@ -25,15 +25,11 @@ Node *newNode(int val) {
 void splitNode(Node **node){
   Node* p = *node;
   int median = p->vals[(int) floor(MAX/2)];
-
-  printf("split con media %d", median);
-  printf("\n");
-  
   // We create a new root. 
   Node* right_son = newNode(median);
 
   // We save all the values;
-  int i = floor(MAX/2) - 1;
+  int i = floor(MAX/2);
   int k = 0;
   right_son->count = 0;
   for (i; i < MAX ; i++){
@@ -72,25 +68,11 @@ void splitNode(Node **node){
     j++;
   }
 
-  // We save the value saved in the position of j, and
-  // the right son of that value
-  int e = father->vals[j];
-  Node* aux = father->C[j+1];
-
-  p->parent = father;           // p and right son have a new father
-  right_son->parent = father;   
-  father->vals[j] = median;     // the new value in j is the median
-  father->C[j] = p;             // the left node is p
-  father->C[j+1] = right_son;   // and the right is right_son
-  father->count++;              // We increse the count of the father
-  right_son = aux;              // we reload the values for the next
-  median = e;                   // iterations
-  j++;
-
+  int aux_j = j;
   // We do the same on the next values of the node.
-  while (j < father->count){
-    e = father->vals[j];
-    aux = father->C[j+1];
+  while (j <= father->count){
+    int e = father->vals[j];
+    Node* aux = father->C[j+1];
     right_son->parent = father;
     father->vals[j] = median;
     father->C[j+1] = right_son;
@@ -98,6 +80,10 @@ void splitNode(Node **node){
     median = e;
     j++;
   }
+
+  p->parent = father;
+  father->C[aux_j] = p; 
+  father->count++;
 
   if (father->count == MAX){
     splitNode(&father->parent);
@@ -109,8 +95,6 @@ void splitNode(Node **node){
 
 void insert(Node **node, int val) {
   Node* p = *node;
-  printf("insertamos %d", val);
-  printf("\n");
   // If the root is NULL, we just create it
   if (p == NULL) {
     *node = newNode(val);
