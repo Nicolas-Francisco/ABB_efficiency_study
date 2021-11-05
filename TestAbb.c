@@ -4,11 +4,15 @@
 #include<time.h>
 #include "Abb.c"
 
+clock_t start, end;
+double cpu_time_used;
+
 #define ins 0; //insercion
 #define be 1; //busqueda exitosa
 #define bi 2; //busqueda incorrecta
 
-#define n  10
+//#define n  1000000 // 10 a la 6
+#define n 100
 
 #define pi 0.5
 #define pbe 0.33
@@ -56,15 +60,14 @@ void initSecuencia(){
 }
 
 //experimento aleatorio
-void aleatorio(){
+double aleatorio(){
     printf("--------------Experimento aleatorio-------------------------\n");
     Node *rootABB = NULL;
-
     long numeros[n/2];
     long cont = 0;
     long max = pow(2,32);
     long random = 0;
-
+    start = clock();
     for (long i=0; i < n; i++){ //recorro mi secuencia
         int operation = secuencia[i];
         if (operation==0){ //insercion en los arboles
@@ -90,18 +93,71 @@ void aleatorio(){
             Node * node = search(&rootABB,random);
             printf("busque fallidamente el %lld\n",random);
         }
-    }    
+    }
+    end = clock();   
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
+    return cpu_time_used;
 }
+
+double creciente(double factor){
+    printf("--------------Experimento creciente con factor %f-------------------------\n",factor);
+    Node *rootABB = NULL;
+    long numeros[n/2];
+    long  m = 0;
+    long max = pow(2,32);
+    long random = 0;
+    double k = 0; // el k
+    start = clock();
+    for (long i=0; i < n; i++){ //recorro mi secuencia
+        int operation = secuencia[i];
+        if (operation==0){ //insercion en los arboles
+            do{
+                random = (rand() % k); // busco un numero entre 0 y k
+                //random = m;
+                random=random+m; //k+m
+            } while (search_in_array(numeros,random,m));
+            numeros[m]=random;
+            m++;
+            k=m*factor;
+            printf("kkkkk es %f",k);
+            insert(&rootABB,random);
+            printf("inserte el %lld\n",random);
+        }
+        
+        else if (operation==1){ //busqueda exitosa
+            int index = (rand() % m);
+            random=numeros[index];
+            Node * node = search(&rootABB,random);
+            printf("busque exitosamente el %lld\n",random);
+        }
+        else{ //busqueda infructuosa
+            do{
+                random = (rand() % max);
+            } while (search_in_array(numeros,random,m));
+            Node * node = search(&rootABB,random);
+            printf("busque fallidamente el %lld\n",random);
+        }
+    }
+    end = clock();   
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
+    return cpu_time_used;
+}
+
 
 int main(){
     srand(time(NULL)); 
     initSecuencia();
-    printf("la cantidad de insercciones sera %d\n",cant_in);
-    printf("la cantidad de busquedas exitosas sera %d\n",cant_be);
-    printf("la cantidad de busquedas incorrectas sera %d\n",cant_bi);
-    for (int i=0; i < n; i++){
-        printf("%d, ",secuencia[i]);
-    }
-    printf("\n");
-    aleatorio();
+    //printf("la cantidad de insercciones sera %d\n",cant_in);
+    //printf("la cantidad de busquedas exitosas sera %d\n",cant_be);
+    //printf("la cantidad de busquedas incorrectas sera %d\n",cant_bi);
+    //for (int i=0; i < n; i++){
+    //    printf("%d, ",secuencia[i]);
+    //}
+    //printf("\n");
+    
+    double timeA = aleatorio();
+    printf("El tiempo de ejecucion es %f\n",timeA);
+    double timeC_0p1 = creciente(0.1);
+    //printf("El tiempo de ejecucion es %f\n",timeA);
+    
 }
