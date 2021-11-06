@@ -4,8 +4,9 @@
 
 #define MAX 4
 
+
 typedef struct nodo {
-  int vals[MAX-1];        // Array of values
+  int vals[MAX];        // Array of values
   int count;            // value counter
   struct nodo *C[MAX];  // Array of node pointers
   struct nodo *parent;  // We keep trace of the parent node
@@ -17,276 +18,139 @@ Node *newNode(int val) {
   node = malloc(sizeof(Node));
   node->vals[0] = val;
   node->count = 1;
-  node->parent = NULL;
   return node;
 }
 
 
-void parent_insert(Node **node, int x, Node **left, Node **right, Node **root){
-  Node *p = *node;
+void splitNode(Node **node){
+  Node* p = *node;
+  int median = p->vals[(int) floor(MAX/2)];
+  // We create a new root. 
+  Node* right_son = newNode(median);
 
-  // If theres space in the parent node
-  if (p->count < MAX-1){
-    
-    int j = p->count-1; 
-    // We move all the values to the next space
-    while((p->vals)[j] >= x){
-      (p->vals)[j+1] = (p->vals)[j]; 
-      (p->C)[j+2] = (p->C)[j+1]; 
-      j--;
-      if (j < 0) {
-        break;
-      } 
-    }
-
-    // Then we insert the element in the position left null
-    (p->vals)[j+1] = x;
-    (p->C)[j+1] = *left;
-    (p->C)[j+2] = *right;
-    Node* left_node = *left;
-    Node* right_node = *right;
-    (left_node->parent) = p;
-    (right_node->parent) = p;
-    (p->count)++;
-  }
-
-  // If theres not space in the node, we must split the parent
-  else {
-    parent_split(node, x, left, right, root);
-  }
-}
-
-
-void parent_split(Node **node, int x, Node **left, Node **right, Node **root){
-  Node *p = *node;
-
-  // We calculate the median value without inserting it
-  int median = (p->vals)[MAX/2];
-  int to_left = 0;
-  // If the element is to the left of the median
-  if (x < median){
-    // We move the median to its left
-    median = (p->vals)[(MAX/2)-1];
-    to_left = 1;
-    if (x > median){
-      median = x;
-      to_left = -1;
+  // We save all the values;
+  int i = floor(MAX/2);
+  int k = 0;
+  right_son->count = 0;
+  for (i; i < MAX ; i++){
+    if (p->vals[i] > median){
+      right_son->vals[k] = p->vals[i];
+      right_son->C[k] = p->C[i];
+      p->vals[i] = 0;
+      p->C[i] = (Node*) NULL;
+      p->count--;
+      right_son->count++;
+      k++;
+    } else if (p->vals[i] == median){
+      p->vals[i] = 0;
+      p->C[i] = (Node*) NULL;
+      p->count--;
     }
   }
 
-  // On each iteration we must create a new right node
-  Node *new_right = newNode(0);
-  int i = 0;
-  int j = 0;
-
-  while (i < MAX-1){
-    // If the value is greater than the media, we move it to the 
-    // new right node
-    if ((p->vals)[i] > median){
-      (new_right->vals)[j] = (p->vals)[i];
-      (new_right->C)[j] = (p->C)[i];
-      (p->C)[i] = NULL;
-      (new_right->count)++;
-      j++;
-    } else if ((p->vals)[i] == median){
-      (p->vals)[i] = NULL;
-      (p->count)--;
-    }
-    i++;
-  }
-
-  // We set the correct values to the new right node
-  (new_right->count)--;
-  (new_right->C)[j] = (p->C)[i];
-
-  // We insert the median to it correct position in the parent
-  if (to_left > -1){
-    if (to_left){
-      parent_insert(&p, x, left, right, root);
-    } else {
-      parent_insert(&new_right, x, left, right, root);
-    }
-  }
-
-  // If the new value is the median
-  else{
-    // We only need to insert its children
-    (p->C)[new_right->count] = *left;
-    (new_right->C)[0] = *right;
-  }
-
-  // If we are in the root node of the B tree, we just create
-  // a new root, and place the trees as its new children
+  // If we are the main root of the tree
   if (p->parent == NULL){
-    Node *new_parent = newNode(median);
-    (new_parent->C)[0] = p;
-    (new_parent->C)[1] = new_right;
-    p->parent = new_parent;
-    new_right->parent = new_parent;
-
-    *root = new_parent;
-  } 
-
-  // If we are not the root, we just go up recursively
-  else{
-    new_right->parent = p->parent;
-    parent_insert(&(p->parent), median, &p, &new_right, root);
-  }
-  
-  return;
-}
-
-// The function insert just calls the insert to a leaf.
-// We only can insert a new value into a leaf, never a intern node (this is done
-// by the function parent insert)
-void insert(Node **node, int x){
-  leaf_insert(node, node, x);
-}
-
-
-void leaf_insert(Node **node, Node **root, int x) {
-  Node *p = *node;
-
-  // If the node has a chldren
-  if ((p->C)[0] != NULL){
-    // We look for the position that we must insert the value x
-    int i = 0;
-    while((p->vals)[i] < x){
-      i++;
-      if (i == p->count) {
-        break;
-      } 
-    }
-
-    // Once we reached the expected posittion, we insert the value recursively.
-    leaf_insert(&(p->C)[i], root, x);
-  }
-
-  // If we are in a leaf without children
-  else{
-    // We must move the values that are greater than the x
-    int j = p->count-1;
-    while((p->vals)[j] > x){
-      (p->vals)[j+1] = (p->vals)[j]; 
-      j--;
-      if (j < 0) {
-        break;
-      } 
-    }
-
-    // We insert the new value into the leaf
-    (p->vals)[j+1] = x;
-    (p->count)++;
-
-    // If the node is full, we must split the leaf.
-    if (p->count >= MAX){ 
-      leaf_split(node, root);
-    }
-  }
-  return;
-}
-
-
-void leaf_split(Node **node, Node **root){
-  Node *p = *node;
-
-  int median = (p->vals)[MAX/2];
-
-  // As the parent_split, we always create a new right node
-  Node *right = newNode(0);
-  int i = 0;
-  int j = 0;
-
-  // We move the values to the right
-  while (i < MAX){ 
-    if ((p->vals)[i] > median){
-      (right->vals)[j] = (p->vals)[i];
-      (right->count)++;
-      (p->vals)[i] = NULL;
-      (p->count)--;
-      j++;
-    } 
-    i++;
-  }
-
-  (right->count)--;
-
-  // If we are the root, we create a new root.
-  if (p->parent == NULL){
-    Node *new_parent = newNode(median);
-    (new_parent->C)[0] = p;
-    (new_parent->C)[1] = right;
-    p->parent = new_parent;
-    right->parent = new_parent;
-    *root = new_parent;
+    Node* new_root = newNode(median);
+    // We change the root of the tree.
+    p->parent = new_root;
+    right_son->parent = new_root;
+    new_root->C[0] = p;
+    new_root->C[1] = right_son;
+    *node = new_root;
     return;
   }
 
-  // If we are not, we must split recursively
-  else{
-    right->parent = p->parent;
-    parent_insert(&(p->parent), median, &p, &right, root);
+  // If we are not the root, we are in the recursive case
+  // We have to add the value into the parent
+  Node* father = p->parent;
+  int j = 0;
+  while (father->vals[j] < median){
+    j++;
   }
+
+  int aux_j = j;
+  // We do the same on the next values of the node.
+  while (j <= father->count){
+    int e = father->vals[j];
+    Node* aux = father->C[j+1];
+    right_son->parent = father;
+    father->vals[j] = median;
+    father->C[j+1] = right_son;
+    right_son = aux;
+    median = e;
+    j++;
+  }
+
+  p->parent = father;
+  father->C[aux_j] = p; 
+  father->count++;
+
+  if (father->count == MAX){
+    splitNode(&father->parent);
+  }
+
+  return;
 }
 
-Node* search(Node **root, int x){
-  Node *p = *root;
 
-  // If the node doesnt have children, we are in a leaf
-  if ((p->C)[0] == NULL){
-    // We look for the value in the node 
+void insert(Node **node, int val) {
+  Node* p = *node;
+  // If the root is NULL, we just create it
+  if (p == NULL) {
+    *node = newNode(val);
+    return;
+
+  // If the root is not null, we proceed
+  } else {
+    // We must look for the position where we must insert
     int i = 0;
-    while(i < MAX-1){ 
-      // If we didn't found it, we get out and return null.
-      if ((p->vals)[i] == NULL) {
+    for (i; i < p->count; i++){
+      if(p->vals[i] > val && p->C[i] != NULL){
+        insert(&(p->C[i]), val);
+        return;
+      } else if (p->vals[i] > val && p->C[i] == NULL){
         break;
       }
-      // If we founded it, we return it
-      if ((p->vals)[i] == x){ 
-        return p;
-      }
+    }
+    
+    // Si ya llegamos donde corresponde, entonces insertamos
+    while(i <= p->count){
+      int e = p->vals[i];
+      p->vals[i] = val;
+      val = e;
       i++;
     }
+    p->count ++;
+
+    if(p->count == MAX){
+      splitNode(&p);
+    }
+
+    *node = p;
+  }
+}
+
+
+Node* search(Node **node, int val) {
+  Node *a = *node;
+  if (a == NULL){
     return NULL;
-  }
-
-  // If we are not in a leaf, we must look for the children that
-  // should contain the value
-  else{ 
+  } else{
+    // We set a counter for the possible possition of the value
+    // The first iteration will be with a value of 0
     int i = 0;
-    while(i < MAX-1){
-      // If the value in the position i is greater than x, we search
-      // recursively on its children
-      if ((p->vals)[i] >= x || (p->vals)[i] == NULL){ 
-        return search(&(p->C)[i], x);            
+    while (i < a->count){
+      if (val < a->vals[i]){
+        return search(&(a->C[i]), val);
+      } else if (a->vals[i] == val){
+        return a;
       }
       i++;
     }
-    // If the node was almost full, we look in the last children.
-    return search(&(p->C)[i], x);
+    return search(&(a->C[i]), val);
   }
 }
 
-void print_leaves(Node *p){
-  if (p->C[0] != NULL){
-    for(int i = 0; i < (p->count)+1; i++){
-      print_leaves(p->C[i]);
-    }
-  }
-  else{
-    for(int i = 0; i < p->count; i++){
-      printf("%d ", p->vals[i]);
-    }
-  }
-}
-
-void free_nodes(Node *p) {
-  int i = 0;
-  while(p->C[i] != NULL){
-    free_nodes(p->C[i]);
-  }
-  free(p);
-}
 
 void inorden(Node **node) {
   Node *a = *node;
@@ -306,7 +170,10 @@ void inorden(Node **node) {
 
 
 int main() {
-  Node *root = newNode(10);
+  Node *root = NULL;
+
+  insert(&root, 10);
+  printf("\n");
   inorden(&root);
   printf("\n");
 
@@ -354,5 +221,21 @@ int main() {
   printf("\n");
   inorden(&root);
   printf("\n");
+
+  /* Constructing tree given in the above figure 
+  insert(&root, 40);
+  insert(&root, 70);
+  
+  printf("inserting: %d", val);
+  printf("\n");
+  
+  if(a->parent != NULL){
+      printf("my father : %d", a->parent->vals[0]);
+      printf("\n");
+    }
+    
+  printf("%d", root->parent->vals[0]);
+  printf("\n");
+  */
   return 0;
 }
