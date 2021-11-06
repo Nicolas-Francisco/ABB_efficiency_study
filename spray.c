@@ -146,7 +146,7 @@ void preorder(Node *R)
 	preorder(R->r);
 }
 
-Node* find(int v)
+Node* search(int v)
 {
 	if(!root) return NULL;
 	Node *P=root;
@@ -172,16 +172,11 @@ Node* find(int v)
 	Splay(P);
 	if(P->v==v) return P;
 	else {
-		Node* a=(Node *)malloc(sizeof(Node));
-		a->l=NULL;
-		a->r=NULL;
-		a->p=NULL;
-		a->v=-1;
-		return a;
+		return NULL;
 	}
 }
 
-int main()
+/* int main()
 {
 	
   insert(10);
@@ -193,10 +188,10 @@ int main()
   preorder(root);
 
   printf("END OF FIRST EX \n");
-  int value100 = find(100)->v;
+  int value100 = search(100)->v;
   printf("FOUND %i \n", value100);
-  Node* value0 = find(130);
+  Node* value0 = search(130);
   preorder(root);
   printf("FOUND %i \n", value0->v);
   preorder(root);
-}
+} */

@@ -136,6 +136,24 @@ void insert(Node** node, int value)
     }
     return;
 }
+
+
+Node * search(Node ** node, long value){
+    Node *a = *node;
+    if (a == NULL){
+        return NULL;
+    }else{
+        if (value == a->value){
+            return a;
+        }else{
+            if (value < a->value){
+                return search(&(a->left), value);
+            }else{
+                return search(&(a->right), value);
+            }
+        }
+    }
+}
  
 // A utility function to print preorder traversal
 // of the tree.
@@ -168,10 +186,10 @@ void postorden(Node **node) {
 //////////////////////////////////////
  
 /* Driver program to test above function*/
-int main()
+/* int main()
 {
   Node *root = NULL;
-  /* Constructing tree given in the above figure */
+  //Constructing tree given in the above figure 
   insert(&root, 10);
   insert(&root, 100);
   insert(&root, 20);
@@ -182,4 +200,5 @@ int main()
   preorden(&root);
 
   return 0;
-}
+} 
+*/

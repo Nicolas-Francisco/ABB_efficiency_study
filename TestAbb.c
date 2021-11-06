@@ -274,7 +274,7 @@ int main(){
 
     printf("--------------------Sesgado p(x)=x----------------------------\n");
     FILE* ficheroSesgado_x_Abb;
-    ficheroSesgado_x_Abb = fopen("Datos/sesgado_x_Abb", "w");
+    ficheroSesgado_x_Abb = fopen("Datos/sesgado_x_Abb.txt", "w");
     for (int i = 0; i < 100; i++){
         double time_s_x = sesgada(&p_x);
         fprintf(ficheroSesgado_x_Abb, "%f",time_s_x);
@@ -288,7 +288,7 @@ int main(){
     printf("--------------------Sesgado p(x)=sqrt(x)------------------------\n");
     
     FILE* ficheroSesgado_sqrt_Abb;
-    ficheroSesgado_sqrt_Abb = fopen("Datos/sesgado_sqrt_Abb", "w");
+    ficheroSesgado_sqrt_Abb = fopen("Datos/sesgado_sqrt_Abb.txt", "w");
     for (int i = 0; i < 100; i++){
        double time_s_sqrt = sesgada(&p_sqrt);
         fprintf(ficheroSesgado_sqrt_Abb, "%f",time_s_sqrt);
@@ -302,7 +302,7 @@ int main(){
     printf("--------------------Sesgado p(x)=ln(x)---------------------------\n");
     
     FILE* ficheroSesgado_ln_Abb;
-    ficheroSesgado_ln_Abb = fopen("Datos/sesgado_ln_Abb", "w");
+    ficheroSesgado_ln_Abb = fopen("Datos/sesgado_ln_Abb.txt", "w");
     for (int i = 0; i < 100; i++){
        double time_s_ln = sesgada(&p_ln);
         fprintf(ficheroSesgado_ln_Abb, "%f",time_s_ln);
