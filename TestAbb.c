@@ -12,7 +12,7 @@ double cpu_time_used;
 #define bi 2; //busqueda incorrecta
 
 //#define n  1000000 // 10 a la 6
-#define n 1000000
+#define n 10
 
 #define pi 0.5
 #define pbe 0.33
@@ -95,21 +95,21 @@ double aleatorio(){
             numeros[cont]=random;
             cont++;
             insert(&rootABB,random);
-            printf("inserte el %lld\n",random);
+            //printf("inserte el %lld\n",random);
         }
         
         else if (operation==1){ //busqueda exitosa
             int index = (rand() % cont);
             random=numeros[index];
             Node * node = search(&rootABB,random);
-            printf("busque exitosamente el %lld\n",random);
+           // printf("busque exitosamente el %lld\n",random);
         }
         else{ //busqueda infructuosa
             do{
                 random = (rand() % max);
             } while (search_in_array(numeros,random,cont));
             Node * node = search(&rootABB,random);
-            printf("busque fallidamente el %lld\n",random);
+           // printf("busque fallidamente el %lld\n",random);
         }
     }
     end = clock();   
@@ -148,21 +148,21 @@ double creciente(double factor){
             k=m*factor;
             
             insert(&rootABB,random);
-            printf("inserte el %lld\n",random);
+            //printf("inserte el %lld\n",random);
         }
         
         else if (operation==1){ //busqueda exitosa
             int index = (rand() % m);
             random=numeros[index];
             Node * node = search(&rootABB,random);
-            printf("busque exitosamente el %lld\n",random);
+            //printf("busque exitosamente el %lld\n",random);
         }
         else{ //busqueda infructuosa
             do{
                 random = (rand() % max);
             } while (search_in_array(numeros,random,m));
             Node * node = search(&rootABB,random);
-            printf("busque fallidamente el %lld\n",random);
+            //printf("busque fallidamente el %lld\n",random);
         }
     }
     end = clock();   
@@ -170,8 +170,8 @@ double creciente(double factor){
     return cpu_time_used;
 }
 
-double sesgada(double (*f)(double)){
-    printf("--------------Sesgado-------------------------\n");
+double sesgada(double (*f)(double),char * type){
+    printf("--------------Sesgado %s-------------------------\n",type);
     Node *rootABB = NULL;
 /*  long numeros[n/2]; //aca se guarda los numeros insertados
     long cont = 0;   // cantidad de nodos en el arbol
@@ -213,7 +213,7 @@ double sesgada(double (*f)(double)){
             //printf("P es %f \n",P);
             cont++;
             insert(&rootABB,random);
-            printf("inserte el %lld\n",random);
+            //printf("inserte el %lld\n",random);
         }
         
         else if (operation==1){ //busqueda exitosa
@@ -223,7 +223,7 @@ double sesgada(double (*f)(double)){
             random=numeros[pos];
             //printf("pos es %lld\n",pos);
             Node * node = search(&rootABB,random);
-            printf("busque exitosamente el %lld\n",random);
+            //printf("busque exitosamente el %lld\n",random);
             
         
        
@@ -233,7 +233,7 @@ double sesgada(double (*f)(double)){
                 random = (rand() % max);
             } while (search_in_array(numeros,random,cont));
             Node * node = search(&rootABB,random);
-            printf("busque fallidamente el %lld\n",random);
+            //printf("busque fallidamente el %lld\n",random);
         }
     }
     end = clock();   
@@ -247,20 +247,17 @@ int main(){
     
     double timeA = aleatorio();
     printf("El tiempo de ejecucion es %f\n",timeA);
-       
-   /*
+
     double timeC_0p1 = creciente(0.1);
     printf("El tiempo de ejecucion es %f\n",timeC_0p1);
     double timeC_0p5 = creciente(0.5);
     printf("El tiempo de ejecucion es %f\n",timeC_0p5);
-  
-    double time_s_x = sesgada(&p_x);
+
+    double time_s_x = sesgada(&p_x,"x");
     printf("El tiempo de ejecucion es %f\n",time_s_x);
-
-    double time_s_sqrt = sesgada(&p_sqrt);
+    double time_s_sqrt = sesgada(&p_sqrt,"sqrt(x)");
     printf("El tiempo de ejecucion es %f\n",time_s_sqrt);
-
-    double time_s_ln = sesgada(&p_ln);
+    double time_s_ln = sesgada(&p_ln,"ln(x)");
     printf("El tiempo de ejecucion es %f\n",time_s_ln);
-    */
+
 }
