@@ -12,15 +12,15 @@ double cpu_time_used;
 #define bi 2; //busqueda incorrecta
 
 //#define n  1000000 // 10 a la 6
-#define n 100
+#define n 1000000
 
 #define pi 0.5
 #define pbe 0.33
 #define pbi 0.17
 
-int cant_in=round(n*pi);
-int cant_be=round(n*pbe);
-int cant_bi=round(n*pbi);
+long cant_in=(long)(n*pi);
+long cant_be=(long)(n*pbe);
+long cant_bi=(long)(n*pbi);
 
 int secuencia[n];
 
@@ -184,20 +184,23 @@ double sesgada(double (*f)(double)){
     float P = 0; // peso total de los  p(x)
     float p_x = 0; //peso individula */
 
+    long numeros[n/2]; //aca se guarda los numeros insertados
+    long cont = 0;   // cantidad de nodos en el arbol
+    float prob[n/2]; //aca se guarda la prob acumulada
+    long max = pow(2,32); // numero maximo posible
+    long random = 0; //numero random
+    
+    float P = 0; // peso total de los  p(x)
+    float p_x = 0; //peso individula
+    int operation;
+
     start = clock(); //inicio del timer
 
     for (long i=0; i < n; i++){ //recorro mi secuencia
-        long numeros[n/2]; //aca se guarda los numeros insertados
-        long cont = 0;   // cantidad de nodos en el arbol
+        
 
-        float prob[n/2]; //aca se guarda la prob acumulada
-
-        long max = pow(2,32); // numero maximo posible
-        long random = 0; //numero random
-    
-        float P = 0; // peso total de los  p(x)
-        float p_x = 0; //peso individula
-        int operation = secuencia[i];
+        
+        operation = secuencia[i];
         if (operation==0){ //insercion en los arboles
             do{
                 random = (rand() % max);
@@ -207,22 +210,23 @@ double sesgada(double (*f)(double)){
             p_x = f(random); //Obtenemos el peso
             P=P+p_x; // sumamos al peso global
             prob[cont]=P;
-            printf("P es %f \n",P);
+            //printf("P es %f \n",P);
             cont++;
             insert(&rootABB,random);
             printf("inserte el %lld\n",random);
         }
         
         else if (operation==1){ //busqueda exitosa
-            float range = prob[cont];
-            float index = fmod(rand(), range);
+
+            float index = (rand() % (long)P);
             int pos = get_bigger(prob,index,cont);
             random=numeros[pos];
-            printf("pos es %lld\n",pos);
+            //printf("pos es %lld\n",pos);
             Node * node = search(&rootABB,random);
+            printf("busque exitosamente el %lld\n",random);
             
         
-       printf("busque exitosamente el %lld\n",random);
+       
         }
         else{ //busqueda infructuosa
             do{
@@ -240,14 +244,23 @@ double sesgada(double (*f)(double)){
 int main(){
     srand(time(NULL)); 
     initSecuencia();   
-    /* 
+    
     double timeA = aleatorio();
     printf("El tiempo de ejecucion es %f\n",timeA);
+       
+   /*
     double timeC_0p1 = creciente(0.1);
     printf("El tiempo de ejecucion es %f\n",timeC_0p1);
     double timeC_0p5 = creciente(0.5);
     printf("El tiempo de ejecucion es %f\n",timeC_0p5);
+  
+    double time_s_x = sesgada(&p_x);
+    printf("El tiempo de ejecucion es %f\n",time_s_x);
+
+    double time_s_sqrt = sesgada(&p_sqrt);
+    printf("El tiempo de ejecucion es %f\n",time_s_sqrt);
+
+    double time_s_ln = sesgada(&p_ln);
+    printf("El tiempo de ejecucion es %f\n",time_s_ln);
     */
-    double time_s = sesgada(&p_x);
-    printf("El tiempo de ejecucion es %f\n",time_s);
 }
