@@ -41,9 +41,9 @@ int search_in_array(long arreglo[], long busqueda, long ene) {
     return 0;
 }
 
-long get_bigger(float arreglo[], long busqueda, long ene ){
+long get_bigger(float arreglo[], float busqueda, long ene ){
     for (int i = 0; i < ene; i++) {
-        if (arreglo[i] > busqueda) return i;
+        if (arreglo[i] >= busqueda) return i;
     }
     return -1;
 
@@ -173,7 +173,7 @@ double creciente(double factor){
 double sesgada(double (*f)(double)){
     printf("--------------Sesgado-------------------------\n");
     Node *rootABB = NULL;
-    long numeros[n/2]; //aca se guarda los numeros insertados
+/*  long numeros[n/2]; //aca se guarda los numeros insertados
     long cont = 0;   // cantidad de nodos en el arbol
 
     float prob[n/2]; //aca se guarda la prob acumulada
@@ -182,11 +182,21 @@ double sesgada(double (*f)(double)){
     long random = 0; //numero random
     
     float P = 0; // peso total de los  p(x)
-    float p_x = 0; //peso individula
+    float p_x = 0; //peso individula */
 
     start = clock(); //inicio del timer
 
     for (long i=0; i < n; i++){ //recorro mi secuencia
+        long numeros[n/2]; //aca se guarda los numeros insertados
+        long cont = 0;   // cantidad de nodos en el arbol
+
+        float prob[n/2]; //aca se guarda la prob acumulada
+
+        long max = pow(2,32); // numero maximo posible
+        long random = 0; //numero random
+    
+        float P = 0; // peso total de los  p(x)
+        float p_x = 0; //peso individula
         int operation = secuencia[i];
         if (operation==0){ //insercion en los arboles
             do{
@@ -204,16 +214,8 @@ double sesgada(double (*f)(double)){
         }
         
         else if (operation==1){ //busqueda exitosa
-            long range = prob[cont];
-            long index;
-            if (range == 0){
-                index = 0;
-            }
-            else{
-                index = (rand() % range);
-            }
-        
-            
+            float range = prob[cont];
+            float index = fmod(rand(), range);
             int pos = get_bigger(prob,index,cont);
             random=numeros[pos];
             printf("pos es %lld\n",pos);
