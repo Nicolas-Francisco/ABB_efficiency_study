@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define MAX 4
+#define MAX 16
 
 typedef struct nodo {
   int vals[MAX];          // Array of values
