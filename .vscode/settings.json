@@ -1,7 +1,7 @@
 {
     "files.associations": {
         "cmath": "c",
-        "stdio.h": "c"
+        "type_traits": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

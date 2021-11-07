@@ -2,25 +2,25 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-typedef struct node{
-    int value;
-    struct node *left;
-    struct node *right;
+typedef struct nodeAvl{
+    long value;
+    struct nodeAvl *left;
+    struct nodeAvl *right;
     int height;
-}Node;
+}NodeAvl;
  
-int height(Node * node){
+long height(NodeAvl * node){
     if (node == NULL)
         return 0;
     return node->height;
 }
  
-int max(int a, int b){
+long max(long a, long b){
     return (a > b)? a : b;
 }
  
-Node* newNode(int value){
-    Node *node = malloc(sizeof(Node));
+NodeAvl* newNodeAvl(long value){
+    NodeAvl *node = malloc(sizeof(NodeAvl));
     node->value   = value;
     node->left   = NULL;
     node->right  = NULL;
@@ -30,11 +30,11 @@ Node* newNode(int value){
 
 // A utility function to right rotate subtree rooted with y
 // See the diagram given above.
-void *rightRotate(Node **node)
+void *rightRotateAvl(NodeAvl **node)
 {
-    Node *y = *node;
-    Node *x = y->left;
-    Node *T2 = x->right;
+    NodeAvl *y = *node;
+    NodeAvl *x = y->left;
+    NodeAvl *T2 = x->right;
  
     // Perform rotation
     x->right = y;
@@ -50,11 +50,11 @@ void *rightRotate(Node **node)
  
 // A utility function to left rotate subtree rooted with x
 // See the diagram given above.
-void leftRotate(Node **node)
+void leftRotateAvl(NodeAvl **node)
 {
-    Node *x = *node;
-    Node *y = x->right;
-    Node *T2 = y->left;
+    NodeAvl *x = *node;
+    NodeAvl *y = x->right;
+    NodeAvl *T2 = y->left;
  
     // Perform rotation
     y->left = x;
@@ -69,7 +69,7 @@ void leftRotate(Node **node)
 }
  
 // Get Balance factor of node N
-int getBalance(Node *node)
+int getBalance(NodeAvl *node)
 {
     if (node == NULL)
         return 0;
@@ -78,17 +78,17 @@ int getBalance(Node *node)
  
 // Recursive function to insert a value in the subtree rooted
 // with node and returns the new root of the subtree.
-void insertAVL(Node** node, int value)
+void insertAvl(NodeAvl** node, long value)
 {
-    Node *a = *node;
+    NodeAvl *a = *node;
     if (a == NULL){
-        *node=newNode(value);
+        *node=newNodeAvl(value);
         return;
     }
     if (value < a->value)
-        insert(&(a->left), value);
+        insertAvl(&(a->left), value);
     else if (value > a->value)
-        insert(&(a->right), value);
+        insertAvl(&(a->right), value);
     else // Equal keys are not allowed in BST
         return;
 
@@ -106,40 +106,40 @@ void insertAVL(Node** node, int value)
 
     // Left Left Case
     if (balance > 1 && value < a->left->value){
-        rightRotate(node);
+        rightRotateAvl(node);
         return;
     }
 
      // Left Left Case
     if (balance > 1 && value < a->left->value){
-        rightRotate(node);
+        rightRotateAvl(node);
                 return;
     }
     // Right Right Case
     if (balance < -1 && value > a->right->value){
-        leftRotate(node);
+        leftRotateAvl(node);
                 return;
     }
  
     // Left Right Case
     if (balance > 1 && value > a->left->value){
-        leftRotate(&(a->left));
-        rightRotate(node);
+        leftRotateAvl(&(a->left));
+        rightRotateAvl(node);
                 return;
     }
  
     // Right Left Case
     if (balance < -1 && value < a->right->value)
     {
-        rightRotate(&(a->right));
-        leftRotate(node);
+        rightRotateAvl(&(a->right));
+        leftRotateAvl(node);
     }
     return;
 }
 
 
-Node * searchAVL(Node ** node, long value){
-    Node *a = *node;
+NodeAvl * searchAvl(NodeAvl ** node, long value){
+    NodeAvl *a = *node;
     if (a == NULL){
         return NULL;
     }else{
@@ -147,58 +147,11 @@ Node * searchAVL(Node ** node, long value){
             return a;
         }else{
             if (value < a->value){
-                return search(&(a->left), value);
+                return searchAvl(&(a->left), value);
             }else{
-                return search(&(a->right), value);
+                return searchAvl(&(a->right), value);
             }
         }
     }
 }
  
-/* // A utility function to print preorder traversal
-// of the tree.
-// The function also prints height of every node
-////////// Debuging //////////////////
-void preorden(Node **node) {
-    Node *a = *node;
-    if (a != NULL) {
-        printf("%d,", a->value);
-        preorden(&(a->left));
-        preorden(&(a->right));
-    }
-}
-void inorden(Node **node) {
-    Node *a = *node;
-    if (a != NULL) {
-        inorden(&(a->left));
-        printf("%d,", a->value);
-        inorden(&(a->right));
-    }
-}
-void postorden(Node **node) {
-    Node *a = *node;
-    if (a != NULL) {
-        postorden(&(a->left));
-        postorden(&(a->right));
-        printf("%d,", a->value);
-    }
-}
-////////////////////////////////////// */
- 
-/* Driver program to test above function*/
-/* int main()
-{
-  Node *root = NULL;
-  //Constructing tree given in the above figure 
-  insert(&root, 10);
-  insert(&root, 100);
-  insert(&root, 20);
-  insert(&root, 80);
-  insert(&root, 40);
-  insert(&root, 70);
-  printf("\nImprimiendo\n");
-  preorden(&root);
-
-  return 0;
-} 
-*/

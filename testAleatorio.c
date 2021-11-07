@@ -4,10 +4,11 @@
 #include<time.h>
 #include "Abb.c"
 #include "Avl.c"
-#include "Btree.c"
+#include "Splay.c"
+//#include "Btree.c"
 #include "Btree16.c"
-#include "Btree256.c"
-#include "Btree4096.c"
+//#include "Btree256.c"
+//#include "Btree4096.c"
 
 clock_t start, end;
 double cpu_time_used;
@@ -16,7 +17,7 @@ double cpu_time_used;
 #define be 1; //codigo de busqueda exitosa
 #define bi 2; //codigo de busqueda infructuosa
 
-#define n 1000000 //largo de la secuencia
+#define n 100000 //largo de la secuencia
 
 #define pi 0.5 //probabilidad de insercion
 #define pbe 0.33 //probabilidad de busqueda exitosa
@@ -92,14 +93,11 @@ void initSecuencia(){
 }
 
 //experimento aleatorio
-double aleatorio(){
-    Node *rootABB = NULL; //iniacializo mi arbol
-    Node *rootAVL = NULL;
-    Node *rootBT = NULL;
-    Node *rootBT16 = NULL;
-    Node *rootBT256 = NULL;
-    Node *rootBT4096 = NULL;
+void aleatorio(double times[]){
+    NodeAbb *rootABB = NULL; //iniacializo mi arbol
+    NodeAvl *rootAVL = NULL;
     //Node *rootSPLAY = NULL;
+    NodeBt_16 *rootBt_16 = NULL;
 
     //long nodos[n/2]; //arreglo donde se guardara los nodos insertados
     //long params[n];
@@ -111,6 +109,8 @@ double aleatorio(){
     long max_numero = pow(2,32); //maximo numero posible
     long random = 0; //numero obtenido al azar
     int operacion; //operacion obtenida de la secuencia
+
+    
 
     for (long i=0; i<n; i++) {
         operacion = secuencia[i];
@@ -133,49 +133,115 @@ double aleatorio(){
             index++;
         }
     }
-
+     printf(" ACA PARTE EL ABB\n");
     start = clock(); //inicio el temporizador
-
     for (long i=0; i < n; i++){ //recorro mi secuencia
         operacion = secuencia[i]; //obtengo la operacion
         param = params[i];
         //printf("el paramentro es %d\n",param);
         if (operacion==0){ //la operacion es una insercion
             insertABB(&rootABB,param); //inserto el nodo en ABB
-            insertABB(&rootAVL,param); //inserto el nodo en AVL
-            insertABB(&rootBT,param); //inserto el nodo en BT
-            insertABB(&rootBT16,param); //inserto el nodo en BT
-            insertABB(&rootBT256,param); //inserto el nodo en BT
-            insertBT(&rootBT4096,param); //inserto el nodo en BT
-            insertSPLAY(param); //inserto el nodo en splay
-
             printf("inserte el %lld\n",param);
         }
         else if (operacion==1){ //la operacion es una busqueda exitosa
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            NodeAbb * node = searchABB(&rootABB,param);//busco el nodo en mi arbol
             printf("busque exitosamente el %lld\n",param);
         }
         else{ //La operacion es una busqueda infructuosa
-            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            NodeAbb * node = searchABB(&rootABB,param);//busco el nodo en mi arbol
             printf("busque fallidamente el %lld\n",param);
         }
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
-    return cpu_time_used;
+    times[0]=cpu_time_used;
+
+    printf(" ACA PARTE EL AVL\n");
+
+    start = clock(); //inicio el temporizador
+    for (long i=0; i < n; i++){ //recorro mi secuencia
+        operacion = secuencia[i]; //obtengo la operacion
+        param = params[i];
+        //printf("el paramentro es %d\n",param);
+        if (operacion==0){ //la operacion es una insercion
+            insertAvl(&rootAVL,param); //inserto el nodo en ABB
+            printf("inserte el %lld\n",param);
+        }
+        else if (operacion==1){ //la operacion es una busqueda exitosa
+            NodeAvl * node = searchAvl(&rootAVL,param);//busco el nodo en mi arbol
+            printf("busque exitosamente el %lld\n",param);
+        }
+        else{ //La operacion es una busqueda infructuosa
+            NodeAvl * node = searchAvl(&rootAVL,param);//busco el nodo en mi arbol
+            printf("busque fallidamente el %lld\n",param);
+        }
+    }
+    end = clock(); //termino temporizador
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
+    times[1]=cpu_time_used;
+
+    /*
+    printf("ACA PARTE EL SPLAY");
+
+    start = clock(); //inicio el temporizador
+    for (long i=0; i < n; i++){ //recorro mi secuencia
+        operacion = secuencia[i]; //obtengo la operacion
+        param = params[i];
+        //printf("el paramentro es %d\n",param);
+        if (operacion==0){ //la operacion es una insercion
+            insertSplay(param); //inserto el nodo en ABB
+            printf("inserte el %lld\n",param);
+        }
+        else if (operacion==1){ //la operacion es una busqueda exitosa
+            NodeSplay * node = searchSplay(param);//busco el nodo en mi arbol
+            printf("busque exitosamente el %lld\n",param);
+        }
+        else{ //La operacion es una busqueda infructuosa
+            NodeSplay * node = searchSplay(param);//busco el nodo en mi arbol
+            printf("busque fallidamente el %lld\n",param);
+        }
+    }
+    end = clock(); //termino temporizador
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
+    times[2]=cpu_time_used;
+    */
+
+    printf("ACA PARTE EL ARBOL B 16\n");
+    start = clock(); //inicio el temporizador
+    for (long i=0; i < n; i++){ //recorro mi secuencia
+        operacion = secuencia[i]; //obtengo la operacion
+        param = params[i];
+        //printf("el paramentro es %d\n",param);
+        if (operacion==0){ //la operacion es una insercion
+            insertBt_16(&rootBt_16,param); //inserto el nodo en ABB
+            printf("inserte el %lld\n",param);
+        }
+        else if (operacion==1){ //la operacion es una busqueda exitosa
+            NodeBt_16 * node = searchBt_16(&rootBt_16,param);//busco el nodo en mi arbol
+            printf("busque exitosamente el %lld\n",param);
+        }
+        else{ //La operacion es una busqueda infructuosa
+            NodeBt_16 * node = searchBt_16(&rootBt_16,param);//busco el nodo en mi arbol
+            printf("busque fallidamente el %lld\n",param);
+        }
+    }
+    end = clock(); //termino temporizador
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
+    times[3]=cpu_time_used;
+
+
 }
 
 int main(){
     srand(time(NULL)); 
     initSecuencia();  
-    double timeA = aleatorio(); 
-    printf("aaaa %f\n",timeA);
+    double times[6];
+    aleatorio(times);
+    for (int i = 0; i <6; i++){
+        printf("aaaa %f\n",times[i]);
+    }
+
+    
 
     /*
 

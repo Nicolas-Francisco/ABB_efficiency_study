@@ -4,28 +4,28 @@
 
 #define MAX 16
 
-typedef struct nodo {
-  int vals[MAX];          // Array of values
+typedef struct nodoBt_16 {
+  long vals[MAX];          // Array of values
   int count;              // value counter
-  struct nodo *C[MAX+1];  // Array of node pointers
-  struct nodo *parent;    // We keep trace of the parent node
-}Node;
+  struct nodoBt_16 *C[MAX+1];  // Array of node pointers
+  struct nodoBt_16 *parent;    // We keep trace of the parent node
+}NodeBt_16;
 
 
-Node *newNode(int val) {
-  Node *node;
-  node = malloc(sizeof(Node));
+NodeBt_16 *newNodeBt_16(long val) {
+  NodeBt_16 *node;
+  node = malloc(sizeof(NodeBt_16));
   node->vals[0] = val;
   node->count = 1;
   return node;
 }
 
 
-void splitNode(Node **node, Node** root){
-  Node* p = *node;
+void splitNode(NodeBt_16 **node, NodeBt_16** root){
+  NodeBt_16* p = *node;
   int median = p->vals[(int) floor(MAX/2)];
   // We create a new root. 
-  Node* right_son = newNode(median);
+  NodeBt_16* right_son = newNodeBt_16(median);
 
   // We save all the values greater than the median
   // into a its new right node
@@ -39,7 +39,7 @@ void splitNode(Node **node, Node** root){
       right_son->vals[k] = p->vals[i];
       p->vals[i] = NULL;
       right_son->C[k] = p->C[i];
-      p->C[i] = (Node*) NULL;
+      p->C[i] = (NodeBt_16*) NULL;
       p->count--;
       right_son->count++;
       k++;
@@ -58,7 +58,7 @@ void splitNode(Node **node, Node** root){
 
   // If we are the main root of the tree
   if (p->parent == NULL){
-    Node* new_root = newNode(median);
+    NodeBt_16* new_root = newNodeBt_16(median);
     // We change the root of the tree.
     new_root->C[0] = p;
     new_root->C[1] = right_son;
@@ -70,8 +70,8 @@ void splitNode(Node **node, Node** root){
 
   // If we are not the root, we are in the recursive case
   // We have to add the value into the parent
-  Node* father = p->parent;
-  Node* grand = father->parent;
+  NodeBt_16* father = p->parent;
+  NodeBt_16* grand = father->parent;
   int j = 0;
 
   while (j < father->count){
@@ -83,7 +83,7 @@ void splitNode(Node **node, Node** root){
   // We do the same on the next values of the node.
   while (j <= father->count){
     int e = father->vals[j];
-    Node* aux = father->C[j+1];
+    NodeBt_16* aux = father->C[j+1];
     right_son->parent = father;
     father->vals[j] = median;
     father->C[j+1] = right_son;
@@ -107,11 +107,11 @@ void splitNode(Node **node, Node** root){
 }
 
 
-void insert_Node(Node **node, int val, Node **root) {
-  Node* p = *node;
+void insert_Node(NodeBt_16 **node, long val, NodeBt_16 **root) {
+  NodeBt_16* p = *node;
   // If the root is NULL, we just create it
   if (p == NULL) {
-    *node = newNode(val);
+    *node = newNodeBt_16(val);
     return;
 
   // If the root is not null, we proceed
@@ -157,15 +157,15 @@ void insert_Node(Node **node, int val, Node **root) {
 }
 
 
-void insertBT(Node **node, int val){
+void insertBt_16(NodeBt_16 **node, int val){
   // To avoid loosing trace of the main root, we just give it to the 
   // insert and split functions.
   insert_Node(node, val, node);
 }
 
 
-Node* searchBT(Node **node, int val) {
-  Node *a = *node;
+NodeBt_16* searchBt_16(NodeBt_16 **node, int val) {
+  NodeBt_16 *a = *node;
   // If the node is empty, the value doest exist in the node
   if (a == NULL){
     return NULL;
@@ -178,7 +178,7 @@ Node* searchBT(Node **node, int val) {
     while (i < a->count){
       // If the value stored in i is greater, we search recursively on the child
       if (val < a->vals[i]){
-        return search(&(a->C[i]), val);
+        return searchBt_16(&(a->C[i]), val);
       // if we founded the right value, we just return
       } else if (a->vals[i] == val){
         return a;
@@ -186,13 +186,13 @@ Node* searchBT(Node **node, int val) {
       i++;
     }
     // We look in the last child
-    return search(&(a->C[i]), val);
+    return searchBt_16(&(a->C[i]), val);
   }
 }
 
 
-void inorden(Node **node) {
-  Node *a = *node;
+void inorden(NodeBt_16 **node) {
+  NodeBt_16 *a = *node;
   if (a != NULL) {
     printf("[");
     for (int i = 0; i<a->count ; i++)
@@ -209,99 +209,3 @@ void inorden(Node **node) {
   }
 }
 
-
-int main() {
-  // We test the Btree using a series of insertions.
-  Node *root = NULL;
-
-  insert(&root, 10);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 60);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 20);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 50);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 65);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 70);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 80);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 90);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 100);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 110);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 120);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 130);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 140);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 85);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 95);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 98);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 97);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-
-  insert(&root, 99);
-  printf("\n");
-  inorden(&root);
-  printf("\n");
-  return 0;
-}

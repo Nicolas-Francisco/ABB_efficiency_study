@@ -1,21 +1,21 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-typedef struct node{
+typedef struct nodeSplay{
 
     int value;
-    struct node* left;
-    struct node* right;
-    struct node* parent;
+    struct nodeSplay* left;
+    struct nodeSplay* right;
+    struct nodeSplay* parent;
     
-}Node;
+}NodeSplay;
 
-Node* root;
+NodeSplay* rootSplay;
 
-void rightRotate(Node* p){
-    Node* L = p->left;
-    Node* R = L->right;
-    Node* papa = p->parent;
+void rightRotateSplay(NodeSplay* p){
+    NodeSplay* L = p->left;
+    NodeSplay* R = L->right;
+    NodeSplay* papa = p->parent;
 
     if(papa){
         if(papa->right == p){
@@ -36,10 +36,10 @@ void rightRotate(Node* p){
 
 }
 
-void leftRotate(Node* p){
-    Node* L = p->right;
-    Node* R = L->left;
-    Node* papa = p->parent;
+void leftRotateSplay(NodeSplay* p){
+    NodeSplay* L = p->right;
+    NodeSplay* R = L->left;
+    NodeSplay* papa = p->parent;
 
     if(papa){
         if(papa->right == p){
@@ -60,53 +60,53 @@ void leftRotate(Node* p){
 
 }
 
-void splay(Node* T){
+void splay(NodeSplay* T){
     while(1){
-        Node *p = T->parent;
+        NodeSplay *p = T->parent;
         if(!p) break;
-        Node *pp = p->parent;
+        NodeSplay *pp = p->parent;
         if(!pp){
             if(p->left==T){
-                rightRotate(p);
+                rightRotateSplay(p);
             }
             else{
-                leftRotate(p);
+                leftRotateSplay(p);
             }
             break;
         }
         if(pp->left==p){
             if(p->left==T){
-                rightRotate(pp);
-                rightRotate(p);
+                rightRotateSplay(pp);
+                rightRotateSplay(p);
             }
             else{
-                leftRotate(p);
-                rightRotate(pp);
+                leftRotateSplay(p);
+                rightRotateSplay(pp);
             }
         }
         else{
             if(p->left==T){
-                rightRotate(p);
-                leftRotate(pp);
+                rightRotateSplay(p);
+                leftRotateSplay(pp);
             }
             else{
-                leftRotate(pp);
-                leftRotate(p);
+                leftRotateSplay(pp);
+                leftRotateSplay(p);
             }
         }
     }
-    root=T;
+    rootSplay=T;
 }
 
-void insertSPLAY(int val){
-    if(!root){
-        root = malloc(sizeof(Node));
-        root->left=NULL;
-        root->right=NULL;
-        root->parent=NULL;
-        root->value=val;
+void insertSplay(int val){
+    if(!rootSplay){
+        rootSplay = malloc(sizeof(rootSplay));
+        rootSplay->left=NULL;
+        rootSplay->right=NULL;
+        rootSplay->parent=NULL;
+        rootSplay->value=val;
     }
-    Node *p = root;
+    NodeSplay *p = rootSplay;
     while(1)
     {
         if(p->value==val)break;
@@ -115,7 +115,7 @@ void insertSPLAY(int val){
                 p=p->left;
             }
             else{
-                p->left= malloc(sizeof(Node));
+                p->left= malloc(sizeof(rootSplay));
                 p->left->parent=p;
                 p->left->right=NULL;
                 p->left->left=NULL;
@@ -127,7 +127,7 @@ void insertSPLAY(int val){
         else{
             if(p->right)p=p->right;
             else{
-                p->right=malloc(sizeof(Node));
+                p->right=malloc(sizeof(rootSplay));
                 p->right->parent=p;
                 p->right->right=NULL;
                 p->right->left=NULL;
@@ -140,9 +140,9 @@ void insertSPLAY(int val){
     splay(p);
 }
 
-Node* searchSPLAY(int val){
-    if(!root) return NULL;
-    Node* p = root;
+NodeSplay* searchSplay(int val){
+    if(!rootSplay) return NULL;
+    NodeSplay* p = rootSplay;
     while(p){
         if(p->value==val)break;
         if(val<(p->value)){
@@ -159,34 +159,3 @@ Node* searchSPLAY(int val){
     else return NULL;
 }
 
-void inorder(Node* r){
-    if(!r)return;
-    inorder(r->left);
-    printf("v: %d", r->value);
-    if(r->left) printf("l: %d", r->left->value);
-    if(r->right) printf("l: %d", r->right->value);
-    puts("");
-    inorder(r->right);
-}
-
-
-int main()
-{
-  /* Constructing tree given in the above figure */
-  insert(10);
-  insert(100);
-  insert(20);
-  insert(80);
-  insert(120);
-  insert(70);
-  inorder(root);
-  
-  /* printf("\nImprimiendo\n");
-  inorder(root);
-  printf("\nBuscando el 1:\n");
-  printf("%i", search(1)->value);
-  printf("\nImprimiendo\n");
-  inorder(root); */
-
-  return 0;
-}
