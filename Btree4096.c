@@ -4,28 +4,28 @@
 
 #define MAX 4096
 
-typedef struct nodo {
-  int vals[MAX];          // Array of values
+typedef struct nodoBt_4096 {
+  long vals[MAX];          // Array of values
   int count;              // value counter
-  struct nodo *C[MAX+1];  // Array of node pointers
-  struct nodo *parent;    // We keep trace of the parent node
-}Node;
+  struct nodoBt_4096 *C[MAX+1];  // Array of node pointers
+  struct nodoBt_4096 *parent;    // We keep trace of the parent node
+}NodeBt_4096;
 
 
-Node *newNode(int val) {
-  Node *node;
-  node = malloc(sizeof(Node));
+NodeBt_4096 *newNodeBt_4096(long val) {
+  NodeBt_4096 *node;
+  node = malloc(sizeof(NodeBt_4096));
   node->vals[0] = val;
   node->count = 1;
   return node;
 }
 
 
-void splitNode(Node **node, Node** root){
-  Node* p = *node;
+void splitNode(NodeBt_4096 **node, NodeBt_4096** root){
+  NodeBt_4096* p = *node;
   int median = p->vals[(int) floor(MAX/2)];
   // We create a new root. 
-  Node* right_son = newNode(median);
+  NodeBt_4096* right_son = newNodeBt_4096(median);
 
   // We save all the values greater than the median
   // into a its new right node
@@ -39,7 +39,7 @@ void splitNode(Node **node, Node** root){
       right_son->vals[k] = p->vals[i];
       p->vals[i] = NULL;
       right_son->C[k] = p->C[i];
-      p->C[i] = (Node*) NULL;
+      p->C[i] = (NodeBt_4096*) NULL;
       p->count--;
       right_son->count++;
       k++;
@@ -58,7 +58,7 @@ void splitNode(Node **node, Node** root){
 
   // If we are the main root of the tree
   if (p->parent == NULL){
-    Node* new_root = newNode(median);
+    NodeBt_4096* new_root = newNodeBt_4096(median);
     // We change the root of the tree.
     new_root->C[0] = p;
     new_root->C[1] = right_son;
@@ -70,8 +70,8 @@ void splitNode(Node **node, Node** root){
 
   // If we are not the root, we are in the recursive case
   // We have to add the value into the parent
-  Node* father = p->parent;
-  Node* grand = father->parent;
+  NodeBt_4096* father = p->parent;
+  NodeBt_4096* grand = father->parent;
   int j = 0;
 
   while (j < father->count){
@@ -83,7 +83,7 @@ void splitNode(Node **node, Node** root){
   // We do the same on the next values of the node.
   while (j <= father->count){
     int e = father->vals[j];
-    Node* aux = father->C[j+1];
+    NodeBt_4096* aux = father->C[j+1];
     right_son->parent = father;
     father->vals[j] = median;
     father->C[j+1] = right_son;
@@ -107,11 +107,11 @@ void splitNode(Node **node, Node** root){
 }
 
 
-void insert_Node(Node **node, int val, Node **root) {
-  Node* p = *node;
+void insert_Node(NodeBt_4096 **node, long val, NodeBt_4096 **root) {
+  NodeBt_4096* p = *node;
   // If the root is NULL, we just create it
   if (p == NULL) {
-    *node = newNode(val);
+    *node = newNodeBt_4096(val);
     return;
 
   // If the root is not null, we proceed
@@ -157,15 +157,15 @@ void insert_Node(Node **node, int val, Node **root) {
 }
 
 
-void insertBT(Node **node, int val){
+void insertBt_4096(NodeBt_4096 **node, int val){
   // To avoid loosing trace of the main root, we just give it to the 
   // insert and split functions.
   insert_Node(node, val, node);
 }
 
 
-Node* searchBT(Node **node, int val) {
-  Node *a = *node;
+NodeBt_4096* searchBt_4096(NodeBt_4096 **node, int val) {
+  NodeBt_4096 *a = *node;
   // If the node is empty, the value doest exist in the node
   if (a == NULL){
     return NULL;
@@ -178,7 +178,7 @@ Node* searchBT(Node **node, int val) {
     while (i < a->count){
       // If the value stored in i is greater, we search recursively on the child
       if (val < a->vals[i]){
-        return search(&(a->C[i]), val);
+        return searchBt_4096(&(a->C[i]), val);
       // if we founded the right value, we just return
       } else if (a->vals[i] == val){
         return a;
@@ -186,13 +186,13 @@ Node* searchBT(Node **node, int val) {
       i++;
     }
     // We look in the last child
-    return search(&(a->C[i]), val);
+    return searchBt_4096(&(a->C[i]), val);
   }
 }
 
 
-void inorden(Node **node) {
-  Node *a = *node;
+void inorden(NodeBt_4096 **node) {
+  NodeBt_4096 *a = *node;
   if (a != NULL) {
     printf("[");
     for (int i = 0; i<a->count ; i++)
