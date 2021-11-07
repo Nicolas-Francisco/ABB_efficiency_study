@@ -11,7 +11,7 @@ double cpu_time_used;
 #define be 1; //codigo de busqueda exitosa
 #define bi 2; //codigo de busqueda infructuosa
 
-#define n 10 //largo de la secuencia
+#define n 1000000 //largo de la secuencia
 
 #define pi 0.5 //probabilidad de insercion
 #define pbe 0.33 //probabilidad de busqueda exitosa
@@ -41,6 +41,14 @@ int search_in_array(long arreglo[], long busqueda, long ene) {
         if (arreglo[i] == busqueda) return 1;
     }
     return 0;
+}
+
+long get_random_not_repeted(long arreglo[],long size,long max_numero){
+    long random;
+    do{
+        random = (rand() % max_numero);
+    } while (search_in_array(arreglo,random,size));
+    return random;
 }
 
 //encuentra la posicion del entero mas cercano a busqueda
@@ -82,40 +90,53 @@ void initSecuencia(){
 double aleatorio(){
     Node *rootABB = NULL; //iniacializo mi arbol
     long nodos[n/2]; //arreglo donde se guardara los nodos insertados
-    long cant_nodos = 0; //cantidad de nodos
+    long params[n];
+    long param;
+    long index = 0; //indice de operacion
+    long cant_nodos=0;
     long max_numero = pow(2,32); //maximo numero posible
     long random = 0; //numero obtenido al azar
     int operacion; //operacion obtenida de la secuencia
+
+    for (long i=0; i<n; i++) {
+        operacion = secuencia[i];
+        if (operacion==0){
+            long random = get_random_not_repeted(nodos,cant_nodos,max_numero);
+            nodos[cant_nodos]=random; 
+            params[index]=random; 
+            cant_nodos++;
+            index++; 
+        }
+        else if (operacion==1){
+            long indice = (rand() % cant_nodos);
+            random=nodos[indice];
+            params[index]=random;
+            index++;
+        }
+        else{
+            long random = get_random_not_repeted(nodos,cant_nodos,max_numero);
+            params[index]=random; 
+            index++;
+        }
+    }
 
     start = clock(); //inicio el temporizador
 
     for (long i=0; i < n; i++){ //recorro mi secuencia
         operacion = secuencia[i]; //obtengo la operacion
-
+        param = params[i];
+        //printf("el paramentro es %d\n",param);
         if (operacion==0){ //la operacion es una insercion
-
-            do{ //busco un random hasta que no este en el arreglo de nodos
-                random = (rand() % max_numero); //obtengo un numero al azar entre 0 y max_numero
-            } while (search_in_array(nodos,random,cant_nodos));
-            nodos[cant_nodos]=random; //agrego el nodo
-            cant_nodos++; //aumento la cantidad
-            insert(&rootABB,random); //inserto el nodo en el arbol
-            //printf("inserte el %lld\n",random);
+            insert(&rootABB,param); //inserto el nodo en el arbol
+            printf("inserte el %lld\n",param);
         }
         else if (operacion==1){ //la operacion es una busqueda exitosa
-
-            int index = (rand() % cant_nodos);//obtengo un numero random entre 0 y la cantidad de nodos
-            random=nodos[index]; //obtengo el numero del nodo
-            Node * node = search(&rootABB,random);//busco el nodo en mi arbol
-           // printf("busque exitosamente el %lld\n",random);
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            printf("busque exitosamente el %lld\n",param);
         }
         else{ //La operacion es una busqueda infructuosa
-
-            do{ //busco un random hasta que no este en el arreglo de nodos
-                random = (rand() % max_numero); //obtengo un numero al azar entre 0 y max_numero
-            } while (search_in_array(nodos,random,cant_nodos));
-            Node * node = search(&rootABB,random);//busco el nodo en mi arbol
-           // printf("busque fallidamente el %lld\n",random);
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            printf("busque fallidamente el %lld\n",param);
         }
     }
     end = clock(); //termino temporizador
@@ -231,7 +252,11 @@ double sesgada(double (*f)(double)){
 
 int main(){
     srand(time(NULL)); 
-    initSecuencia();   
+    initSecuencia();  
+    double timeA = aleatorio(); 
+    printf("aaaa %f\n",timeA);
+
+    /*
 
     printf("--------------Experimento aleatorio--------------------------\n");
     FILE* ficheroAleatorioAbb;
@@ -312,6 +337,6 @@ int main(){
     }
     fclose(ficheroSesgado_ln_Abb);
     printf("\n");
-
+*/
 
 }
