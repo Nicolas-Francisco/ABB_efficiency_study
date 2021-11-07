@@ -3,6 +3,12 @@
 #include<math.h>
 #include<time.h>
 #include "Abb.c"
+#include "Avl.c"
+#include "Splay.c"
+//#include "Btree.c"
+#include "Btree16.c"
+#include "Btree256.c"
+#include "Btree4096.c"
 
 clock_t start, end;
 double cpu_time_used;

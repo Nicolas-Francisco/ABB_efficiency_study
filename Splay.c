@@ -100,7 +100,7 @@ void splay(NodeSplay* T){
 
 void insertSplay(int val){
     if(!rootSplay){
-        rootSplay = malloc(sizeof(rootSplay));
+        rootSplay = malloc(sizeof(NodeSplay));
         rootSplay->left=NULL;
         rootSplay->right=NULL;
         rootSplay->parent=NULL;
@@ -115,7 +115,7 @@ void insertSplay(int val){
                 p=p->left;
             }
             else{
-                p->left= malloc(sizeof(rootSplay));
+                p->left= malloc(sizeof(NodeSplay));
                 p->left->parent=p;
                 p->left->right=NULL;
                 p->left->left=NULL;
@@ -127,7 +127,7 @@ void insertSplay(int val){
         else{
             if(p->right)p=p->right;
             else{
-                p->right=malloc(sizeof(rootSplay));
+                p->right=malloc(sizeof(NodeSplay));
                 p->right->parent=p;
                 p->right->right=NULL;
                 p->right->left=NULL;
