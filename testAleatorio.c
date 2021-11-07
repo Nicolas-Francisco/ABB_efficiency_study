@@ -3,6 +3,11 @@
 #include<math.h>
 #include<time.h>
 #include "Abb.c"
+#include "Avl.c"
+#include "Btree.c"
+#include "Btree16.c"
+#include "Btree256.c"
+#include "Btree4096.c"
 
 clock_t start, end;
 double cpu_time_used;
@@ -89,9 +94,16 @@ void initSecuencia(){
 //experimento aleatorio
 double aleatorio(){
     Node *rootABB = NULL; //iniacializo mi arbol
+    Node *rootAVL = NULL;
+    Node *rootBT = NULL;
+    Node *rootBT16 = NULL;
+    Node *rootBT256 = NULL;
+    Node *rootBT4096 = NULL;
+    //Node *rootSPLAY = NULL;
+
     //long nodos[n/2]; //arreglo donde se guardara los nodos insertados
     //long params[n];
-    long *nodos = (long *)malloc(sizeof(long)*(n/2));
+    long *nodos= (long *)malloc(sizeof(long)*(n/2));
     long *params = (long *)malloc(sizeof(long)*n);
     long param;
     long index = 0; //indice de operacion
@@ -129,10 +141,23 @@ double aleatorio(){
         param = params[i];
         //printf("el paramentro es %d\n",param);
         if (operacion==0){ //la operacion es una insercion
-            insert(&rootABB,param); //inserto el nodo en el arbol
+            insertABB(&rootABB,param); //inserto el nodo en ABB
+            insertABB(&rootAVL,param); //inserto el nodo en AVL
+            insertABB(&rootBT,param); //inserto el nodo en BT
+            insertABB(&rootBT16,param); //inserto el nodo en BT
+            insertABB(&rootBT256,param); //inserto el nodo en BT
+            insertBT(&rootBT4096,param); //inserto el nodo en BT
+            insertSPLAY(param); //inserto el nodo en splay
+
             printf("inserte el %lld\n",param);
         }
         else if (operacion==1){ //la operacion es una busqueda exitosa
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
+            Node * node = search(&rootABB,param);//busco el nodo en mi arbol
             Node * node = search(&rootABB,param);//busco el nodo en mi arbol
             printf("busque exitosamente el %lld\n",param);
         }
@@ -142,112 +167,6 @@ double aleatorio(){
         }
     }
     end = clock(); //termino temporizador
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
-    return cpu_time_used;
-}
-
-//experimento creciente
-double creciente(double factor){
-    Node *rootABB = NULL; //iniacializo mi arbol
-    long nodos[n/2];//arreglo donde se guardara los nodos insertados
-    long  m = 0; //cantidad de nodos
-    long max_numero = pow(2,32);//maximo numero posible
-    long random = 0; //numero obtenido al azar
-    int operacion; //operacion obtenida de la secuencia
-    double k = 0; // el k
-
-    start = clock(); //inicio el temporizador
-
-    for (long i=0; i < n; i++){ //recorro mi secuencia
-        operacion = secuencia[i]; //obtengo la operacion
-
-        if (operacion==0){ //la operacion es una insercion
-
-            do{ //busco un random hasta que no este en el arreglo de nodos
-                if (k>=1){
-                    random = (rand() % (int)k); // busco un numero al azar entre 0 y k
-                    random=random+m; //sumo m al random
-                }
-                else{
-                    random=0+m;
-                }
-            } while (search_in_array(nodos,random,m));
-            nodos[m]=random;//agrego el nodo
-            m++;//aumento la cantidad
-            k=m*factor;//redefino el k
-            insert(&rootABB,random);//inserto el nodo en el arbol
-        }
-        
-        else if (operacion==1){ //la operacion es una busqueda exitosa
-
-            int index = (rand() % m);//obtengo un numero random entre 0 y la cantidad de nodos
-            random=nodos[index];//obtengo el numero del nodo
-            Node * node = search(&rootABB,random);//busco el nodo en mi arbol
-            //printf("busque exitosamente el %lld\n",random);
-        }
-        else{ //La operacion es una busqueda infructuosa
-            do{ //busco un random hasta que no este en el arreglo de nodos
-                random = (rand() % max_numero);
-            } while (search_in_array(nodos,random,m)); //obtengo un numero al azar entre 0 y max_numero
-            Node * node = search(&rootABB,random);//busco el nodo en mi arbol
-            //printf("busque fallidamente el %lld\n",random);
-        }
-    }
-    end = clock();//termino temporizador   
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;//obtengo el tiempo de ejecucion 
-    return cpu_time_used;
-}
-
-double sesgada(double (*f)(double)){
-    
-    Node *rootABB = NULL;//iniacializo mi arbol
-    long nodos[n/2]; //arreglo donde se guardara los nodos insertados
-    long cant_nodos = 0;//cantidad de nodos
-    long max_numero = pow(2,32); //maximo numero posible
-    long random = 0; //numero obtenido al azar
-    int operacion; //operacion obtenida de la secuencia
-    float prob[n/2]; //aca se guarda la prob acumulada en cada insercion
-    float P = 0; // peso total de los p(x)
-    float p_x = 0; //peso individula
-
-    start = clock(); //inicio el temporizador
-
-    for (long i=0; i < n; i++){ //recorro mi secuencia
-        operacion = secuencia[i]; //obtengo la operacion
-
-        if (operacion==0){ //la operacion es una insercion
-
-            do{//busco un random hasta que no este en el arreglo de nodos
-                random = (rand() % max_numero);//obtengo un numero al azar entre 0 y max_numero
-            } while (search_in_array(nodos,random,cant_nodos));
-            nodos[cant_nodos]=random; //agrego el nodo
-
-            p_x = f(random); //sbtenemos el peso del nodo
-            P=P+p_x; // sumamos p_x al peso global
-            prob[cant_nodos]=P; //guargo la probabilidad aculada del momento
-
-            cant_nodos++; //aumento la cantidad
-            insert(&rootABB,random); //inserto el nodo en el arbol
-            //printf("inserte el %lld\n",random);
-        }
-        
-        else if (operacion==1){ //la operacion es una busqueda exitosa
-
-            float index = (rand() % (long)P);//obtengo un numero random entre 0 y P
-            int pos = get_bigger(prob,index,cant_nodos);//obtengo la posicion del siguiente numero mas grande de prob
-            random=nodos[pos]; //obtengo el nodo en esa posicion
-            Node * node = search(&rootABB,random);//busco el nodo en mi arbol
-            //printf("busque exitosamente el %lld\n",random); 
-        }
-        else{ //La operacion es una busqueda infructuosa
-            do{//busco un random hasta que no este en el arreglo de nodos
-                random = (rand() % max_numero);//obtengo un numero al azar entre 0 y max_numero
-            } while (search_in_array(nodos,random,cant_nodos));
-            Node * node = search(&rootABB,random);//busco el nodo en mi arbol
-            //printf("busque fallidamente el %lld\n",random);
-        }
-    }
-    end = clock();//termino temporizador   
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
     return cpu_time_used;
 }

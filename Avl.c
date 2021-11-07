@@ -78,7 +78,7 @@ int getBalance(Node *node)
  
 // Recursive function to insert a value in the subtree rooted
 // with node and returns the new root of the subtree.
-void insert(Node** node, int value)
+void insertAVL(Node** node, int value)
 {
     Node *a = *node;
     if (a == NULL){
@@ -138,7 +138,7 @@ void insert(Node** node, int value)
 }
 
 
-Node * search(Node ** node, long value){
+Node * searchAVL(Node ** node, long value){
     Node *a = *node;
     if (a == NULL){
         return NULL;
@@ -155,7 +155,7 @@ Node * search(Node ** node, long value){
     }
 }
  
-// A utility function to print preorder traversal
+/* // A utility function to print preorder traversal
 // of the tree.
 // The function also prints height of every node
 ////////// Debuging //////////////////
@@ -183,7 +183,7 @@ void postorden(Node **node) {
         printf("%d,", a->value);
     }
 }
-//////////////////////////////////////
+////////////////////////////////////// */
  
 /* Driver program to test above function*/
 /* int main()

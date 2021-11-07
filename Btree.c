@@ -157,14 +157,14 @@ void insert_Node(Node **node, int val, Node **root) {
 }
 
 
-void insert(Node **node, int val){
+void insertBT(Node **node, int val){
   // To avoid loosing trace of the main root, we just give it to the 
   // insert and split functions.
   insert_Node(node, val, node);
 }
 
 
-Node* search(Node **node, int val) {
+Node* searchBT(Node **node, int val) {
   Node *a = *node;
   // If the node is empty, the value doest exist in the node
   if (a == NULL){

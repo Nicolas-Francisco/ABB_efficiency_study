@@ -98,7 +98,7 @@ void splay(Node* T){
     root=T;
 }
 
-void insert(int val){
+void insertSPLAY(int val){
     if(!root){
         root = malloc(sizeof(Node));
         root->left=NULL;
@@ -140,7 +140,7 @@ void insert(int val){
     splay(p);
 }
 
-Node* search(int val){
+Node* searchSPLAY(int val){
     if(!root) return NULL;
     Node* p = root;
     while(p){
@@ -178,7 +178,6 @@ int main()
   insert(20);
   insert(80);
   insert(120);
-  
   insert(70);
   inorder(root);
   

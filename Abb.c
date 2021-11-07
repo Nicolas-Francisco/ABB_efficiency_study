@@ -18,7 +18,7 @@ Node* newNode(int value){
 }
  
 
-void insert(Node **node,long value){
+void insertABB(Node **node,long value){
     Node *a = *node;
     if (a==NULL){
         *node=newNode(value);
@@ -38,7 +38,7 @@ void insert(Node **node,long value){
     }
 }
 
-Node * search(Node ** node, long value){
+Node * searchABB(Node ** node, long value){
     Node *a = *node;
     if (a == NULL){
         return NULL;
@@ -55,7 +55,7 @@ Node * search(Node ** node, long value){
     }
 }
 
-////////// Debuging //////////////////
+/* ////////// Debuging //////////////////
 void preorden(Node **node) {
     Node *a = *node;
     if (a != NULL) {
@@ -80,7 +80,7 @@ void postorden(Node **node) {
         printf("%d,", a->value);
     }
 }
-//////////////////////////////////////
+////////////////////////////////////// */
 
 /*
 int main() {
