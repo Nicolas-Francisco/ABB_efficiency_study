@@ -21,7 +21,7 @@ long cant_in=(long)(n*pi); //cantidad de inserciones
 long cant_be=(long)(n*pbe); //cantidad de busquedas exitosas
 long cant_bi=(long)(n*pbi); //cantidad de bisquedas infructuosas
 
-int secuencia[n]; //arreglo de largo 100 que cant_nodosendra las operaciones
+int *secuencia = (int *)malloc(sizeof(int)*n);; //arreglo de largo 100 que cant_nodosendra las operaciones
 
 double p_x(double x){ // p(x)=x
     return x;
@@ -89,8 +89,10 @@ void initSecuencia(){
 //experimento aleatorio
 double aleatorio(){
     Node *rootABB = NULL; //iniacializo mi arbol
-    long nodos[n/2]; //arreglo donde se guardara los nodos insertados
-    long params[n];
+    //long nodos[n/2]; //arreglo donde se guardara los nodos insertados
+    //long params[n];
+    long *nodos = (long *)malloc(sizeof(long)*(n/2));
+    long *params = (long *)malloc(sizeof(long)*n);
     long param;
     long index = 0; //indice de operacion
     long cant_nodos=0;
