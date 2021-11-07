@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<math.h>
 #include<time.h>
-#include "spray.c"
+#include "splay.c"
 
 clock_t start, end;
 double cpu_time_used;
@@ -11,7 +11,7 @@ double cpu_time_used;
 #define be 1; //codigo de busqueda exitosa
 #define bi 2; //codigo de busqueda infructuosa
 
-#define n 10//largo de la secuencia
+#define n 100000//largo de la secuencia
 
 #define pi 0.5 //probabilidad de insercion
 #define pbe 0.33 //probabilidad de busqueda exitosa

@@ -13,50 +13,50 @@ typedef struct node{
 Node* root;
 
 void rightRotate(Node* p){
-    Node* left = p->left;
-    Node* right = p->right;
+    Node* L = p->left;
+    Node* R = L->right;
     Node* papa = p->parent;
 
     if(papa){
         if(papa->right == p){
-            papa->right = left;
+            papa->right = L;
         }
         else{
-            papa->left = left;
+            papa->left = L;
         }
     }
-    if(right){
-        right->parent=p;
+    if(R){
+        R->parent=p;
     }
-    left->parent=papa;
-    left->right=p;
+    L->parent=papa;
+    L->right=p;
 
-    p->parent=left;
-    p->left=right;
+    p->parent=L;
+    p->left=R;
 
 }
 
 void leftRotate(Node* p){
-    Node* left = p->right;
-    Node* right = p->left;
+    Node* L = p->right;
+    Node* R = L->left;
     Node* papa = p->parent;
 
     if(papa){
         if(papa->right == p){
-            papa->right = left;
+            papa->right = L;
         }
         else{
-            papa->left = left;
+            papa->left = L;
         }
     }
-    if(right){
-        right->parent=p;
+    if(R){
+        R->parent=p;
     }
-    left->parent=papa;
-    left->left=p;
+    L->parent=papa;
+    L->left=p;
 
-    p->parent=left;
-    p->right=right;
+    p->parent=L;
+    p->right=R;
 
 }
 
@@ -80,8 +80,8 @@ void splay(Node* T){
                 rightRotate(p);
             }
             else{
-                rightRotate(p);
-                leftRotate(pp);
+                leftRotate(p);
+                rightRotate(pp);
             }
         }
         else{
@@ -180,6 +180,7 @@ int main()
   insert(120);
   
   insert(70);
+  inorder(root);
   
   /* printf("\nImprimiendo\n");
   inorder(root);
