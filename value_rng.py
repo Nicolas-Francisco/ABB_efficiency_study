@@ -13,7 +13,7 @@ def rng():
             if i==len(values)-1:
                 f.write(str(values[i]))
             else:
-                f.write(str(values[i])+",")
+                f.write(str(values[i])+"\n")
         f.close()
         print(">archivo numero "+str(num)+ " generado")
         print(">distinto tamaño:",end=" ")
