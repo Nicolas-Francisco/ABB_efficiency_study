@@ -146,7 +146,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
     ssize_t read;
 
 
-    printf("Loaging\n");
+    printf("Loaging parametros\n");
     
     fp = fopen("Values/values_0.txt","r");
 
@@ -249,9 +249,9 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             index++;
         }
 
-        if (index%10000 == 0){
-            printf("[%lld,%lld]\n",index,n);
-        }
+        //if (index%10000 == 0){
+         //   printf("[%lld,%lld]\n",index,n);
+        //}
     }
     fclose(fp);
     buffer[0]=paramsAleatorios;
