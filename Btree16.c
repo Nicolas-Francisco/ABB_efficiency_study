@@ -37,7 +37,7 @@ void splitNodeBt_16(NodeBt_16 **node, NodeBt_16** root){
     // to the next position
     if (p->vals[i] > median){
       right_son->vals[k] = p->vals[i];
-      p->vals[i] = NULL;
+      p->vals[i] = 0;
       right_son->C[k] = p->C[i];
       p->C[i] = (NodeBt_16*) NULL;
       p->count--;
