@@ -200,10 +200,6 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
         else if (operacion==1){
           
             long long indice = (rand() % cant_nodos);
-            //long long indice = atol(line);
-            //indice = indice*(cant_nodos/max_numero);
-            //printf("el indice pa buscar exitosamente es %lld\n",indice);
-            //long long indice = 0;
 
             random=nodosAleatorios[indice];
             paramsAleatorios[index]=random;
@@ -264,6 +260,15 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
     buffer[3]=paramsSesgado_x;
     buffer[4]=paramsSesgado_sqrt;
     buffer[5]=paramsSesgado_ln;
+    free(nodosAleatorios);
+    free(nodosCreciente_0p1);
+    free(nodosCreciente_0p5);
+    free(nodosSesgado_x);
+    free(nodosSesgado_sqrt);
+    free(nodosSesgado_ln);
+    free(probSesgado_x);
+    free(probSesgado_sqrt);
+    free(probSesgado_ln);
 
 }
 
@@ -427,155 +432,273 @@ void ejecucion(double times[],long long params[]){
 
 int main(){
     srand(time(NULL)); 
-    initSecuencia();
-    long long *params[6];
-    generate_params(params,&p_x,&p_sqrt,&p_ln);
-    double times[6];
+    printf("RECUERDA EJECUTAR EL PY PARA TENER 10 NUEVOS VALUES");
 
-    printf("----------------------------------------------------\n");
-    ejecucion(times,params[0]); // se ejecuta el aleatorio
-    printf("El tiempo aleatorio de ABB es %f \n",times[0]);
-    printf("El tiempo aleatorio de AVL es %f \n",times[1]);
-    printf("El tiempo aleatorio de SPLAY es %f \n",times[2]);
-    printf("El tiempo aleatorio de BTREE 16 es %f \n",times[3]);
-    printf("El tiempo aleatorio de BTREE 256 es %f \n",times[4]);
-    printf("El tiempo aleatorio de BTREE 4096 es %f \n",times[5]);
+    FILE *aleatorioAbb = fopen("Resultados/aleatorioAbb.txt", "a"); 
+    FILE *aleatorioAvl = fopen("Resultados/aleatorioAvl.txt", "a"); 
+    FILE *aleatorioSplay = fopen("Resultados/aleatorioSplay.txt", "a"); 
+    FILE *aleatorioBtree16 = fopen("Resultados/aleatorioBtree16.txt", "a"); 
+    FILE *aleatorioBtree256 = fopen("Resultados/aleatorioBtree256.txt", "a"); 
+    FILE *aleatorioBtree4096 = fopen("Resultados/aleatorioBtree4096.txt", "a"); 
 
-    
-    printf("----------------------------------------------------\n");
-    ejecucion(times,params[1]); // se ejecura el creciente de 0.1;
-    printf("El tiempo creciente 0.1 de ABB es %f \n",times[0]);
-    printf("El tiempo creciente 0.1 de AVL es %f \n",times[1]);
-    printf("El tiempo creciente 0.1 de SPLAY es %f \n",times[2]);
-    printf("El tiempo creciente 0.1 de BTREE 16 es %f \n",times[3]);
-    printf("El tiempo creciente 0.1 de BTREE 256 es %f \n",times[4]);
-    printf("El tiempo creciente 0.1 de BTREE 4096 es %f \n",times[5]);
+    FILE *creciente0p1Abb = fopen("Resultados/creciente0p1Abb.txt", "a"); 
+    FILE *creciente0p1Avl = fopen("Resultados/creciente0p1Avl.txt", "a"); 
+    FILE *creciente0p1Splay = fopen("Resultados/creciente0p1Splay.txt", "a"); 
+    FILE *creciente0p1Btree16 = fopen("Resultados/creciente0p1Btree16.txt", "a"); 
+    FILE *creciente0p1Btree256 = fopen("Resultados/creciente0p1Btree256.txt", "a"); 
+    FILE *creciente0p1Btree4096 = fopen("Resultados/creciente0p1Btree4096.txt", "a");
 
-    
-    printf("----------------------------------------------------\n");
-    ejecucion(times,params[2]); // se ejecura el creciente de 0.5;
-    printf("El tiempo creciente 0.5 de ABB es %f \n",times[0]);
-    printf("El tiempo creciente 0.5 de AVL es %f \n",times[1]);
-    printf("El tiempo creciente 0.5 de SPLAY es %f \n",times[2]);
-    printf("El tiempo creciente 0.5 de BTREE 16 es %f \n",times[3]);
-    printf("El tiempo creciente 0.5 de BTREE 256 es %f \n",times[4]);
-    printf("El tiempo creciente 0.5 de BTREE 4096 es %f \n",times[5]);
-    printf("----------------------------------------------------\n");
+    FILE *creciente0p5Abb = fopen("Resultados/creciente0p5Abb.txt", "a"); 
+    FILE *creciente0p5Avl = fopen("Resultados/creciente0p5Avl.txt", "a"); 
+    FILE *creciente0p5Splay = fopen("Resultados/creciente0p5Splay.txt", "a"); 
+    FILE *creciente0p5Btree16 = fopen("Resultados/creciente0p5Btree16.txt", "a"); 
+    FILE *creciente0p5Btree256 = fopen("Resultados/creciente0p5Btree256.txt", "a"); 
+    FILE *creciente0p5Btree4096 = fopen("Resultados/creciente0p5Btree4096.txt", "a");
 
-    
-   
-    ejecucion(times,params[3]); // se ejecura el csesgado p(x);
+    FILE *sesgadoxAbb = fopen("Resultados/sesgadoxAbb.txt", "a"); 
+    FILE *sesgadoxAvl = fopen("Resultados/sesgadoxAvl.txt", "a"); 
+    FILE *sesgadoxSplay = fopen("Resultados/sesgadoxSplay.txt", "a"); 
+    FILE *sesgadoxBtree16 = fopen("Resultados/sesgadoxBtree16.txt", "a"); 
+    FILE *sesgadoxBtree256 = fopen("Resultados/sesgadoxBtree256.txt", "a"); 
+    FILE *sesgadoxBtree4096 = fopen("Resultados/sesgadoxBtree4096.txt", "a");
 
-    
-    printf("El tiempo sesgado p(x) de ABB es %f \n",times[0]);
-    printf("El tiempo sesgado p(x) de AVL es %f \n",times[1]);
-    printf("El tiempo sesgado p(x) de SPLAY es %f \n",times[2]);
-    printf("El tiempo sesgado p(x) de BTREE 16 es %f \n",times[3]);
-    printf("El tiempo sesgado p(x) de BTREE 256 es %f \n",times[4]);
-    printf("El tiempo sesgado p(x) de BTREE 4096 es %f \n",times[5]);
+    FILE *sesgadosqrtAbb = fopen("Resultados/sesgadosqrtAbb.txt", "a"); 
+    FILE *sesgadosqrtAvl = fopen("Resultados/sesgadosqrtAvl.txt", "a"); 
+    FILE *sesgadosqrtSplay = fopen("Resultados/sesgadosqrtSplay.txt", "a"); 
+    FILE *sesgadosqrtBtree16 = fopen("Resultados/sesgadosqrtBtree16.txt", "a"); 
+    FILE *sesgadosqrtBtree256 = fopen("Resultados/sesgadosqrtBtree256.txt", "a"); 
+    FILE *sesgadosqrtBtree4096 = fopen("Resultados/sesgadosqrtBtree4096.txt", "a");
 
-    printf("----------------------------------------------------\n");
-    ejecucion(times,params[4]); // se ejecura el sesgado sqrt(x);
-    printf("El tiempo sesgado sqrt(x) de ABB es %f \n",times[0]);
-    printf("El tiempo sesgado sqrt(x) de AVL es %f \n",times[1]);
-    printf("El tiempo sesgado sqrt(x) de SPLAY es %f \n",times[2]);
-    printf("El tiempo sesgado sqrt(x) de BTREE 16 es %f \n",times[3]);
-    printf("El tiempo sesgado sqrt(x) de BTREE 256 es %f \n",times[4]);
-    printf("El tiempo sesgado sqrt(x) de BTREE 4096 es %f \n",times[5]);
-    printf("----------------------------------------------------\n");
- 
-    
-    ejecucion(times,params[5]); // se ejecura el sesgado ln(x);
-    printf("El tiempo sesgado ln(x) de ABB es %f \n",times[0]);
-    printf("El tiempo sesgado ln(x) de AVL es %f \n",times[1]);
-    printf("El tiempo sesgado ln(x) de SPLAY es %f \n",times[2]);
-    printf("El tiempo sesgado ln(x) de BTREE 16 es %f \n",times[3]);
-    printf("El tiempo sesgado ln(x) de BTREE 256 es %f \n",times[4]);
-    printf("El tiempo sesgado ln(x) de BTREE 4096 es %f \n",times[5]);
-    
+    FILE *sesgadolnAbb = fopen("Resultados/sesgadolnAbb.txt", "a"); 
+    FILE *sesgadolnAvl = fopen("Resultados/sesgadolnAvl.txt", "a"); 
+    FILE *sesgadolnSplay = fopen("Resultados/sesgadolnSplay.txt", "a"); 
+    FILE *sesgadolnBtree16 = fopen("Resultados/sesgadolnBtree16.txt", "a"); 
+    FILE *sesgadolnBtree256 = fopen("Resultados/sesgadolnBtree256.txt", "a"); 
+    FILE *sesgadolnBtree4096 = fopen("Resultados/sesgadolnBtree4096.txt", "a");
+
+    for(int i=0;i<1;i++){
+        initSecuencia();
+        long long *params[6];
+        generate_params(params,&p_x,&p_sqrt,&p_ln);
+        double times[6];
+        printf("-------------------iteracion %d-------------------------\n",i);
+        printf("--------------------Aleatorio-----------------------\n");
+        ejecucion(times,params[0]); // se ejecuta el aleatorio
+        printf("El tiempo aleatorio de ABB es %f \n",times[0]);
+        printf("El tiempo aleatorio de AVL es %f \n",times[1]);
+        printf("El tiempo aleatorio de SPLAY es %f \n",times[2]);
+        printf("El tiempo aleatorio de BTREE 16 es %f \n",times[3]);
+        printf("El tiempo aleatorio de BTREE 256 es %f \n",times[4]);
+        printf("El tiempo aleatorio de BTREE 4096 es %f \n",times[5]);
+
+        fprintf(aleatorioAbb,"%f",times[0]);
+        fprintf(aleatorioAbb,"%s","\n");
+
+        fprintf(aleatorioAvl,"%f",times[1]);
+        fprintf(aleatorioAvl,"%s","\n");
+
+        fprintf(aleatorioSplay,"%f",times[2]);
+        fprintf(aleatorioSplay,"%s","\n");
+
+        fprintf(aleatorioBtree16,"%f",times[3]);
+        fprintf(aleatorioBtree16,"%s","\n");
+
+        fprintf(aleatorioBtree256,"%f",times[4]);
+        fprintf(aleatorioBtree256,"%s","\n");
+
+        fprintf(aleatorioBtree4096,"%f",times[5]);
+        fprintf(aleatorioBtree4096,"%s","\n");
+
+        printf("Se guardaron los datos del aleatorio\n");
+
+        printf("------------------Creciente 0.1-------------------------\n");
+        ejecucion(times,params[1]); // se ejecura el creciente de 0.1;
+        printf("El tiempo creciente 0.1 de ABB es %f \n",times[0]);
+        printf("El tiempo creciente 0.1 de AVL es %f \n",times[1]);
+        printf("El tiempo creciente 0.1 de SPLAY es %f \n",times[2]);
+        printf("El tiempo creciente 0.1 de BTREE 16 es %f \n",times[3]);
+        printf("El tiempo creciente 0.1 de BTREE 256 es %f \n",times[4]);
+        printf("El tiempo creciente 0.1 de BTREE 4096 es %f \n",times[5]);
+
+        fprintf(creciente0p1Abb,"%f",times[0]);
+        fprintf(creciente0p1Abb,"%s","\n");
+
+        fprintf(creciente0p1Avl,"%f",times[1]);
+        fprintf(creciente0p1Avl,"%s","\n");
+
+        fprintf(creciente0p1Splay,"%f",times[2]);
+        fprintf(creciente0p1Splay,"%s","\n");
+
+        fprintf(creciente0p1Btree16,"%f",times[3]);
+        fprintf(creciente0p1Btree16,"%s","\n");
+
+        fprintf(creciente0p1Btree256,"%f",times[4]);
+        fprintf(creciente0p1Btree256,"%s","\n");
+
+        fprintf(creciente0p1Btree4096,"%f",times[5]);
+        fprintf(creciente0p1Btree4096,"%s","\n");
+
+        printf("Se guardaron los datos del crecientes 0.1\n");
+
+        printf("----------------Creciente 0.5------------------------\n");
+        ejecucion(times,params[2]); // se ejecura el creciente de 0.5;
+        printf("El tiempo creciente 0.5 de ABB es %f \n",times[0]);
+        printf("El tiempo creciente 0.5 de AVL es %f \n",times[1]);
+        printf("El tiempo creciente 0.5 de SPLAY es %f \n",times[2]);
+        printf("El tiempo creciente 0.5 de BTREE 16 es %f \n",times[3]);
+        printf("El tiempo creciente 0.5 de BTREE 256 es %f \n",times[4]);
+        printf("El tiempo creciente 0.5 de BTREE 4096 es %f \n",times[5]);
+
+        fprintf(creciente0p5Abb,"%f",times[0]);
+        fprintf(creciente0p1Abb,"%s","\n");
+
+        fprintf(creciente0p5Avl,"%f",times[1]);
+        fprintf(creciente0p5Avl,"%s","\n");
+
+        fprintf(creciente0p5Splay,"%f",times[2]);
+        fprintf(creciente0p5Splay,"%s","\n");
+
+        fprintf(creciente0p5Btree16,"%f",times[3]);
+        fprintf(creciente0p5Btree16,"%s","\n");
+
+        fprintf(creciente0p5Btree256,"%f",times[4]);
+        fprintf(creciente0p5Btree256,"%s","\n");
+
+        fprintf(creciente0p5Btree4096,"%f",times[5]);
+        fprintf(creciente0p5Btree4096,"%s","\n");
+
+        printf("Se guardaron los datos del crecientes 0.5\n");
 
 
-    /*
+        printf("--------------sesgado x-------------------------\n");
+        ejecucion(times,params[3]); // se ejecura el csesgado p(x);
+        printf("El tiempo sesgado p(x) de ABB es %f \n",times[0]);
+        printf("El tiempo sesgado p(x) de AVL es %f \n",times[1]);
+        printf("El tiempo sesgado p(x) de SPLAY es %f \n",times[2]);
+        printf("El tiempo sesgado p(x) de BTREE 16 es %f \n",times[3]);
+        printf("El tiempo sesgado p(x) de BTREE 256 es %f \n",times[4]);
+        printf("El tiempo sesgado p(x) de BTREE 4096 es %f \n",times[5]);
 
-    printf("--------------Experimento aleatorio--------------------------\n");
-    FILE* ficheroAleatorioAbb;
-    ficheroAleatorioAbb = fopen("Datos/aleatorioAbb.txt", "w");
-    for (int i = 0; i < 100; i++){
-        double timeA = aleatorio();
-        fprintf(ficheroAleatorioAbb, "%f",timeA);
-        if(i<99){
-            fprintf(ficheroAleatorioAbb, ",");
-        }        
+        fprintf(sesgadoxAbb,"%f",times[0]);
+        fprintf(sesgadoxAbb,"%s","\n");
+
+        fprintf(sesgadoxAvl,"%f",times[1]);
+        fprintf(sesgadoxAvl,"%s","\n");
+
+        fprintf(sesgadoxSplay,"%f",times[2]);
+        fprintf(sesgadoxSplay,"%s","\n");
+
+        fprintf(sesgadoxBtree16,"%f",times[3]);
+        fprintf(sesgadoxBtree16,"%s","\n");
+
+        fprintf(sesgadoxBtree256,"%f",times[4]);
+        fprintf(sesgadoxBtree256,"%s","\n");
+
+        fprintf(sesgadoxBtree4096,"%f",times[5]);
+        fprintf(sesgadoxBtree4096,"%s","\n");
+
+        printf("Se guardaron los sesgados x\n");
+
+        printf("----------------sesgado sqrt---------------------------\n");
+        ejecucion(times,params[4]); // se ejecura el sesgado sqrt(x);
+        printf("El tiempo sesgado sqrt(x) de ABB es %f \n",times[0]);
+        printf("El tiempo sesgado sqrt(x) de AVL es %f \n",times[1]);
+        printf("El tiempo sesgado sqrt(x) de SPLAY es %f \n",times[2]);
+        printf("El tiempo sesgado sqrt(x) de BTREE 16 es %f \n",times[3]);
+        printf("El tiempo sesgado sqrt(x) de BTREE 256 es %f \n",times[4]);
+        printf("El tiempo sesgado sqrt(x) de BTREE 4096 es %f \n",times[5]);
+
+        fprintf(sesgadosqrtAbb,"%f",times[0]);
+        fprintf(sesgadosqrtAbb,"%s","\n");
+
+        fprintf(sesgadosqrtAvl,"%f",times[1]);
+        fprintf(sesgadosqrtAvl,"%s","\n");
+
+        fprintf(sesgadosqrtSplay,"%f",times[2]);
+        fprintf(sesgadosqrtSplay,"%s","\n");
+
+        fprintf(sesgadosqrtBtree16,"%f",times[3]);
+        fprintf(sesgadosqrtBtree16,"%s","\n");
+
+        fprintf(sesgadosqrtBtree256,"%f",times[4]);
+        fprintf(sesgadosqrtBtree256,"%s","\n");
+
+        fprintf(sesgadosqrtBtree4096,"%f",times[5]);
+        fprintf(sesgadosqrtBtree4096,"%s","\n");
+
+        printf("Se guardaron los sesgados sqrt\n");
+
+        printf("---------------sesgado ln-------------------------\n");
+        ejecucion(times,params[5]); // se ejecura el sesgado ln(x);
+        printf("El tiempo sesgado ln(x) de ABB es %f \n",times[0]);
+        printf("El tiempo sesgado ln(x) de AVL es %f \n",times[1]);
+        printf("El tiempo sesgado ln(x) de SPLAY es %f \n",times[2]);
+        printf("El tiempo sesgado ln(x) de BTREE 16 es %f \n",times[3]);
+        printf("El tiempo sesgado ln(x) de BTREE 256 es %f \n",times[4]);
+        printf("El tiempo sesgado ln(x) de BTREE 4096 es %f \n",times[5]);
+
+        fprintf(sesgadolnAbb,"%f",times[0]);
+        fprintf(sesgadolnAbb,"%s","\n");
+
+        fprintf(sesgadolnAvl,"%f",times[1]);
+        fprintf(sesgadolnAvl,"%s","\n");
+
+        fprintf(sesgadolnSplay,"%f",times[2]);
+        fprintf(sesgadolnSplay,"%s","\n");
+
+        fprintf(sesgadolnBtree16,"%f",times[3]);
+        fprintf(sesgadolnBtree16,"%s","\n");
+
+        fprintf(sesgadolnBtree256,"%f",times[4]);
+        fprintf(sesgadolnBtree256,"%s","\n");
+
+        fprintf(sesgadolnBtree4096,"%f",times[5]);
+        fprintf(sesgadolnBtree4096,"%s","\n");
+
+        printf("Se guardaron los sesgados ln\n");
+
     }
-    fclose(ficheroAleatorioAbb);
-    printf("\n");
+    printf("se terminaron las 10 iteraciones :)");
 
-    printf("--------------Experimento creciente con factor 0.1------------\n");
-    FILE* ficheroCreciente_0p1_Abb;
-    ficheroCreciente_0p1_Abb = fopen("Datos/creciente_0p1_Abb.txt", "w");
-    for (int i = 0; i < 100; i++){
-        double timeC_0p1 = creciente(0.1);
-        fprintf(ficheroCreciente_0p1_Abb, "%f",timeC_0p1);
-        if(i<99){
-            fprintf(ficheroCreciente_0p1_Abb, ",");
-        }        
-    }
-    fclose(ficheroCreciente_0p1_Abb);
-    printf("\n");
+    fclose(aleatorioAbb);
+    fclose(aleatorioAvl);
+    fclose(aleatorioSplay);
+    fclose(aleatorioBtree16);
+    fclose(aleatorioBtree256);
+    fclose(aleatorioBtree4096);
 
-    printf("--------------Experimento creciente con factor 0.5------------\n");
-    FILE* ficheroCreciente_0p5_Abb;
-    ficheroCreciente_0p5_Abb = fopen("Datos/creciente_0p5_Abb.txt", "w");
-    for (int i = 0; i < 100; i++){
-        double timeC_0p5 = creciente(0.5);
-        fprintf(ficheroCreciente_0p5_Abb, "%f",timeC_0p5);
-        if(i<99){
-            fprintf(ficheroCreciente_0p5_Abb, ",");
-        }        
-    }
-    fclose(ficheroCreciente_0p5_Abb);
-    printf("\n");
+    fclose(creciente0p1Abb);
+    fclose(creciente0p1Avl);
+    fclose(creciente0p1Splay);
+    fclose(creciente0p1Btree16);
+    fclose(creciente0p1Btree256);
+    fclose(creciente0p1Btree4096);
 
-    printf("--------------------Sesgado p(x)=x----------------------------\n");
-    FILE* ficheroSesgado_x_Abb;
-    ficheroSesgado_x_Abb = fopen("Datos/sesgado_x_Abb.txt", "w");
-    for (int i = 0; i < 100; i++){
-        double time_s_x = sesgada(&p_x);
-        fprintf(ficheroSesgado_x_Abb, "%f",time_s_x);
-        if(i<99){
-            fprintf(ficheroSesgado_x_Abb, ",");
-        }        
-    }
-    fclose(ficheroSesgado_x_Abb);
-    printf("\n");
+    fclose(creciente0p5Abb);
+    fclose(creciente0p5Avl);
+    fclose(creciente0p5Splay);
+    fclose(creciente0p5Btree16);
+    fclose(creciente0p5Btree256);
+    fclose(creciente0p5Btree4096);
 
-    printf("--------------------Sesgado p(x)=sqrt(x)------------------------\n");
+    fclose(sesgadoxAbb);
+    fclose(sesgadoxAvl);
+    fclose(sesgadoxSplay);
+    fclose(sesgadoxBtree16);
+    fclose(sesgadoxBtree256);
+    fclose(sesgadoxBtree4096);
+
+    fclose(sesgadosqrtAbb);
+    fclose(sesgadosqrtAvl);
+    fclose(sesgadosqrtSplay);
+    fclose(sesgadosqrtBtree16);
+    fclose(sesgadosqrtBtree256);
+    fclose(sesgadosqrtBtree4096);
     
-    FILE* ficheroSesgado_sqrt_Abb;
-    ficheroSesgado_sqrt_Abb = fopen("Datos/sesgado_sqrt_Abb.txt", "w");
-    for (int i = 0; i < 100; i++){
-       double time_s_sqrt = sesgada(&p_sqrt);
-        fprintf(ficheroSesgado_sqrt_Abb, "%f",time_s_sqrt);
-        if(i<99){
-            fprintf(ficheroSesgado_sqrt_Abb, ",");
-        }        
-    }
-    fclose(ficheroSesgado_sqrt_Abb);
-    printf("\n");
-
-    printf("--------------------Sesgado p(x)=ln(x)---------------------------\n");
-    
-    FILE* ficheroSesgado_ln_Abb;
-    ficheroSesgado_ln_Abb = fopen("Datos/sesgado_ln_Abb.txt", "w");
-    for (int i = 0; i < 100; i++){
-       double time_s_ln = sesgada(&p_ln);
-        fprintf(ficheroSesgado_ln_Abb, "%f",time_s_ln);
-        if(i<99){
-            fprintf(ficheroSesgado_ln_Abb, ",");
-        }        
-    }
-    fclose(ficheroSesgado_ln_Abb);
-    printf("\n");
-*/
-
+    fclose(sesgadolnAbb);
+    fclose(sesgadolnAvl);
+    fclose(sesgadolnSplay);
+    fclose(sesgadolnBtree16);
+    fclose(sesgadolnBtree256);
+    fclose(sesgadolnBtree4096);
 }
