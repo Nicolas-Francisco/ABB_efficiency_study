@@ -96,7 +96,7 @@ long long get_bigger(float arreglo[], float busqueda, long long ene ){
     return -1;
 }
 
-void generate_params(long long ** buffer,double (*f_x)(double),
+void generate_params(long long ** buffer,char * archivo,double (*f_x)(double),
 double (*f_sqrt)(double),double (*f_ln)(double)){
     long long *nodosAleatorios= (long long *)malloc(sizeof(long long)*(n/2));
     long long *paramsAleatorios = (long long *)malloc(sizeof(long long)*n);
@@ -148,7 +148,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
 
     printf("Loaging parametros\n");
     
-    fp = fopen("Values/values_0.txt","r");
+    fp = fopen(archivo,"r");
 
     while ((read = getline(&line, &len, fp)) != -1){
         random = atol(line);
@@ -432,7 +432,7 @@ void ejecucion(double times[],long long params[]){
 
 int main(){
     srand(time(NULL)); 
-    printf("RECUERDA EJECUTAR EL PY PARA TENER 10 NUEVOS VALUES");
+    printf("RECUERDA EJECUTAR EL PY PARA TENER 10 NUEVOS VALUES\n");
 
     FILE *aleatorioAbb = fopen("Resultados/aleatorioAbb.txt", "a"); 
     FILE *aleatorioAvl = fopen("Resultados/aleatorioAvl.txt", "a"); 
@@ -479,7 +479,12 @@ int main(){
     for(int i=0;i<1;i++){
         initSecuencia();
         long long *params[6];
-        generate_params(params,&p_x,&p_sqrt,&p_ln);
+        char *arreglo_archivos[10] = {"Values/values_0.txt", 
+        "Values/values_1.txt", "Values/values_2.txt", "Values/values_3.txt", 
+        "Values/values_4.txt", "Values/values_5.txt", "Values/values_6.txt", 
+        "Values/values_7.txt", "Values/values_8.txt", "Values/values_9.txt"};
+
+        generate_params(params,arreglo_archivos[i],&p_x,&p_sqrt,&p_ln);
         double times[6];
         printf("-------------------iteracion %d-------------------------\n",i);
         printf("--------------------Aleatorio-----------------------\n");
