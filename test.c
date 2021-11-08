@@ -21,6 +21,7 @@ double cpu_time_used;
 #define bi 2; //codigo de busqueda infructuosa
 
 #define n 1000000 //largo de la secuencia
+#define interval 1000 //intervalo de operaciones
 
 #define pi 0.5 //probabilidad de insercion
 #define pbe 0.33 //probabilidad de busqueda exitosa
@@ -150,7 +151,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
     
     fp = fopen(archivo,"r");
 
-    while ((read = getline(&line, &len, fp)) != -1){
+    while (((read = getline(&line, &len, fp)) != -1) && (index<n)){
         random = atol(line);
         operacion = secuencia[index];
         if (operacion==0){
@@ -274,7 +275,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
 
 
 // ejecuta las operaciones en los arboles
-void ejecucion(double times[],long long params[]){
+void ejecucion(double * times[],long long params[]){
     NodeAbb *rootABB = NULL; // inicializo arbol ABB
     NodeAvl *rootAVL = NULL; // inicializo arbol AVL
     //Node *rootSPLAY = NULL; // inicializo arbol SLAY
@@ -284,12 +285,29 @@ void ejecucion(double times[],long long params[]){
 
     long long param; //parametro a usar en la operacion
     int operacion; //operacion de la secuencia
+
+    double * timesAbb = (double *)malloc(sizeof(double)*(n/interval));
+    double * timesAvl = (double *)malloc(sizeof(double)*(n/interval));
+    double * timesSplay = (double *)malloc(sizeof(double)*(n/interval));
+    double * timesBtree16 = (double *)malloc(sizeof(double)*(n/interval));
+    double * timesBtree256 = (double *)malloc(sizeof(double)*(n/interval));
+    double * timesBtree4096 = (double *)malloc(sizeof(double)*(n/interval));
     
+    int index = 0;
     //----------- Arbol Abb ------------
     printf("ABB\n");
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
+
+        if ((i%interval==0)&&(i!=0)){
+            end = clock();
+            cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+            timesAbb[index]=cpu_time_used;
+            index++;
+            start = clock();
+        }
+
         operacion = secuencia[i]; 
         param = params[i];
         if (operacion==0){ //la operacion es una insercion
@@ -307,13 +325,24 @@ void ejecucion(double times[],long long params[]){
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    times[0]=cpu_time_used;
+    timesAbb[index]=cpu_time_used;
+    times[0]=timesAbb;
+
+    index=0;
+
 
     //----------- Arbol Avl ------------
     printf("AVL\n");
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
+        if ((i%interval==0)&&(i!=0)){
+            end = clock();
+            cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+            timesAvl[index]=cpu_time_used;
+            index++;
+            start = clock();
+        }
         operacion = secuencia[i]; 
         param = params[i];
         if (operacion==0){ //la operacion es una insercion
@@ -331,13 +360,24 @@ void ejecucion(double times[],long long params[]){
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    times[1]=cpu_time_used;
+    timesAvl[index]=cpu_time_used;
+    times[1]=timesAvl;
+
+    index=0;
+
 
    //----------- Arbol Splay ------------
 
     printf("Splay\n");
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
+        if ((i%interval==0)&&(i!=0)){
+            end = clock();
+            cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+            timesSplay[index]=cpu_time_used;
+            index++;
+            start = clock();
+        }
         operacion = secuencia[i]; 
         param = params[i];
         if (operacion==0){ //la operacion es una insercion
@@ -354,13 +394,22 @@ void ejecucion(double times[],long long params[]){
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    times[2]=cpu_time_used;
+    timesSplay[index]=cpu_time_used;
+    times[2]=timesSplay;
+    index=0;
 
     //----------- Arbol Btree 16 ------------
 
     printf("Btree 16\n");
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
+        if ((i%interval==0)&&(i!=0)){
+            end = clock();
+            cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+            timesBtree16[index]=cpu_time_used;
+            index++;
+            start = clock();
+        }
         operacion = secuencia[i];
         param = params[i];
         if (operacion==0){ //la operacion es una insercion
@@ -378,13 +427,22 @@ void ejecucion(double times[],long long params[]){
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
-    times[3]=cpu_time_used;
+    timesBtree16[index]=cpu_time_used;
+    times[3]=timesBtree16;
+    index=0;
 
     //----------- Arbol Btree 256 ------------
     printf("Btree 256\n");
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
+         if ((i%interval==0)&&(i!=0)){
+            end = clock();
+            cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+            timesBtree256[index]=cpu_time_used;
+            index++;
+            start = clock();
+        }
         operacion = secuencia[i]; 
         param = params[i];
         if (operacion==0){ //la operacion es una insercion
@@ -402,7 +460,9 @@ void ejecucion(double times[],long long params[]){
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
-    times[4]=cpu_time_used;
+    timesBtree256[index]=cpu_time_used;
+    times[4]=timesBtree256;
+    index=0;
 
     //----------- Arbol Btree 4096 ------------
     printf("Btree 4096\n");
@@ -410,6 +470,13 @@ void ejecucion(double times[],long long params[]){
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){
+         if ((i%interval==0)&&(i!=0)){
+            end = clock();
+            cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+            timesBtree4096[index]=cpu_time_used;
+            index++;
+            start = clock();
+        }
         operacion = secuencia[i];
         param = params[i];
         if (operacion==0){ //la operacion es una insercion
@@ -427,243 +494,351 @@ void ejecucion(double times[],long long params[]){
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
-    times[5]=cpu_time_used;
+    timesBtree4096[index]=cpu_time_used;
+    times[5]=timesBtree4096;
 }
 
 int main(){
-    srand(time(NULL)); 
-    printf("RECUERDA EJECUTAR EL PY PARA TENER 10 NUEVOS VALUES\n");
 
-    FILE *aleatorioAbb = fopen("Resultados/aleatorioAbb.txt", "a"); 
-    FILE *aleatorioAvl = fopen("Resultados/aleatorioAvl.txt", "a"); 
-    FILE *aleatorioSplay = fopen("Resultados/aleatorioSplay.txt", "a"); 
-    FILE *aleatorioBtree16 = fopen("Resultados/aleatorioBtree16.txt", "a"); 
-    FILE *aleatorioBtree256 = fopen("Resultados/aleatorioBtree256.txt", "a"); 
-    FILE *aleatorioBtree4096 = fopen("Resultados/aleatorioBtree4096.txt", "a"); 
+    srand(time(NULL));
+    char * mode = "w";
+    
+    FILE *aleatorioAbb = fopen("Resultados/aleatorioAbb.txt", mode); 
+    FILE *aleatorioAvl = fopen("Resultados/aleatorioAvl.txt", mode); 
+    FILE *aleatorioSplay = fopen("Resultados/aleatorioSplay.txt", mode); 
+    FILE *aleatorioBtree16 = fopen("Resultados/aleatorioBtree16.txt", mode); 
+    FILE *aleatorioBtree256 = fopen("Resultados/aleatorioBtree256.txt", mode); 
+    FILE *aleatorioBtree4096 = fopen("Resultados/aleatorioBtree4096.txt", mode); 
 
-    FILE *creciente0p1Abb = fopen("Resultados/creciente0p1Abb.txt", "a"); 
-    FILE *creciente0p1Avl = fopen("Resultados/creciente0p1Avl.txt", "a"); 
-    FILE *creciente0p1Splay = fopen("Resultados/creciente0p1Splay.txt", "a"); 
-    FILE *creciente0p1Btree16 = fopen("Resultados/creciente0p1Btree16.txt", "a"); 
-    FILE *creciente0p1Btree256 = fopen("Resultados/creciente0p1Btree256.txt", "a"); 
-    FILE *creciente0p1Btree4096 = fopen("Resultados/creciente0p1Btree4096.txt", "a");
+    FILE *creciente0p1Abb = fopen("Resultados/creciente0p1Abb.txt", mode); 
+    FILE *creciente0p1Avl = fopen("Resultados/creciente0p1Avl.txt", mode); 
+    FILE *creciente0p1Splay = fopen("Resultados/creciente0p1Splay.txt", mode); 
+    FILE *creciente0p1Btree16 = fopen("Resultados/creciente0p1Btree16.txt", mode); 
+    FILE *creciente0p1Btree256 = fopen("Resultados/creciente0p1Btree256.txt", mode); 
+    FILE *creciente0p1Btree4096 = fopen("Resultados/creciente0p1Btree4096.txt", mode);
 
-    FILE *creciente0p5Abb = fopen("Resultados/creciente0p5Abb.txt", "a"); 
-    FILE *creciente0p5Avl = fopen("Resultados/creciente0p5Avl.txt", "a"); 
-    FILE *creciente0p5Splay = fopen("Resultados/creciente0p5Splay.txt", "a"); 
-    FILE *creciente0p5Btree16 = fopen("Resultados/creciente0p5Btree16.txt", "a"); 
-    FILE *creciente0p5Btree256 = fopen("Resultados/creciente0p5Btree256.txt", "a"); 
-    FILE *creciente0p5Btree4096 = fopen("Resultados/creciente0p5Btree4096.txt", "a");
+    FILE *creciente0p5Abb = fopen("Resultados/creciente0p5Abb.txt", mode); 
+    FILE *creciente0p5Avl = fopen("Resultados/creciente0p5Avl.txt", mode); 
+    FILE *creciente0p5Splay = fopen("Resultados/creciente0p5Splay.txt", mode); 
+    FILE *creciente0p5Btree16 = fopen("Resultados/creciente0p5Btree16.txt", mode); 
+    FILE *creciente0p5Btree256 = fopen("Resultados/creciente0p5Btree256.txt", mode); 
+    FILE *creciente0p5Btree4096 = fopen("Resultados/creciente0p5Btree4096.txt", mode);
 
-    FILE *sesgadoxAbb = fopen("Resultados/sesgadoxAbb.txt", "a"); 
-    FILE *sesgadoxAvl = fopen("Resultados/sesgadoxAvl.txt", "a"); 
-    FILE *sesgadoxSplay = fopen("Resultados/sesgadoxSplay.txt", "a"); 
-    FILE *sesgadoxBtree16 = fopen("Resultados/sesgadoxBtree16.txt", "a"); 
-    FILE *sesgadoxBtree256 = fopen("Resultados/sesgadoxBtree256.txt", "a"); 
-    FILE *sesgadoxBtree4096 = fopen("Resultados/sesgadoxBtree4096.txt", "a");
+    FILE *sesgadoxAbb = fopen("Resultados/sesgadoxAbb.txt", mode); 
+    FILE *sesgadoxAvl = fopen("Resultados/sesgadoxAvl.txt", mode); 
+    FILE *sesgadoxSplay = fopen("Resultados/sesgadoxSplay.txt", mode); 
+    FILE *sesgadoxBtree16 = fopen("Resultados/sesgadoxBtree16.txt", mode); 
+    FILE *sesgadoxBtree256 = fopen("Resultados/sesgadoxBtree256.txt", mode); 
+    FILE *sesgadoxBtree4096 = fopen("Resultados/sesgadoxBtree4096.txt", mode);
 
-    FILE *sesgadosqrtAbb = fopen("Resultados/sesgadosqrtAbb.txt", "a"); 
-    FILE *sesgadosqrtAvl = fopen("Resultados/sesgadosqrtAvl.txt", "a"); 
-    FILE *sesgadosqrtSplay = fopen("Resultados/sesgadosqrtSplay.txt", "a"); 
-    FILE *sesgadosqrtBtree16 = fopen("Resultados/sesgadosqrtBtree16.txt", "a"); 
-    FILE *sesgadosqrtBtree256 = fopen("Resultados/sesgadosqrtBtree256.txt", "a"); 
-    FILE *sesgadosqrtBtree4096 = fopen("Resultados/sesgadosqrtBtree4096.txt", "a");
+    FILE *sesgadosqrtAbb = fopen("Resultados/sesgadosqrtAbb.txt", mode); 
+    FILE *sesgadosqrtAvl = fopen("Resultados/sesgadosqrtAvl.txt", mode); 
+    FILE *sesgadosqrtSplay = fopen("Resultados/sesgadosqrtSplay.txt", mode); 
+    FILE *sesgadosqrtBtree16 = fopen("Resultados/sesgadosqrtBtree16.txt", mode); 
+    FILE *sesgadosqrtBtree256 = fopen("Resultados/sesgadosqrtBtree256.txt", mode); 
+    FILE *sesgadosqrtBtree4096 = fopen("Resultados/sesgadosqrtBtree4096.txt", mode);
 
-    FILE *sesgadolnAbb = fopen("Resultados/sesgadolnAbb.txt", "a"); 
-    FILE *sesgadolnAvl = fopen("Resultados/sesgadolnAvl.txt", "a"); 
-    FILE *sesgadolnSplay = fopen("Resultados/sesgadolnSplay.txt", "a"); 
-    FILE *sesgadolnBtree16 = fopen("Resultados/sesgadolnBtree16.txt", "a"); 
-    FILE *sesgadolnBtree256 = fopen("Resultados/sesgadolnBtree256.txt", "a"); 
-    FILE *sesgadolnBtree4096 = fopen("Resultados/sesgadolnBtree4096.txt", "a");
+    FILE *sesgadolnAbb = fopen("Resultados/sesgadolnAbb.txt", mode); 
+    FILE *sesgadolnAvl = fopen("Resultados/sesgadolnAvl.txt", mode); 
+    FILE *sesgadolnSplay = fopen("Resultados/sesgadolnSplay.txt", mode); 
+    FILE *sesgadolnBtree16 = fopen("Resultados/sesgadolnBtree16.txt",mode); 
+    FILE *sesgadolnBtree256 = fopen("Resultados/sesgadolnBtree256.txt", mode); 
+    FILE *sesgadolnBtree4096 = fopen("Resultados/sesgadolnBtree4096.txt", mode);
 
-    for(int i=0;i<1;i++){
-        initSecuencia();
-        long long *params[6];
-        char *arreglo_archivos[10] = {"Values/values_0.txt", 
+    char *arreglo_archivos[10] = {"Values/values_0.txt", 
         "Values/values_1.txt", "Values/values_2.txt", "Values/values_3.txt", 
         "Values/values_4.txt", "Values/values_5.txt", "Values/values_6.txt", 
         "Values/values_7.txt", "Values/values_8.txt", "Values/values_9.txt"};
 
-        generate_params(params,arreglo_archivos[i],&p_x,&p_sqrt,&p_ln);
-        double times[6];
-        printf("-------------------iteracion %d-------------------------\n",i);
-        printf("--------------------Aleatorio-----------------------\n");
-        ejecucion(times,params[0]); // se ejecuta el aleatorio
-        printf("El tiempo aleatorio de ABB es %f \n",times[0]);
-        printf("El tiempo aleatorio de AVL es %f \n",times[1]);
-        printf("El tiempo aleatorio de SPLAY es %f \n",times[2]);
-        printf("El tiempo aleatorio de BTREE 16 es %f \n",times[3]);
-        printf("El tiempo aleatorio de BTREE 256 es %f \n",times[4]);
-        printf("El tiempo aleatorio de BTREE 4096 es %f \n",times[5]);
+    long long * params[6];
+    double * times[6];
+    int cantIntervalos =  n/interval;
+    double * timesAbb;
+    double * timesAvl;
+    double * timesSplay;
+    double * timesBtree16;
+    double * timesBtree256;
+    double * timesBtree4096;
 
-        fprintf(aleatorioAbb,"%f",times[0]);
+    printf("-------------------iteracion unica-------------------------\n");
+
+    initSecuencia();
+    generate_params(params,arreglo_archivos[0],&p_x,&p_sqrt,&p_ln);
+        
+
+    printf("--------------------Aleatorio-----------------------\n");
+    ejecucion(times,params[0]); 
+
+    timesAbb = times[0];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(aleatorioAbb,"%f",timesAbb[i]);
         fprintf(aleatorioAbb,"%s","\n");
-
-        fprintf(aleatorioAvl,"%f",times[1]);
-        fprintf(aleatorioAvl,"%s","\n");
-
-        fprintf(aleatorioSplay,"%f",times[2]);
-        fprintf(aleatorioSplay,"%s","\n");
-
-        fprintf(aleatorioBtree16,"%f",times[3]);
-        fprintf(aleatorioBtree16,"%s","\n");
-
-        fprintf(aleatorioBtree256,"%f",times[4]);
-        fprintf(aleatorioBtree256,"%s","\n");
-
-        fprintf(aleatorioBtree4096,"%f",times[5]);
-        fprintf(aleatorioBtree4096,"%s","\n");
-
-        printf("Se guardaron los datos del aleatorio\n");
-
-        printf("------------------Creciente 0.1-------------------------\n");
-        ejecucion(times,params[1]); // se ejecura el creciente de 0.1;
-        printf("El tiempo creciente 0.1 de ABB es %f \n",times[0]);
-        printf("El tiempo creciente 0.1 de AVL es %f \n",times[1]);
-        printf("El tiempo creciente 0.1 de SPLAY es %f \n",times[2]);
-        printf("El tiempo creciente 0.1 de BTREE 16 es %f \n",times[3]);
-        printf("El tiempo creciente 0.1 de BTREE 256 es %f \n",times[4]);
-        printf("El tiempo creciente 0.1 de BTREE 4096 es %f \n",times[5]);
-
-        fprintf(creciente0p1Abb,"%f",times[0]);
-        fprintf(creciente0p1Abb,"%s","\n");
-
-        fprintf(creciente0p1Avl,"%f",times[1]);
-        fprintf(creciente0p1Avl,"%s","\n");
-
-        fprintf(creciente0p1Splay,"%f",times[2]);
-        fprintf(creciente0p1Splay,"%s","\n");
-
-        fprintf(creciente0p1Btree16,"%f",times[3]);
-        fprintf(creciente0p1Btree16,"%s","\n");
-
-        fprintf(creciente0p1Btree256,"%f",times[4]);
-        fprintf(creciente0p1Btree256,"%s","\n");
-
-        fprintf(creciente0p1Btree4096,"%f",times[5]);
-        fprintf(creciente0p1Btree4096,"%s","\n");
-
-        printf("Se guardaron los datos del crecientes 0.1\n");
-
-        printf("----------------Creciente 0.5------------------------\n");
-        ejecucion(times,params[2]); // se ejecura el creciente de 0.5;
-        printf("El tiempo creciente 0.5 de ABB es %f \n",times[0]);
-        printf("El tiempo creciente 0.5 de AVL es %f \n",times[1]);
-        printf("El tiempo creciente 0.5 de SPLAY es %f \n",times[2]);
-        printf("El tiempo creciente 0.5 de BTREE 16 es %f \n",times[3]);
-        printf("El tiempo creciente 0.5 de BTREE 256 es %f \n",times[4]);
-        printf("El tiempo creciente 0.5 de BTREE 4096 es %f \n",times[5]);
-
-        fprintf(creciente0p5Abb,"%f",times[0]);
-        fprintf(creciente0p1Abb,"%s","\n");
-
-        fprintf(creciente0p5Avl,"%f",times[1]);
-        fprintf(creciente0p5Avl,"%s","\n");
-
-        fprintf(creciente0p5Splay,"%f",times[2]);
-        fprintf(creciente0p5Splay,"%s","\n");
-
-        fprintf(creciente0p5Btree16,"%f",times[3]);
-        fprintf(creciente0p5Btree16,"%s","\n");
-
-        fprintf(creciente0p5Btree256,"%f",times[4]);
-        fprintf(creciente0p5Btree256,"%s","\n");
-
-        fprintf(creciente0p5Btree4096,"%f",times[5]);
-        fprintf(creciente0p5Btree4096,"%s","\n");
-
-        printf("Se guardaron los datos del crecientes 0.5\n");
-
-
-        printf("--------------sesgado x-------------------------\n");
-        ejecucion(times,params[3]); // se ejecura el csesgado p(x);
-        printf("El tiempo sesgado p(x) de ABB es %f \n",times[0]);
-        printf("El tiempo sesgado p(x) de AVL es %f \n",times[1]);
-        printf("El tiempo sesgado p(x) de SPLAY es %f \n",times[2]);
-        printf("El tiempo sesgado p(x) de BTREE 16 es %f \n",times[3]);
-        printf("El tiempo sesgado p(x) de BTREE 256 es %f \n",times[4]);
-        printf("El tiempo sesgado p(x) de BTREE 4096 es %f \n",times[5]);
-
-        fprintf(sesgadoxAbb,"%f",times[0]);
-        fprintf(sesgadoxAbb,"%s","\n");
-
-        fprintf(sesgadoxAvl,"%f",times[1]);
-        fprintf(sesgadoxAvl,"%s","\n");
-
-        fprintf(sesgadoxSplay,"%f",times[2]);
-        fprintf(sesgadoxSplay,"%s","\n");
-
-        fprintf(sesgadoxBtree16,"%f",times[3]);
-        fprintf(sesgadoxBtree16,"%s","\n");
-
-        fprintf(sesgadoxBtree256,"%f",times[4]);
-        fprintf(sesgadoxBtree256,"%s","\n");
-
-        fprintf(sesgadoxBtree4096,"%f",times[5]);
-        fprintf(sesgadoxBtree4096,"%s","\n");
-
-        printf("Se guardaron los sesgados x\n");
-
-        printf("----------------sesgado sqrt---------------------------\n");
-        ejecucion(times,params[4]); // se ejecura el sesgado sqrt(x);
-        printf("El tiempo sesgado sqrt(x) de ABB es %f \n",times[0]);
-        printf("El tiempo sesgado sqrt(x) de AVL es %f \n",times[1]);
-        printf("El tiempo sesgado sqrt(x) de SPLAY es %f \n",times[2]);
-        printf("El tiempo sesgado sqrt(x) de BTREE 16 es %f \n",times[3]);
-        printf("El tiempo sesgado sqrt(x) de BTREE 256 es %f \n",times[4]);
-        printf("El tiempo sesgado sqrt(x) de BTREE 4096 es %f \n",times[5]);
-
-        fprintf(sesgadosqrtAbb,"%f",times[0]);
-        fprintf(sesgadosqrtAbb,"%s","\n");
-
-        fprintf(sesgadosqrtAvl,"%f",times[1]);
-        fprintf(sesgadosqrtAvl,"%s","\n");
-
-        fprintf(sesgadosqrtSplay,"%f",times[2]);
-        fprintf(sesgadosqrtSplay,"%s","\n");
-
-        fprintf(sesgadosqrtBtree16,"%f",times[3]);
-        fprintf(sesgadosqrtBtree16,"%s","\n");
-
-        fprintf(sesgadosqrtBtree256,"%f",times[4]);
-        fprintf(sesgadosqrtBtree256,"%s","\n");
-
-        fprintf(sesgadosqrtBtree4096,"%f",times[5]);
-        fprintf(sesgadosqrtBtree4096,"%s","\n");
-
-        printf("Se guardaron los sesgados sqrt\n");
-
-        printf("---------------sesgado ln-------------------------\n");
-        ejecucion(times,params[5]); // se ejecura el sesgado ln(x);
-        printf("El tiempo sesgado ln(x) de ABB es %f \n",times[0]);
-        printf("El tiempo sesgado ln(x) de AVL es %f \n",times[1]);
-        printf("El tiempo sesgado ln(x) de SPLAY es %f \n",times[2]);
-        printf("El tiempo sesgado ln(x) de BTREE 16 es %f \n",times[3]);
-        printf("El tiempo sesgado ln(x) de BTREE 256 es %f \n",times[4]);
-        printf("El tiempo sesgado ln(x) de BTREE 4096 es %f \n",times[5]);
-
-        fprintf(sesgadolnAbb,"%f",times[0]);
-        fprintf(sesgadolnAbb,"%s","\n");
-
-        fprintf(sesgadolnAvl,"%f",times[1]);
-        fprintf(sesgadolnAvl,"%s","\n");
-
-        fprintf(sesgadolnSplay,"%f",times[2]);
-        fprintf(sesgadolnSplay,"%s","\n");
-
-        fprintf(sesgadolnBtree16,"%f",times[3]);
-        fprintf(sesgadolnBtree16,"%s","\n");
-
-        fprintf(sesgadolnBtree256,"%f",times[4]);
-        fprintf(sesgadolnBtree256,"%s","\n");
-
-        fprintf(sesgadolnBtree4096,"%f",times[5]);
-        fprintf(sesgadolnBtree4096,"%s","\n");
-
-        printf("Se guardaron los sesgados ln\n");
-
     }
-    printf("se terminaron las 10 iteraciones :)");
+
+    timesAvl = times[1];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(aleatorioAvl,"%f",timesAvl[i]);
+        fprintf(aleatorioAvl,"%s","\n");
+    }
+
+    timesSplay = times[2];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(aleatorioSplay,"%f",timesSplay[i]);
+        fprintf(aleatorioSplay,"%s","\n");
+    }
+
+    timesBtree16 = times[3];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(aleatorioBtree16,"%f",timesBtree16[i]);
+        fprintf(aleatorioBtree16,"%s","\n");
+    }
+
+    timesBtree256 = times[4];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(aleatorioBtree256,"%f",timesBtree256[i]);
+        fprintf(aleatorioBtree256,"%s","\n");
+    }
+
+    timesBtree4096 = times[5];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(aleatorioBtree4096,"%f",timesBtree4096[i]);
+        fprintf(aleatorioBtree4096,"%s","\n");
+    }
+
+    for(int i=0;i<6;i++){
+        free(times[i]);
+    }
+
+    printf("Se guardaron los datos del aleatorio\n");
+    printf("------------------Creciente 0.1-------------------------\n");
+    ejecucion(times,params[1]); // se ejecura el creciente de 0.1;
+
+    timesAbb = times[0];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p1Abb,"%f",timesAbb[i]);
+        fprintf(creciente0p1Abb,"%s","\n");
+    }
+
+    timesAvl = times[1];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p1Avl,"%f",timesAvl[i]);
+        fprintf(creciente0p1Avl,"%s","\n");
+    }
+
+    timesSplay = times[2];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p1Splay,"%f",timesSplay[i]);
+        fprintf(creciente0p1Splay,"%s","\n");
+    }
+
+    timesBtree16 = times[3];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p1Btree16,"%f",timesBtree16[i]);
+        fprintf(creciente0p1Btree16,"%s","\n");
+    }
+
+    timesBtree256 = times[4];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p1Btree256,"%f",timesBtree256[i]);
+        fprintf(creciente0p1Btree256,"%s","\n");
+    }
+
+    timesBtree4096 = times[5];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p1Btree4096,"%f",timesBtree4096[i]);
+        fprintf(creciente0p1Btree4096,"%s","\n");
+    }
+
+    for(int i=0;i<6;i++){
+        free(times[i]);
+    }
+
+    printf("Se guardaron los datos del crecientes 0.1\n");
+
+    printf("----------------Creciente 0.5------------------------\n");
+    ejecucion(times,params[2]); // se ejecura el creciente de 0.5;
+
+    timesAbb = times[0];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p5Abb,"%f",timesAbb[i]);
+        fprintf(creciente0p5Abb,"%s","\n");
+    }
+
+    timesAvl = times[1];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p5Avl,"%f",timesAvl[i]);
+        fprintf(creciente0p5Avl,"%s","\n");
+    }
+
+    timesSplay = times[2];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p5Splay,"%f",timesSplay[i]);
+        fprintf(creciente0p5Splay,"%s","\n");
+    }
+
+    timesBtree16 = times[3];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p5Btree16,"%f",timesBtree16[i]);
+        fprintf(creciente0p5Btree16,"%s","\n");
+    }
+
+    timesBtree256 = times[4];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p5Btree256,"%f",timesBtree256[i]);
+        fprintf(creciente0p5Btree256,"%s","\n");
+    }
+
+    timesBtree4096 = times[5];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(creciente0p5Btree4096,"%f",timesBtree4096[i]);
+        fprintf(creciente0p5Btree4096,"%s","\n");
+    }
+
+    for(int i=0;i<6;i++){
+        free(times[i]);
+    }
+
+    printf("Se guardaron los datos del crecientes 0.5\n");
+    printf("--------------sesgado x-------------------------\n");
+    ejecucion(times,params[3]); // se ejecura el csesgado p(x);
+
+    timesAbb = times[0];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadoxAbb,"%f",timesAbb[i]);
+        fprintf(sesgadoxAbb,"%s","\n");
+    }
+
+    timesAvl = times[1];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadoxAvl,"%f",timesAvl[i]);
+        fprintf(sesgadoxAvl,"%s","\n");
+    }
+
+    timesSplay = times[2];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadoxSplay,"%f",timesSplay[i]);
+        fprintf(sesgadoxSplay,"%s","\n");
+    }
+
+    timesBtree16 = times[3];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadoxBtree16,"%f",timesBtree16[i]);
+        fprintf(sesgadoxBtree16,"%s","\n");
+    }
+
+    timesBtree256 = times[4];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadoxBtree256,"%f",timesBtree256[i]);
+        fprintf(sesgadoxBtree256,"%s","\n");
+    }
+
+    timesBtree4096 = times[5];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadoxBtree4096,"%f",timesBtree4096[i]);
+        fprintf(sesgadoxBtree4096,"%s","\n");
+    }
+
+    for(int i=0;i<6;i++){
+        free(times[i]);
+    }
+
+    printf("Se guardaron los sesgados x\n");
+
+    printf("----------------sesgado sqrt---------------------------\n");
+    ejecucion(times,params[4]); // se ejecura el sesgado sqrt(x);
+
+        timesAbb = times[0];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadosqrtAbb,"%f",timesAbb[i]);
+        fprintf(sesgadosqrtAbb,"%s","\n");
+    }
+
+    timesAvl = times[1];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadosqrtAvl,"%f",timesAvl[i]);
+        fprintf(sesgadosqrtAvl,"%s","\n");
+    }
+
+    timesSplay = times[2];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadosqrtSplay,"%f",timesSplay[i]);
+        fprintf(sesgadosqrtSplay,"%s","\n");
+    }
+
+    timesBtree16 = times[3];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadosqrtBtree16,"%f",timesBtree16[i]);
+        fprintf(sesgadosqrtBtree16,"%s","\n");
+    }
+
+    timesBtree256 = times[4];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadosqrtBtree256,"%f",timesBtree256[i]);
+        fprintf(sesgadosqrtBtree256,"%s","\n");
+    }
+
+    timesBtree4096 = times[5];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadosqrtBtree4096,"%f",timesBtree4096[i]);
+        fprintf(sesgadosqrtBtree4096,"%s","\n");
+    }
+
+    for(int i=0;i<6;i++){
+        free(times[i]);
+    }
+
+    printf("Se guardaron los sesgados sqrt\n");
+
+    printf("---------------sesgado ln-------------------------\n");
+    ejecucion(times,params[5]); // se ejecura el sesgado ln(x);
+
+        timesAbb = times[0];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadolnAbb,"%f",timesAbb[i]);
+        fprintf(sesgadolnAbb,"%s","\n");
+    }
+
+    timesAvl = times[1];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadolnAvl,"%f",timesAvl[i]);
+        fprintf(sesgadolnAvl,"%s","\n");
+    }
+
+    timesSplay = times[2];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadolnSplay,"%f",timesSplay[i]);
+        fprintf(sesgadolnSplay,"%s","\n");
+    }
+
+    timesBtree16 = times[3];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadolnBtree16,"%f",timesBtree16[i]);
+        fprintf(sesgadolnBtree16,"%s","\n");
+    }
+
+    timesBtree256 = times[4];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadolnBtree256,"%f",timesBtree256[i]);
+        fprintf(sesgadolnBtree256,"%s","\n");
+    }
+
+    timesBtree4096 = times[5];
+    for(int i=0;i<cantIntervalos;i++){
+        fprintf(sesgadolnBtree4096,"%f",timesBtree4096[i]);
+        fprintf(sesgadolnBtree4096,"%s","\n");
+    }
+
+    for(int i=0;i<6;i++){
+        free(times[i]);
+    }
+
+    printf("Se guardaron los sesgados ln\n");
+
+    for(int i=0;i<6;i++){
+        free(params[i]);
+    }
+
+    printf("se terminaron :)\n");
 
     fclose(aleatorioAbb);
     fclose(aleatorioAvl);
@@ -706,4 +881,28 @@ int main(){
     fclose(sesgadolnBtree16);
     fclose(sesgadolnBtree256);
     fclose(sesgadolnBtree4096);
+
+
+
+
+
+
+
+    /*
+
+
+        
+
+
+      
+
+        
+
+        
+
+        
+
+        
+        
+    */
 }
