@@ -13,10 +13,12 @@ int main(void)
 
     fp = fopen("Values/values_0.txt", "r");
     while ((read = getline(&line, &len, fp)) != -1) {
-        printf("Retrieved line of length %zu:\n", read);
-        printf("%s", line);
-        value = atol(line);;
-        printf("%li\n", value);
+        //printf("Retrieved line of length %zu:\n", read);
+        //printf("%s", line);
+        value = atol(line);
+        value = value +1;
+        //printf("%li\n", value);
+        printf("caca %lld\n",value);
     }
 
     fclose(fp);

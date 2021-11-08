@@ -9,6 +9,10 @@
 #include "Btree256.c"
 #include "Btree4096.c"
 
+
+#include <string.h>
+
+
 clock_t start, end;
 double cpu_time_used;
 
@@ -136,31 +140,42 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
     float peso; //peso individual
     long pos;
 
+    FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
 
 
     printf("Loaging\n");
+    
+    fp = fopen("Values/values_0.txt","r");
 
-    for (long i=0; i<n; i++) {
-        operacion = secuencia[i];
+    while ((read = getline(&line, &len, fp)) != -1){
+    //for (long i=0; i<n; i++) {
+        operacion = secuencia[index];
         if (operacion==0){
-            random = get_random_not_repeted(nodosAleatorios,cant_nodos,max_numero);
-            //printf("el random es %lld\n",random);
-
+            //random = get_random_not_repeted(nodosAleatorios,cant_nodos,max_numero);
+            
+            random = atol(line);
+            
             nodosAleatorios[cant_nodos]=random; 
             paramsAleatorios[index]=random;
+            //printf("el random es %lld\n",random);
+
+            /*
 
             factor_k =k_0p1/max_numero;
             random_0yk =(long) random*factor_k;
-            nodosCreciente_0p1[cant_nodos]=random_0yk+cant_nodos; //random + m
+            nodosCreciente_0p1[cant_nodos]=random_0yk+cant_nodos; 
             paramsCreciente_0p1[index]=random_0yk+cant_nodos;
-            //printf("el random_0yk entre 0 y k es %lld\n",random_0yk);
+
 
             factor_k =k_0p5/max_numero;
             random_0yk = (long)(random*factor_k);
-            nodosCreciente_0p5[cant_nodos]=random_0yk+cant_nodos; //random + m
+            nodosCreciente_0p5[cant_nodos]=random_0yk+cant_nodos; 
             paramsCreciente_0p5[index]=random_0yk+cant_nodos;
-            //printf("el random_0yk entre 0 y k es %lld\n",random_0yk);
    
+
             nodosSesgado_x[cant_nodos]=random;
             paramsSesgado_x[index]=random;
             peso = f_x(random);
@@ -179,22 +194,30 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             P_ln=P_ln+peso;
             probSesgado_ln[cant_nodos]=P_ln;
             
-            cant_nodos++;
+            //cant_nodos++;
             k_0p1 = cant_nodos*0.1;
             k_0p5 = cant_nodos*0.5;
-            
-
-            //printf("mi peso acumulado es %f \n",P_x);
 
             index++; 
-            //printf("[%lld,%lld]\n",i+1,n);
+            //printf("[%lld,%lld]\n",index,n);
+            */
+           cant_nodos++;
+           index++;
+            
+
         }
         else if (operacion==1){
+            //printf("buscare e");
             long indice = (rand() % cant_nodos);
+            //long indice = atol(line);
+            //indice = indice*(cant_nodos/max_numero);
+            //printf("el indice pa buscar exitosamente es %lld\n",indice);
+            //long indice = 0;
 
             random=nodosAleatorios[indice];
             paramsAleatorios[index]=random;
 
+            /*
             random=nodosCreciente_0p1[indice];
             paramsCreciente_0p1[index]=random;
 
@@ -206,7 +229,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             pos = get_bigger(probSesgado_x,pesoAleatorio,cant_nodos);
             //printf("indice en nodos es %lld\n",pos);
             random=nodosSesgado_x[pos];
-            paramsAleatorios[index]=random;
+            paramsSesgado_x[index]=random;
 
 
             pesoAleatorio = ((long)P_sqrt/cant_nodos)*indice;
@@ -214,7 +237,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             pos = get_bigger(probSesgado_sqrt,pesoAleatorio,cant_nodos);
             //printf("indice en nodos es %lld\n",pos);
             random=nodosSesgado_sqrt[pos];
-            paramsAleatorios[index]=random;
+            paramsSesgado_sqrt[index]=random;
 
 
             pesoAleatorio = ((long)P_ln/cant_nodos)*indice;
@@ -222,15 +245,21 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             pos = get_bigger(probSesgado_ln,pesoAleatorio,cant_nodos);
             //printf("indice en nodos es %lld\n",pos);
             random=nodosSesgado_ln[pos];
-            paramsAleatorios[index]=random;
-
+            paramsSesgado_lns[index]=random;
+*/
             index++;
-            //printf("[%lld,%lld]\n",i+1,n);
+            //printf("[%lld,%lld]\n",index,n);
+            
+            
         }
         else{
-            random = get_random_not_repeted(nodosAleatorios,cant_nodos,max_numero);
+            //printf("buscare m");
+            //random = get_random_not_repeted(nodosAleatorios,cant_nodos,max_numero);
 
+            
+            random = atol(line);
             paramsAleatorios[index]=random;
+            /*
             
             paramsCreciente_0p1[index]=random;
 
@@ -241,15 +270,19 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             paramsSesgado_sqrt[index]=random;
 
             paramsSesgado_ln[index]=random;
+            */
 
             index++;
-            //printf("[%lld,%lld]\n",i+1,n);
+            //printf("[%lld,%lld]\n",index,n);
+            
         }
 
-        if (i%10000 == 0){
-            printf("[%lld,%lld]\n",i,n);
-        }
+        //if (index%10000 == 0){
+            //printf("[%lld,%lld]\n",index,n);
+        //}
     }
+    printf("last %lld",paramsAleatorios[999999]);
+    fclose(fp);
     buffer[0]=paramsAleatorios;
     buffer[1]=paramsCreciente_0p1;
     buffer[2]=paramsCreciente_0p5;
@@ -296,6 +329,7 @@ void ejecucion(double times[],long params[]){
     times[0]=cpu_time_used;
 
     //printf(" ACA PARTE EL AVL\n");
+    
 
     start = clock(); //inicio el temporizador
     for (long i=0; i < n; i++){ //recorro mi secuencia
@@ -349,24 +383,24 @@ void ejecucion(double times[],long params[]){
     for (long i=0; i < n; i++){ //recorro mi secuencia
         operacion = secuencia[i]; //obtengo la operacion
         param = params[i];
-        //printf("el paramentro es %d\n",param);
+        printf("el paramentro es %lld\n",param);
         if (operacion==0){ //la operacion es una insercion
             insertBt_16(&rootBt_16,param); //inserto el nodo en ABB
-            //printf("inserte el %lld\n",param);
+            printf("inserte el %lld\n",param);
         }
         else if (operacion==1){ //la operacion es una busqueda exitosa
             NodeBt_16 * node = searchBt_16(&rootBt_16,param);//busco el nodo en mi arbol
-            //printf("busque exitosamente el %lld\n",param);
+            printf("busque exitosamente el %lld\n",param);
         }
         else{ //La operacion es una busqueda infructuosa
             NodeBt_16 * node = searchBt_16(&rootBt_16,param);//busco el nodo en mi arbol
-            //printf("busque fallidamente el %lld\n",param);
+            printf("busque fallidamente el %lld\n",param);
         }
     }
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
     times[3]=cpu_time_used;
-
+/*
     //printf("ACA PARTE EL ARBOL B 256\n");
 
     start = clock(); //inicio el temporizador
@@ -414,6 +448,7 @@ void ejecucion(double times[],long params[]){
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; //obtengo el tiempo de ejecucion
     times[5]=cpu_time_used;
+    */
 
 
 }
@@ -424,6 +459,15 @@ int main(){
     long *params[6];
     generate_params(params,&p_x,&p_sqrt,&p_ln);
     double times[6];
+    //long contador;
+    //for (int i = 0; i < n; i++){
+      //  printf("aaaaaaaaaaaa%lld\n",params[0][i]);
+       // contador++;
+
+   // }
+
+
+
 
     printf("----------------------------------------------------\n");
     ejecucion(times,params[0]); // se ejecuta el aleatorio
@@ -431,8 +475,10 @@ int main(){
     printf("El tiempo aleatorio de AVL es %f \n",times[1]);
     printf("El tiempo aleatorio de SPLAY es %f \n",times[2]);
     printf("El tiempo aleatorio de BTREE 16 es %f \n",times[3]);
-    printf("El tiempo aleatorio de BTREE 256 es %f \n",times[4]);
-    printf("El tiempo aleatorio de BTREE 4096 es %f \n",times[5]);
+   // printf("El tiempo aleatorio de BTREE 256 es %f \n",times[4]);
+    //printf("El tiempo aleatorio de BTREE 4096 es %f \n",times[5]);
+
+    /*
     printf("----------------------------------------------------\n");
     ejecucion(times,params[1]); // se ejecura el creciente de 0.1;
     printf("El tiempo creciente 0.1 de ABB es %f \n",times[0]);
@@ -475,7 +521,7 @@ int main(){
     printf("El tiempo sesgado ln(x) de BTREE 4096 es %f \n",times[5]);
     
 
-
+*/
     
 
     /*
