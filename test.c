@@ -474,7 +474,6 @@ int main(){
     printf("El tiempo sesgado p(x) de BTREE 256 es %f \n",times[4]);
     printf("El tiempo sesgado p(x) de BTREE 4096 es %f \n",times[5]);
 
-    */
     printf("----------------------------------------------------\n");
     ejecucion(times,params[4]); // se ejecura el sesgado sqrt(x);
     printf("El tiempo sesgado sqrt(x) de ABB es %f \n",times[0]);

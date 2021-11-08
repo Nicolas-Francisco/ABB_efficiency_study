@@ -82,7 +82,7 @@ void splitNodeBt_16(NodeBt_16 **node, NodeBt_16** root){
   int aux_j = j;
   // We do the same on the next values of the node.
   while (j <= father->count){
-    int e = father->vals[j];
+    long long e = father->vals[j];
     NodeBt_16* aux = father->C[j+1];
     right_son->parent = father;
     father->vals[j] = median;
@@ -142,7 +142,7 @@ void insert_NodeBt_16(NodeBt_16 **node, long long val, NodeBt_16 **root) {
     // Now that we have the right position, we move all the values to
     // the right and insert the main val into the node
     while(i <= p->count){
-      int e = p->vals[i];
+      long long e = p->vals[i];
       p->vals[i] = val;
       val = e;
       i++;

@@ -7,7 +7,7 @@ min_num = 0
 def rng():
 
     for num in range(100):
-        values = random.sample(range(min_num,max_num), n)
+        values = random.sample(range(min_num,max_num-1), n)
         f = open(f"Values/values_{num}.txt", "w")
         for i in range(len(values)):
             if i==len(values)-1:
