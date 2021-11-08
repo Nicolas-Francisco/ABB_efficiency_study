@@ -35,7 +35,7 @@ library(ggplot2)
 ```
 
 
-## Importacion de valores
+## Experimento Aleatorio
 ```{r, eval=TRUE}
 random.abb = read.table("Resultados/aleatorioAbb.txt")
 random.avl = read.table("Resultados/aleatorioAvl.txt")
@@ -83,6 +83,54 @@ plot
 
 ```
 
+
+## Experimento Creciente 0.1
+```{r, eval=TRUE}
+creciente01.abb = read.table("Resultados/creciente0p1Abb.txt")
+creciente01.avl = read.table("Resultados/creciente0p1Avl.txt")
+creciente01.splay = read.table("Resultados/creciente0p1Splay.txt")
+creciente01.btree16 = read.table("Resultados/creciente0p1Btree16.txt")
+creciente01.btree256 = read.table("Resultados/creciente0p1Btree256.txt")
+creciente01.btree4096 = read.table("Resultados/creciente0p1Btree4096.txt")
+
+```
+
+```{r, eval=TRUE}
+Experimento_creciente0p1 <-  data.frame(Operacion = integer(),
+                                     V1 = double(),
+                                     Estructura = factor()) 
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.abb, Estructura = "ABB")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.avl, Estructura = "AVL")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.splay, Estructura = "Splay")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.btree16, Estructura = "BTree16")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.btree256, Estructura = "BTree256")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.btree4096, Estructura = "BTree4096")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
+```
+
+
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Iteraciones") +  
+  ylab("Tiempo") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente 0.1") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
 
 ---
 
