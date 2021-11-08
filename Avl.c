@@ -3,23 +3,23 @@
 #include<stdlib.h>
 
 typedef struct nodeAvl{
-    long value;
+    long long value;
     struct nodeAvl *left;
     struct nodeAvl *right;
     int height;
 }NodeAvl;
  
-long height(NodeAvl * node){
+long long height(NodeAvl * node){
     if (node == NULL)
         return 0;
     return node->height;
 }
  
-long max(long a, long b){
+long long max(long long a, long long b){
     return (a > b)? a : b;
 }
  
-NodeAvl* newNodeAvl(long value){
+NodeAvl* newNodeAvl(long long value){
     NodeAvl *node = malloc(sizeof(NodeAvl));
     node->value   = value;
     node->left   = NULL;
@@ -78,7 +78,7 @@ int getBalance(NodeAvl *node)
  
 // Recursive function to insert a value in the subtree rooted
 // with node and returns the new root of the subtree.
-void insertAvl(NodeAvl** node, long value)
+void insertAvl(NodeAvl** node, long long value)
 {
     NodeAvl *a = *node;
     if (a == NULL){
@@ -102,30 +102,22 @@ void insertAvl(NodeAvl** node, long value)
         // unbalanced */
     int balance = getBalance(a);
 
-    //printf("\nla altura es %d \n",balance);
-
-    // Left Left Case
+     // Left Left Case
     if (balance > 1 && value < a->left->value){
         rightRotateAvl(node);
         return;
     }
-
-     // Left Left Case
-    if (balance > 1 && value < a->left->value){
-        rightRotateAvl(node);
-                return;
-    }
     // Right Right Case
     if (balance < -1 && value > a->right->value){
         leftRotateAvl(node);
-                return;
+        return;
     }
  
     // Left Right Case
     if (balance > 1 && value > a->left->value){
         leftRotateAvl(&(a->left));
         rightRotateAvl(node);
-                return;
+        return;
     }
  
     // Right Left Case
@@ -138,7 +130,7 @@ void insertAvl(NodeAvl** node, long value)
 }
 
 
-NodeAvl * searchAvl(NodeAvl ** node, long value){
+NodeAvl * searchAvl(NodeAvl ** node, long long value){
     NodeAvl *a = *node;
     if (a == NULL){
         return NULL;

@@ -3,7 +3,7 @@
 
 typedef struct nodeSplay{
 
-    int value;
+    long long value;
     struct nodeSplay* left;
     struct nodeSplay* right;
     struct nodeSplay* parent;
@@ -98,7 +98,7 @@ void splay(NodeSplay* T){
     rootSplay=T;
 }
 
-void insertSplay(int val){
+void insertSplay(long long val){
     if(!rootSplay){
         rootSplay = malloc(sizeof(NodeSplay));
         rootSplay->left=NULL;
@@ -140,7 +140,7 @@ void insertSplay(int val){
     splay(p);
 }
 
-NodeSplay* searchSplay(int val){
+NodeSplay* searchSplay(long long val){
     if(!rootSplay) return NULL;
     NodeSplay* p = rootSplay;
     while(p){

@@ -23,9 +23,9 @@ double cpu_time_used;
 #define pbe 0.33 //probabilidad de busqueda exitosa
 #define pbi 0.17 //probabilidad de busqueda infructuosa
 
-long cant_in=(long)(n*pi); //cantidad de inserciones
-long cant_be=(long)(n*pbe); //cantidad de busquedas exitosas
-long cant_bi=(long)(n*pbi); //cantidad de bisquedas infructuosas
+long long cant_in=(long long)(n*pi); //cantidad de inserciones
+long long cant_be=(long long)(n*pbe); //cantidad de busquedas exitosas
+long long cant_bi=(long long)(n*pbi); //cantidad de bisquedas infructuosas
 
 int secuencia[n]; //arreglo de largo 100 que cant_nodosendra las operaciones
 
@@ -42,15 +42,15 @@ double p_ln(double x){ //p(x)=ln(x)
 }
 
 //busca un elemento en un arreglo, si lo encuentra retorna 1 sino entrega 0
-int search_in_array(long arreglo[], long busqueda, long ene) {
+int search_in_array(long long arreglo[], long long busqueda, long long ene) {
     for (int i = 0; i < ene; i++) {
         if (arreglo[i] == busqueda) return 1;
     }
     return 0;
 }
 
-long get_random_not_repeted(long arreglo[],long size,long max_numero){
-    long random;
+long long get_random_not_repeted(long long arreglo[],long long size,long long max_numero){
+    long long random;
     do{
         random = (rand() % max_numero);
     } while (search_in_array(arreglo,random,size));
@@ -58,7 +58,7 @@ long get_random_not_repeted(long arreglo[],long size,long max_numero){
 }
 
 //encuentra la posicion del entero mas cercano a busqueda
-long get_bigger(float arreglo[], float busqueda, long ene ){
+long long get_bigger(float arreglo[], float busqueda, long long ene ){
     for (int i = 0; i < ene; i++) {
         if (arreglo[i] >= busqueda) return i;
     }
@@ -95,34 +95,34 @@ void initSecuencia(){
 //experimento aleatorio
 double aleatorio(){
     Node *rootABB = NULL; //iniacializo mi arbol
-    //long nodos[n/2]; //arreglo donde se guardara los nodos insertados
-    //long params[n];
-    long *nodos = (long *)malloc(sizeof(long)*(n/2));
-    long *params = (long *)malloc(sizeof(long)*n);
-    long param;
-    long index = 0; //indice de operacion
-    long cant_nodos=0;
-    long max_numero = pow(2,32); //maximo numero posible
-    long random = 0; //numero obtenido al azar
+    //long long nodos[n/2]; //arreglo donde se guardara los nodos insertados
+    //long long params[n];
+    long long *nodos = (long long *)malloc(sizeof(long long)*(n/2));
+    long long *params = (long long *)malloc(sizeof(long long)*n);
+    long long param;
+    long long index = 0; //indice de operacion
+    long long cant_nodos=0;
+    long long max_numero = pow(2,32); //maximo numero posible
+    long long random = 0; //numero obtenido al azar
     int operacion; //operacion obtenida de la secuencia
 
-    for (long i=0; i<n; i++) {
+    for (long long i=0; i<n; i++) {
         operacion = secuencia[i];
         if (operacion==0){
-            long random = get_random_not_repeted(nodos,cant_nodos,max_numero);
+            long long random = get_random_not_repeted(nodos,cant_nodos,max_numero);
             nodos[cant_nodos]=random; 
             params[index]=random; 
             cant_nodos++;
             index++; 
         }
         else if (operacion==1){
-            long indice = (rand() % cant_nodos);
+            long long indice = (rand() % cant_nodos);
             random=nodos[indice];
             params[index]=random;
             index++;
         }
         else{
-            long random = get_random_not_repeted(nodos,cant_nodos,max_numero);
+            long long random = get_random_not_repeted(nodos,cant_nodos,max_numero);
             params[index]=random; 
             index++;
         }
@@ -130,7 +130,7 @@ double aleatorio(){
 
     start = clock(); //inicio el temporizador
 
-    for (long i=0; i < n; i++){ //recorro mi secuencia
+    for (long long i=0; i < n; i++){ //recorro mi secuencia
         operacion = secuencia[i]; //obtengo la operacion
         param = params[i];
         //printf("el paramentro es %d\n",param);
@@ -155,16 +155,16 @@ double aleatorio(){
 //experimento creciente
 double creciente(double factor){
     Node *rootABB = NULL; //iniacializo mi arbol
-    long nodos[n/2];//arreglo donde se guardara los nodos insertados
-    long  m = 0; //cantidad de nodos
-    long max_numero = pow(2,32);//maximo numero posible
-    long random = 0; //numero obtenido al azar
+    long long nodos[n/2];//arreglo donde se guardara los nodos insertados
+    long long  m = 0; //cantidad de nodos
+    long long max_numero = pow(2,32);//maximo numero posible
+    long long random = 0; //numero obtenido al azar
     int operacion; //operacion obtenida de la secuencia
     double k = 0; // el k
 
     start = clock(); //inicio el temporizador
 
-    for (long i=0; i < n; i++){ //recorro mi secuencia
+    for (long long i=0; i < n; i++){ //recorro mi secuencia
         operacion = secuencia[i]; //obtengo la operacion
 
         if (operacion==0){ //la operacion es una insercion
@@ -207,10 +207,10 @@ double creciente(double factor){
 double sesgada(double (*f)(double)){
     
     Node *rootABB = NULL;//iniacializo mi arbol
-    long nodos[n/2]; //arreglo donde se guardara los nodos insertados
-    long cant_nodos = 0;//cantidad de nodos
-    long max_numero = pow(2,32); //maximo numero posible
-    long random = 0; //numero obtenido al azar
+    long long nodos[n/2]; //arreglo donde se guardara los nodos insertados
+    long long cant_nodos = 0;//cantidad de nodos
+    long long max_numero = pow(2,32); //maximo numero posible
+    long long random = 0; //numero obtenido al azar
     int operacion; //operacion obtenida de la secuencia
     float prob[n/2]; //aca se guarda la prob acumulada en cada insercion
     float P = 0; // peso total de los p(x)
@@ -218,7 +218,7 @@ double sesgada(double (*f)(double)){
 
     start = clock(); //inicio el temporizador
 
-    for (long i=0; i < n; i++){ //recorro mi secuencia
+    for (long long i=0; i < n; i++){ //recorro mi secuencia
         operacion = secuencia[i]; //obtengo la operacion
 
         if (operacion==0){ //la operacion es una insercion
@@ -239,7 +239,7 @@ double sesgada(double (*f)(double)){
         
         else if (operacion==1){ //la operacion es una busqueda exitosa
 
-            float index = (rand() % (long)P);//obtengo un numero random entre 0 y P
+            float index = (rand() % (long long)P);//obtengo un numero random entre 0 y P
             int pos = get_bigger(prob,index,cant_nodos);//obtengo la posicion del siguiente numero mas grande de prob
             random=nodos[pos]; //obtengo el nodo en esa posicion
             Node * node = search(&rootABB,random);//busco el nodo en mi arbol

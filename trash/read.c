@@ -9,7 +9,7 @@ int main(void)
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
-    long int value;
+    long longint value;
 
     fp = fopen("Values/values_0.txt", "r");
     while ((read = getline(&line, &len, fp)) != -1) {

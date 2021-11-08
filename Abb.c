@@ -2,12 +2,12 @@
 #include<stdlib.h>
 
 typedef struct nodeAbb {
-    long value;
+    long long value;
     struct nodeAbb *left;
     struct nodeAbb *right;
 }NodeAbb;
 
-NodeAbb* newNodeAbb(long value){
+NodeAbb* newNodeAbb(long long value){
     NodeAbb *node = malloc(sizeof(NodeAbb));
     node->value = value;
     node->left = NULL;
@@ -16,7 +16,7 @@ NodeAbb* newNodeAbb(long value){
 }
  
 
-void insertABB(NodeAbb **node,long value){
+void insertABB(NodeAbb **node,long long value){
     NodeAbb *a = *node;
     if (a==NULL){
         *node=newNodeAbb(value);
@@ -36,7 +36,7 @@ void insertABB(NodeAbb **node,long value){
     }
 }
 
-NodeAbb * searchABB(NodeAbb ** node, long value){
+NodeAbb * searchABB(NodeAbb ** node, long long value){
     NodeAbb *a = *node;
     if (a == NULL){
         return NULL;

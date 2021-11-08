@@ -5,14 +5,14 @@
 #define MAXBt_256 256
 
 typedef struct nodoBt_256 {
-  long vals[MAXBt_256];          // Array of values
+  long long vals[MAXBt_256];          // Array of values
   int count;              // value counter
   struct nodoBt_256 *C[MAXBt_256+1];  // Array of node pointers
   struct nodoBt_256 *parent;    // We keep trace of the parent node
 }NodeBt_256;
 
 
-NodeBt_256 *newNodeBt_256(long val) {
+NodeBt_256 *newNodeBt_256(long long val) {
   NodeBt_256 *node;
   node = malloc(sizeof(NodeBt_256));
   node->vals[0] = val;
@@ -23,7 +23,7 @@ NodeBt_256 *newNodeBt_256(long val) {
 
 void splitNodeBt_256(NodeBt_256 **node, NodeBt_256** root){
   NodeBt_256* p = *node;
-  int median = p->vals[(int) floor(MAXBt_256/2)];
+  long long median = p->vals[(long long) floor(MAXBt_256/2)];
   // We create a new root. 
   NodeBt_256* right_son = newNodeBt_256(median);
 
@@ -107,7 +107,7 @@ void splitNodeBt_256(NodeBt_256 **node, NodeBt_256** root){
 }
 
 
-void insert_NodeBt_256(NodeBt_256 **node, long val, NodeBt_256 **root) {
+void insert_NodeBt_256(NodeBt_256 **node, long long val, NodeBt_256 **root) {
   NodeBt_256* p = *node;
   // If the root is NULL, we just create it
   if (p == NULL) {
@@ -157,14 +157,14 @@ void insert_NodeBt_256(NodeBt_256 **node, long val, NodeBt_256 **root) {
 }
 
 
-void insertBt_256(NodeBt_256 **node, int val){
+void insertBt_256(NodeBt_256 **node, long long val){
   // To avoid loosing trace of the main root, we just give it to the 
   // insert and split functions.
   insert_NodeBt_256(node, val, node);
 }
 
 
-NodeBt_256* searchBt_256(NodeBt_256 **node, int val) {
+NodeBt_256* searchBt_256(NodeBt_256 **node, long long val) {
   NodeBt_256 *a = *node;
   // If the node is empty, the value doest exist in the node
   if (a == NULL){

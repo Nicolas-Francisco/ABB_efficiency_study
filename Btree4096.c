@@ -5,14 +5,14 @@
 #define MAXBt_4096 4096
 
 typedef struct nodoBt_4096 {
-  long vals[MAXBt_4096];          // Array of values
+  long long vals[MAXBt_4096];          // Array of values
   int count;              // value counter
   struct nodoBt_4096 *C[MAXBt_4096+1];  // Array of node pointers
   struct nodoBt_4096 *parent;    // We keep trace of the parent node
 }NodeBt_4096;
 
 
-NodeBt_4096 *newNodeBt_4096(long val) {
+NodeBt_4096 *newNodeBt_4096(long long val) {
   NodeBt_4096 *node;
   node = malloc(sizeof(NodeBt_4096));
   node->vals[0] = val;
@@ -23,7 +23,7 @@ NodeBt_4096 *newNodeBt_4096(long val) {
 
 void splitNodeBt_4096(NodeBt_4096 **node, NodeBt_4096** root){
   NodeBt_4096* p = *node;
-  int median = p->vals[(int) floor(MAXBt_4096/2)];
+  long long median = p->vals[(long long) floor(MAXBt_4096/2)];
   // We create a new root. 
   NodeBt_4096* right_son = newNodeBt_4096(median);
 
@@ -107,7 +107,7 @@ void splitNodeBt_4096(NodeBt_4096 **node, NodeBt_4096** root){
 }
 
 
-void insert_NodeBt_4096(NodeBt_4096 **node, long val, NodeBt_4096 **root) {
+void insert_NodeBt_4096(NodeBt_4096 **node, long long val, NodeBt_4096 **root) {
   NodeBt_4096* p = *node;
   // If the root is NULL, we just create it
   if (p == NULL) {
@@ -157,14 +157,14 @@ void insert_NodeBt_4096(NodeBt_4096 **node, long val, NodeBt_4096 **root) {
 }
 
 
-void insertBt_4096(NodeBt_4096 **node, int val){
+void insertBt_4096(NodeBt_4096 **node, long long val){
   // To avoid loosing trace of the main root, we just give it to the 
   // insert and split functions.
   insert_NodeBt_4096(node, val, node);
 }
 
 
-NodeBt_4096* searchBt_4096(NodeBt_4096 **node, int val) {
+NodeBt_4096* searchBt_4096(NodeBt_4096 **node, long long val) {
   NodeBt_4096 *a = *node;
   // If the node is empty, the value doest exist in the node
   if (a == NULL){
