@@ -1,22 +1,24 @@
 ---
-title: "Tarea 1 - Resultados Experimentales"
 output:
   html_document:
     df_print: paged
 ---
 
-<center> <h1>Tarea 2: Frequentist Inference </h1> </center>
-<center><strong>CC6104: Statistical Thinking</strong></center>
+<center> <h1>Tarea 1: Resultados Experimentales </h1> </center>
+<center><strong>CC4102: Diseño y Análisis de Algoritmos</strong></center>
 #### **Integrantes :** 
 
 - Nicolás García Ríos
+- Javier Lavados Jilbert
+- Lung Pang Wang
 
 #### **Cuerpo Docente:**
 
-- Profesor: Felipe Bravo M.
-- Auxiliar: Sebastian Bustos e Ignacio Meza D.
+- Profesor: Gonzalo Navarro
+- Auxiliar: Antonia Labarca Sánchez
             
 
+#### Importación de librerías importante
 
 ```{r, eval=TRUE}
 # Manipulación de estructuras
@@ -29,9 +31,6 @@ library(tidyr)
 library(ggplot2)
 # library(plotly)
 
-# Manipulación de varios plots en una imagen.
-# library(gridExtra)
-# library(grid)
 ```
 
 
@@ -126,7 +125,200 @@ plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.
   geom_line(aes(colour=Estructura)) +
   xlab("Iteraciones") +  
   ylab("Tiempo") + 
-  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente 0.1") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.1") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+## Experimento Creciente 0.5
+```{r, eval=TRUE}
+creciente05.abb = read.table("Resultados/creciente0p5Abb.txt")
+creciente05.avl = read.table("Resultados/creciente0p5Avl.txt")
+creciente05.splay = read.table("Resultados/creciente0p5Splay.txt")
+creciente05.btree16 = read.table("Resultados/creciente0p5Btree16.txt")
+creciente05.btree256 = read.table("Resultados/creciente0p5Btree256.txt")
+creciente05.btree4096 = read.table("Resultados/creciente0p5Btree4096.txt")
+
+```
+
+```{r, eval=TRUE}
+Experimento_creciente0p5 <-  data.frame(Operacion = integer(),
+                                     V1 = double(),
+                                     Estructura = factor()) 
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente05.abb, Estructura = "ABB")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente05.avl, Estructura = "AVL")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente05.splay, Estructura = "Splay")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente05.btree16, Estructura = "BTree16")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente05.btree256, Estructura = "BTree256")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = creciente05.btree4096, Estructura = "BTree4096")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
+
+```
+
+
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p5, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Iteraciones") +  
+  ylab("Tiempo") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.5") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+## Experimento Sesgado f(x)=x
+```{r, eval=TRUE}
+sesgadox.abb = read.table("Resultados/sesgadoxAbb.txt")
+sesgadox.avl = read.table("Resultados/sesgadoxAvl.txt")
+sesgadox.splay = read.table("Resultados/sesgadoxSplay.txt")
+sesgadox.btree16 = read.table("Resultados/sesgadoxBtree16.txt")
+sesgadox.btree256 = read.table("Resultados/sesgadoxBtree256.txt")
+sesgadox.btree4096 = read.table("Resultados/sesgadoxBtree4096.txt")
+
+```
+
+```{r, eval=TRUE}
+Experimento_sesgadox <-  data.frame(Operacion = integer(),
+                                     V1 = double(),
+                                     Estructura = factor()) 
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.abb, Estructura = "ABB")
+Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.avl, Estructura = "AVL")
+Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.splay, Estructura = "Splay")
+Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.btree16, Estructura = "BTree16")
+Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.btree256, Estructura = "BTree256")
+Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.btree4096, Estructura = "BTree4096")
+Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
+
+```
+
+
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Iteraciones") +  
+  ylab("Tiempo") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x) = x") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+
+## Experimento Sesgado f(x)=sqrt(x)
+```{r, eval=TRUE}
+sesgadosqrt.abb = read.table("Resultados/sesgadosqrtAbb.txt")
+sesgadosqrt.avl = read.table("Resultados/sesgadosqrtAvl.txt")
+sesgadosqrt.splay = read.table("Resultados/sesgadosqrtSplay.txt")
+sesgadosqrt.btree16 = read.table("Resultados/sesgadosqrtBtree16.txt")
+sesgadosqrt.btree256 = read.table("Resultados/sesgadosqrtBtree256.txt")
+sesgadosqrt.btree4096 = read.table("Resultados/sesgadosqrtBtree4096.txt")
+
+```
+
+```{r, eval=TRUE}
+Experimento_sesgadosqrt <-  data.frame(Operacion = integer(),
+                                     V1 = double(),
+                                     Estructura = factor()) 
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.abb, Estructura = "ABB")
+Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.avl, Estructura = "AVL")
+Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.splay, Estructura = "Splay")
+Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree16, Estructura = "BTree16")
+Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree256, Estructura = "BTree256")
+Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree4096, Estructura = "BTree4096")
+Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
+
+```
+
+
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Iteraciones") +  
+  ylab("Tiempo") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x)=sqrt(x)") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+## Experimento Sesgado f(x)=ln(x)
+```{r, eval=TRUE}
+sesgadoln.abb = read.table("Resultados/sesgadolnAbb.txt")
+sesgadoln.avl = read.table("Resultados/sesgadolnAvl.txt")
+sesgadoln.splay = read.table("Resultados/sesgadolnSplay.txt")
+sesgadoln.btree16 = read.table("Resultados/sesgadolnBtree16.txt")
+sesgadoln.btree256 = read.table("Resultados/sesgadolnBtree256.txt")
+sesgadoln.btree4096 = read.table("Resultados/sesgadolnBtree4096.txt")
+
+```
+
+```{r, eval=TRUE}
+Experimento_sesgadoln <-  data.frame(Operacion = integer(),
+                                     V1 = double(),
+                                     Estructura = factor()) 
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.abb, Estructura = "ABB")
+Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.avl, Estructura = "AVL")
+Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.splay, Estructura = "Splay")
+Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.btree16, Estructura = "BTree16")
+Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.btree256, Estructura = "BTree256")
+Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
+
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.btree4096, Estructura = "BTree4096")
+Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
+
+```
+
+
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadoln, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Iteraciones") +  
+  ylab("Tiempo") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x)=ln(x)") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
