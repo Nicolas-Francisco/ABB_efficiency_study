@@ -136,7 +136,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
     float P_sqrt = 0; //prob total del p(x)
 
     float P_ln = 0; //prob total del p(x)
-    long long pesoAleatorio;
+    float pesoAleatorio;
     float peso; //peso individual
     long long pos;
 
@@ -175,7 +175,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             peso = f_x(random);
             P_x=P_x+peso;
             probSesgado_x[cant_nodos]=P_x;
-/*
+
             nodosSesgado_sqrt[cant_nodos]=random;
             paramsSesgado_sqrt[index]=random;
             peso = f_sqrt(random);
@@ -187,18 +187,18 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             peso = f_ln(random);
             P_ln=P_ln+peso;
             probSesgado_ln[cant_nodos]=P_ln;
-            */
+        
             cant_nodos++;
             k_0p1 = cant_nodos*0.1;
             k_0p5 = cant_nodos*0.5;
             index++; 
-            //printf("[%lld,%lld]\n",index,n);
 
-            
+
+   
 
         }
         else if (operacion==1){
-            //printf("buscare e");
+          
             long long indice = (rand() % cant_nodos);
             //long long indice = atol(line);
             //indice = indice*(cant_nodos/max_numero);
@@ -217,63 +217,45 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
             paramsCreciente_0p5[index]=random;
 
 
-            pesoAleatorio = ((long long)P_x/cant_nodos)*indice;
-            //printf("pesoAleatorio %lld\n",pesoAleatorio);
+            pesoAleatorio = (P_x/cant_nodos)*indice;
             pos = get_bigger(probSesgado_x,pesoAleatorio,cant_nodos);
-            //printf("indice en nodos es %lld\n",pos);
             random=nodosSesgado_x[pos];
             paramsSesgado_x[index]=random;
+            
 
-/*
-            pesoAleatorio = ((long long)P_sqrt/cant_nodos)*indice;
-            //printf("pesoAleatorio %lld\n",pesoAleatorio);
+            pesoAleatorio = (P_sqrt/cant_nodos)*indice;
             pos = get_bigger(probSesgado_sqrt,pesoAleatorio,cant_nodos);
-            //printf("indice en nodos es %lld\n",pos);
             random=nodosSesgado_sqrt[pos];
             paramsSesgado_sqrt[index]=random;
 
-
-            pesoAleatorio = ((long long)P_ln/cant_nodos)*indice;
-            //printf("pesoAleatorio %lld\n",pesoAleatorio);
+            pesoAleatorio = (P_ln/cant_nodos)*indice;
             pos = get_bigger(probSesgado_ln,pesoAleatorio,cant_nodos);
-            //printf("indice en nodos es %lld\n",pos);
             random=nodosSesgado_ln[pos];
-            paramsSesgado_lns[index]=random;
-*/
+            paramsSesgado_ln[index]=random;
+
             index++;
-            //printf("[%lld,%lld]\n",index,n);
-            
             
         }
         else{
-            //printf("buscare m");
-            //random = get_random_not_repeted(nodosAleatorios,cant_nodos,max_numero);
-
-            
-            //random = atol(line);
             paramsAleatorios[index]=random;
            
-            
             paramsCreciente_0p1[index]=random;
-
 
             paramsCreciente_0p5[index]=random;
 
             paramsSesgado_x[index]=random;
- /*
+
             paramsSesgado_sqrt[index]=random;
 
             paramsSesgado_ln[index]=random;
-            */
+     
 
             index++;
-            //printf("[%lld,%lld]\n",index,n);
-            
         }
 
-        //if (index%10000 == 0){
-          //  printf("[%lld,%lld]\n",index,n);
-        //}
+        if (index%10000 == 0){
+            printf("[%lld,%lld]\n",index,n);
+        }
     }
     fclose(fp);
     buffer[0]=paramsAleatorios;
@@ -449,7 +431,7 @@ int main(){
     long long *params[6];
     generate_params(params,&p_x,&p_sqrt,&p_ln);
     double times[6];
-/*
+
     printf("----------------------------------------------------\n");
     ejecucion(times,params[0]); // se ejecuta el aleatorio
     printf("El tiempo aleatorio de ABB es %f \n",times[0]);
@@ -469,7 +451,7 @@ int main(){
     printf("El tiempo creciente 0.1 de BTREE 256 es %f \n",times[4]);
     printf("El tiempo creciente 0.1 de BTREE 4096 es %f \n",times[5]);
 
-
+    
     printf("----------------------------------------------------\n");
     ejecucion(times,params[2]); // se ejecura el creciente de 0.5;
     printf("El tiempo creciente 0.5 de ABB es %f \n",times[0]);
@@ -479,8 +461,9 @@ int main(){
     printf("El tiempo creciente 0.5 de BTREE 256 es %f \n",times[4]);
     printf("El tiempo creciente 0.5 de BTREE 4096 es %f \n",times[5]);
     printf("----------------------------------------------------\n");
-    */
+
     
+   
     ejecucion(times,params[3]); // se ejecura el csesgado p(x);
 
     
@@ -490,8 +473,9 @@ int main(){
     printf("El tiempo sesgado p(x) de BTREE 16 es %f \n",times[3]);
     printf("El tiempo sesgado p(x) de BTREE 256 es %f \n",times[4]);
     printf("El tiempo sesgado p(x) de BTREE 4096 es %f \n",times[5]);
+
+    */
     printf("----------------------------------------------------\n");
-    /*
     ejecucion(times,params[4]); // se ejecura el sesgado sqrt(x);
     printf("El tiempo sesgado sqrt(x) de ABB es %f \n",times[0]);
     printf("El tiempo sesgado sqrt(x) de AVL es %f \n",times[1]);
@@ -500,6 +484,8 @@ int main(){
     printf("El tiempo sesgado sqrt(x) de BTREE 256 es %f \n",times[4]);
     printf("El tiempo sesgado sqrt(x) de BTREE 4096 es %f \n",times[5]);
     printf("----------------------------------------------------\n");
+ 
+    
     ejecucion(times,params[5]); // se ejecura el sesgado ln(x);
     printf("El tiempo sesgado ln(x) de ABB es %f \n",times[0]);
     printf("El tiempo sesgado ln(x) de AVL es %f \n",times[1]);
@@ -509,8 +495,6 @@ int main(){
     printf("El tiempo sesgado ln(x) de BTREE 4096 es %f \n",times[5]);
     
 
-*/
-    
 
     /*
 
