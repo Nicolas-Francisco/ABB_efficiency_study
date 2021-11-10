@@ -10,13 +10,13 @@ Implementation and comparison of ABBs variants, Design and Analysis of Algorithm
 
 ## About the code
 - `test.c` runs the 6 diferent experiment for 6 BSTs 
-`values_rng.py` creates 10 `.txt` files with 1 million random numbers between 0 to 2^32
-`Abb.c` BST Implementation
-`Avl.c` AVL  Implementation
-`Splay.c` Splay Tree Implementation
-`Btree16.c` BTree Implementation with blocks of 16
-`Btree256.c`  BTree Implementation with blocks of 256
-`Btree4096.c`  BTree Implementation with blocks of 4096
+- `values_rng.py` creates 10 `.txt` files with 1 million random numbers between 0 to 2^32
+- `Abb.c` BST Implementation
+- `Avl.c` AVL  Implementation
+- `Splay.c` Splay Tree Implementation
+- `Btree16.c` BTree Implementation with blocks of 16
+- `Btree256.c`  BTree Implementation with blocks of 256
+- `Btree4096.c`  BTree Implementation with blocks of 4096
 
 ## HOW TO RUN
 
