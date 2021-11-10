@@ -33,23 +33,6 @@ long long cant_bi=(long long)(n*pbi); //cantidad de bisquedas infructuosas
 
 int secuencia[n]; //areglo que almacenara la secuencia
 
-//busca un elemento en un arreglo, si lo encuentra retorna 1 sino entrega 0
-int search_in_array(long long arreglo[], long long busqueda, long long ene) {
-    for (int i = 0; i < ene; i++) {
-        if (arreglo[i] == busqueda) return 1;
-    }
-    return 0;
-}
-
-//genera un random no repetido en una lista
-long long get_random_not_repeted(long long arreglo[],long long size,long long max_numero){
-    long long random;
-    do{
-        random = (rand() % max_numero);
-    } while (search_in_array(arreglo,random,size));
-    return random;
-}
-
 //genera la secuencia desordena de intrucciones
 void initSecuencia(){
     int secuencia_ordenado[n]; // [0,0,0,0,0,1,1,1,2,2]
@@ -97,48 +80,50 @@ long long get_bigger(float arreglo[], float busqueda, long long ene ){
     return -1;
 }
 
+//funcion que genera los paramentros requeridos en cada uno de los experimentos
+//apartir de un archivo txt previamente precomputado
 void generate_params(long long ** buffer,char * archivo,double (*f_x)(double),
 double (*f_sqrt)(double),double (*f_ln)(double)){
-    long long *nodosAleatorios= (long long *)malloc(sizeof(long long)*(n/2));
-    long long *paramsAleatorios = (long long *)malloc(sizeof(long long)*n);
+    long long *nodosAleatorios= (long long *)malloc(sizeof(long long)*(n/2)); // arreglo de nodos para el experimento aleatorio
+    long long *paramsAleatorios = (long long *)malloc(sizeof(long long)*n); //arreglo para los paramentros del experimento aleatorio
 
-    long long *nodosCreciente_0p1= (long long *)malloc(sizeof(long long)*(n/2));
-    long long *paramsCreciente_0p1 = (long long *)malloc(sizeof(long long)*n);
+    long long *nodosCreciente_0p1= (long long *)malloc(sizeof(long long)*(n/2));// arreglo de nodos para el experimento creciente con k=0.1m
+    long long *paramsCreciente_0p1 = (long long *)malloc(sizeof(long long)*n);//arreglo para los paramentros del experimento creciente con k=0.1m
 
-    long long *nodosCreciente_0p5= (long long *)malloc(sizeof(long long)*(n/2));
-    long long *paramsCreciente_0p5 = (long long *)malloc(sizeof(long long)*n);
+    long long *nodosCreciente_0p5= (long long *)malloc(sizeof(long long)*(n/2));// arreglo de nodos para el experimento creciente con k=0.5m
+    long long *paramsCreciente_0p5 = (long long *)malloc(sizeof(long long)*n);//arreglo para los paramentros del experimento creciente con k=0.5m
 
-    long long *nodosSesgado_x= (long long *)malloc(sizeof(long long)*(n/2));
-    long long *paramsSesgado_x = (long long *)malloc(sizeof(long long)*n);
-    float *probSesgado_x = (float *)malloc(sizeof(float)*(n/2));
+    long long *nodosSesgado_x= (long long *)malloc(sizeof(long long)*(n/2));// arreglo de nodos para el experimento sesgado con p(x)=x
+    long long *paramsSesgado_x = (long long *)malloc(sizeof(long long)*n);//arreglo para los paramentros del experimento sesgado con p(x)=x
+    float *probSesgado_x = (float *)malloc(sizeof(float)*(n/2));//arreglo de las probabilidades para el experimento sesgado con p(x)=x
 
-    long long *nodosSesgado_sqrt= (long long *)malloc(sizeof(long long)*(n/2));
-    long long *paramsSesgado_sqrt = (long long *)malloc(sizeof(long long)*n);
-    float *probSesgado_sqrt = (float *)malloc(sizeof(float)*(n/2));
+    long long *nodosSesgado_sqrt= (long long *)malloc(sizeof(long long)*(n/2));// arreglo de nodos para el experimento sesgado con p(x)=sqrt(x)
+    long long *paramsSesgado_sqrt = (long long *)malloc(sizeof(long long)*n);//arreglo para los paramentros del experimento sesgado con p(x)=sqrt(x)
+    float *probSesgado_sqrt = (float *)malloc(sizeof(float)*(n/2));//arreglo de las probabilidades para el experimento sesgado con p(x)=sqrt(x)
 
-    long long *nodosSesgado_ln= (long long *)malloc(sizeof(long long)*(n/2));
-    long long *paramsSesgado_ln = (long long *)malloc(sizeof(long long)*n);
-    float *probSesgado_ln = (float *)malloc(sizeof(float)*(n/2));
+    long long *nodosSesgado_ln= (long long *)malloc(sizeof(long long)*(n/2));// arreglo de nodos para el experimento aleatorio con p(x)=ln(x)
+    long long *paramsSesgado_ln = (long long *)malloc(sizeof(long long)*n);//arreglo para los paramentros del experimento sesgado con p(x)=ln(x)
+    float *probSesgado_ln = (float *)malloc(sizeof(float)*(n/2));//arreglo de las probabilidades para el experimento sesgado con p(x)=ln(x)
 
     long long index = 0; //indice de operacion
-    long long cant_nodos=0;
+    long long cant_nodos=0; //cantidad de nodos
     long long max_numero = pow(2,32); //maximo numero posible
     long long random = 0; //numero obtenido al azar
-    long long random_0yk = 0;
+    long long random_0yk = 0; //random entre 0 y k
     int operacion; //operacion obtenida de la secuencia
 
-    double k_0p1 =0; 
-    double k_0p5= 0;
+    double k_0p1 =0; // k para experimento creciente con k = 0.1m
+    double k_0p5= 0; // k para experimento creciente con k = 0.5m
     double factor_k;
 
     float P_x = 0; //prob total del p(x)
-    
-
     float P_sqrt = 0; //prob total del p(x)
-
     float P_ln = 0; //prob total del p(x)
+
     float pesoAleatorio;
+
     float peso; //peso individual
+
     long long pos;
 
     FILE * fp;
@@ -147,120 +132,153 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
     ssize_t read;
 
 
-    printf("Loaging parametros\n");
+    printf("Loading parametros\n");
     
-    fp = fopen(archivo,"r");
+    fp = fopen(archivo,"r");//abro el archivo que con los numeros rando precalculados
 
-    while (((read = getline(&line, &len, fp)) != -1) && (index<n)){
-        random = atol(line);
+    while (((read = getline(&line, &len, fp)) != -1) && (index<n)){ //mientras aun haya un numero random en el archivo
+        random = atol(line); //obtengo el numer0
         operacion = secuencia[index];
-        if (operacion==0){
-
+        if (operacion==0){ // si es una insercion
+            
+            //en el caso del el experimento aleatorio, simplemente guardo el nodo en la lista
+            //y ademas guardo el mismo numero como paramentro
             nodosAleatorios[cant_nodos]=random; 
             paramsAleatorios[index]=random;
            
+            //en el caso del experimento creciente con k=0.1m, necesito transformar el random a un numero entre 0 y k
+            //para luego sumarle la cantidad de nodos actual y guardar este valor en la lista de nodos y paramentros
             factor_k =k_0p1/max_numero;
             random_0yk =(long long) random*factor_k;
             nodosCreciente_0p1[cant_nodos]=random_0yk+cant_nodos; 
             paramsCreciente_0p1[index]=random_0yk+cant_nodos;
 
-            
+            //en el caso del experimento creciente con k=0.5m, necesito transformar el random a un numero entre 0 y k
+            //para luego sumarle la cantidad de nodos actual y guardar este valor en la lista de nodos y paramentros
             factor_k =k_0p5/max_numero;
             random_0yk = (long long)(random*factor_k);
             nodosCreciente_0p5[cant_nodos]=random_0yk+cant_nodos; 
             paramsCreciente_0p5[index]=random_0yk+cant_nodos;
    
-
+            //en este caso, guardo el numero random en la lista de nodos y en la lista de paramentros pero ademas
+            //obtengo el peso del random para luego calcular el peso acumulado hasta el momento para finalmente guardar este
+            //valor en la lista de probs del esperimento
             nodosSesgado_x[cant_nodos]=random;
             paramsSesgado_x[index]=random;
             peso = f_x(random);
             P_x=P_x+peso;
             probSesgado_x[cant_nodos]=P_x;
 
+            //en este caso, guardo el numero random en la lista de nodos y en la lista de paramentros pero ademas
+            //obtengo el peso del random para luego calcular el peso acumulado hasta el momento para finalmente guardar este
+            //valor en la lista de probs del esperimento
             nodosSesgado_sqrt[cant_nodos]=random;
             paramsSesgado_sqrt[index]=random;
             peso = f_sqrt(random);
             P_sqrt=P_sqrt+peso;
             probSesgado_sqrt[cant_nodos]=P_sqrt;
 
+            //en este caso, guardo el numero random en la lista de nodos y en la lista de paramentros pero ademas
+            //obtengo el peso del random para luego calcular el peso acumulado hasta el momento para finalmente guardar este
+            //valor en la lista de probs del esperimento
             nodosSesgado_ln[cant_nodos]=random;
             paramsSesgado_ln[index]=random;
             peso = f_ln(random);
             P_ln=P_ln+peso;
             probSesgado_ln[cant_nodos]=P_ln;
-        
+
+            //finalmente actualizo el numero de nodos, los dos k y el index
             cant_nodos++;
             k_0p1 = cant_nodos*0.1;
             k_0p5 = cant_nodos*0.5;
             index++; 
-
-
-   
-
         }
-        else if (operacion==1){
-          
+
+        else if (operacion==1){//si es una busqueda exitosa
+
+            //calculo en este caso un numero random entre 0 y la cantidad de nodos para decidir que numero buscar
             long long indice = (rand() % cant_nodos);
 
+            //con el indice obtengo el nodo que buscaremos exitosamente y lo agrego a los paramentros
             random=nodosAleatorios[indice];
             paramsAleatorios[index]=random;
 
-            
+            //con el indice obtengo el nodo que buscaremos exitosamente y lo agrego a los paramentros
             random=nodosCreciente_0p1[indice];
             paramsCreciente_0p1[index]=random;
 
-
+            //con el indice obtengo el nodo que buscaremos exitosamente y lo agrego a los paramentros
             random=nodosCreciente_0p5[indice];
             paramsCreciente_0p5[index]=random;
 
-
+            //transformamos este random a un numero entre 0 y P 
+            //con este numero ahora buscamos la posicion del numero del siguiente mayor a este
+            //y finalmente con esta posicion obtenemos un nodo de la lista de nodos y lo agregamos
+            //a la lista de prametros del experimento
             pesoAleatorio = (P_x/cant_nodos)*indice;
             pos = get_bigger(probSesgado_x,pesoAleatorio,cant_nodos);
             random=nodosSesgado_x[pos];
             paramsSesgado_x[index]=random;
             
-
+            //transformamos este random a un numero entre 0 y P 
+            //con este numero ahora buscamos la posicion del numero del siguiente mayor a este
+            //y finalmente con esta posicion obtenemos un nodo de la lista de nodos y lo agregamos
+            //a la lista de prametros del experimento
             pesoAleatorio = (P_sqrt/cant_nodos)*indice;
             pos = get_bigger(probSesgado_sqrt,pesoAleatorio,cant_nodos);
             random=nodosSesgado_sqrt[pos];
             paramsSesgado_sqrt[index]=random;
 
+            //transformamos este random a un numero entre 0 y P 
+            //con este numero ahora buscamos la posicion del numero del siguiente mayor a este
+            //y finalmente con esta posicion obtenemos un nodo de la lista de nodos y lo agregamos
+            //a la lista de prametros del experimento
             pesoAleatorio = (P_ln/cant_nodos)*indice;
             pos = get_bigger(probSesgado_ln,pesoAleatorio,cant_nodos);
             random=nodosSesgado_ln[pos];
             paramsSesgado_ln[index]=random;
 
+            //aumento el index
             index++;
             
         }
-        else{
+        else{//si es una busqueda infructuosa
+
+            //simplemente agregamos el random precalculado en la lista de paramentros
             paramsAleatorios[index]=random;
            
+            //simplemente agregamos el random precalculado en la lista de paramentros
             paramsCreciente_0p1[index]=random;
 
+            //simplemente agregamos el random precalculado en la lista de paramentros
             paramsCreciente_0p5[index]=random;
 
+            //simplemente agregamos el random precalculado en la lista de paramentros
             paramsSesgado_x[index]=random;
 
+            //simplemente agregamos el random precalculado en la lista de paramentros
             paramsSesgado_sqrt[index]=random;
 
+            //simplemente agregamos el random precalculado en la lista de paramentros
             paramsSesgado_ln[index]=random;
      
-
+            //aumento el index
             index++;
         }
-
-        //if (index%10000 == 0){
-         //   printf("[%lld,%lld]\n",index,n);
-        //}
     }
+
+    //cierro el archivo
     fclose(fp);
+    
+    //agrego los paramentros al buffer para luego usarlos en los respectivos experimentos
     buffer[0]=paramsAleatorios;
     buffer[1]=paramsCreciente_0p1;
     buffer[2]=paramsCreciente_0p5;
     buffer[3]=paramsSesgado_x;
     buffer[4]=paramsSesgado_sqrt;
     buffer[5]=paramsSesgado_ln;
+
+    //libero los arreglos malloc que ya no se usaran
     free(nodosAleatorios);
     free(nodosCreciente_0p1);
     free(nodosCreciente_0p5);
@@ -274,7 +292,7 @@ double (*f_sqrt)(double),double (*f_ln)(double)){
 }
 
 
-// ejecuta las operaciones en los arboles
+//ejecuta una secuencia de operaciones
 void ejecucion(double * times[],long long params[]){
     NodeAbb *rootABB = NULL; // inicializo arbol ABB
     NodeAvl *rootAVL = NULL; // inicializo arbol AVL
@@ -286,22 +304,24 @@ void ejecucion(double * times[],long long params[]){
     long long param; //parametro a usar en la operacion
     int operacion; //operacion de la secuencia
 
-    double * timesAbb = (double *)malloc(sizeof(double)*(n/interval));
-    double * timesAvl = (double *)malloc(sizeof(double)*(n/interval));
-    double * timesSplay = (double *)malloc(sizeof(double)*(n/interval));
-    double * timesBtree16 = (double *)malloc(sizeof(double)*(n/interval));
-    double * timesBtree256 = (double *)malloc(sizeof(double)*(n/interval));
-    double * timesBtree4096 = (double *)malloc(sizeof(double)*(n/interval));
+    double * timesAbb = (double *)malloc(sizeof(double)*(n/interval)); //arreglo para guardar los distintos tiempos del arbol ABB
+    double * timesAvl = (double *)malloc(sizeof(double)*(n/interval)); //arreglo para guardar los distintos tiempos del arbol AVL
+    double * timesSplay = (double *)malloc(sizeof(double)*(n/interval)); //arreglo para guardar los distintos tiempos del arbol SPLAY
+    double * timesBtree16 = (double *)malloc(sizeof(double)*(n/interval)); //arreglo para guardar los distintos tiempos del arbol BTREE 16
+    double * timesBtree256 = (double *)malloc(sizeof(double)*(n/interval)); //arreglo para guardar los distintos tiempos del arbol BTREE 256
+    double * timesBtree4096 = (double *)malloc(sizeof(double)*(n/interval)); //arreglo para guardar los distintos tiempos del arbol BTREE 4096
     
     int index = 0;
     //----------- Arbol Abb ------------
-    printf("ABB\n");
+    printf("Ejecutando el ABB\n");
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
 
         if ((i%interval==0)&&(i!=0)){
-            end = clock();
+            //aca paro el timer para obtener el tiempo de ejecucion hasta el momento y lo guardo en su lista correspondiente
+            //para luego volver a activarlo para que pueda calcular el siguiente intervalo
+            end = clock(); 
             cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
             timesAbb[index]=cpu_time_used;
             index++;
@@ -323,20 +343,25 @@ void ejecucion(double * times[],long long params[]){
             //printf("busque fallidamente el %lld\n",param);
         }
     }
+    //obtengo el ultimo tiempo del arbol y lo guardo para finalmente guardar en el arreglo Times este arreglo
+    //para su posterior uso
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     timesAbb[index]=cpu_time_used;
     times[0]=timesAbb;
 
+    //seteo el index en 0
     index=0;
 
 
     //----------- Arbol Avl ------------
-    printf("AVL\n");
+    printf("Ejecutando AVL\n");
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
         if ((i%interval==0)&&(i!=0)){
+            //aca paro el timer para obtener el tiempo de ejecucion hasta el momento y lo guardo en su lista correspondiente
+            //para luego volver a activarlo para que pueda calcular el siguiente intervalo
             end = clock();
             cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
             timesAvl[index]=cpu_time_used;
@@ -358,20 +383,25 @@ void ejecucion(double * times[],long long params[]){
             //printf("busque fallidamente el %lld\n",param);
         }
     }
+    //obtengo el ultimo tiempo del arbol y lo guardo para finalmente guardar en el arreglo Times este arreglo
+    //para su posterior uso
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     timesAvl[index]=cpu_time_used;
     times[1]=timesAvl;
 
+    //seteo el index en 0
     index=0;
 
 
    //----------- Arbol Splay ------------
 
-    printf("Splay\n");
+    printf("Ejecutando Splay\n");
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
         if ((i%interval==0)&&(i!=0)){
+            //aca paro el timer para obtener el tiempo de ejecucion hasta el momento y lo guardo en su lista correspondiente
+            //para luego volver a activarlo para que pueda calcular el siguiente intervalo
             end = clock();
             cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
             timesSplay[index]=cpu_time_used;
@@ -392,18 +422,23 @@ void ejecucion(double * times[],long long params[]){
             //printf("busque fallidamente el %lld\n",param);
         }
     }
+    //obtengo el ultimo tiempo del arbol y lo guardo para finalmente guardar en el arreglo Times este arreglo
+    //para su posterior uso
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     timesSplay[index]=cpu_time_used;
     times[2]=timesSplay;
+    //seteo el index en 0
     index=0;
 
     //----------- Arbol Btree 16 ------------
 
-    printf("Btree 16\n");
+    printf("Ejecutando Btree 16\n");
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
         if ((i%interval==0)&&(i!=0)){
+            //aca paro el timer para obtener el tiempo de ejecucion hasta el momento y lo guardo en su lista correspondiente
+            //para luego volver a activarlo para que pueda calcular el siguiente intervalo
             end = clock();
             cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
             timesBtree16[index]=cpu_time_used;
@@ -425,18 +460,25 @@ void ejecucion(double * times[],long long params[]){
             //printf("busque fallidamente el %lld\n",param);
         }
     }
+    
+    //obtengo el ultimo tiempo del arbol y lo guardo para finalmente guardar en el arreglo Times este arreglo
+    //para su posterior uso
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
     timesBtree16[index]=cpu_time_used;
     times[3]=timesBtree16;
+    //seteo el index en 0
     index=0;
 
     //----------- Arbol Btree 256 ------------
-    printf("Btree 256\n");
+    printf("Ejecutando Btree 256\n");
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){ 
          if ((i%interval==0)&&(i!=0)){
+            //aca paro el timer para obtener el tiempo de ejecucion hasta el momento y lo guardo en su lista correspondiente
+            //para luego volver a activarlo para que pueda calcular el siguiente intervalo
+
             end = clock();
             cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
             timesBtree256[index]=cpu_time_used;
@@ -458,19 +500,24 @@ void ejecucion(double * times[],long long params[]){
             //printf("busque fallidamente el %lld\n",param);
         }
     }
+    //obtengo el ultimo tiempo del arbol y lo guardo para finalmente guardar en el arreglo Times este arreglo
+    //para su posterior uso
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
     timesBtree256[index]=cpu_time_used;
     times[4]=timesBtree256;
+    //seteo el index en 0
     index=0;
 
     //----------- Arbol Btree 4096 ------------
-    printf("Btree 4096\n");
+    printf("Ejecutando Btree 4096\n");
     
 
     start = clock(); //inicio el temporizador
     for (long long i=0; i < n; i++){
          if ((i%interval==0)&&(i!=0)){
+            //aca paro el timer para obtener el tiempo de ejecucion hasta el momento y lo guardo en su lista correspondiente
+            //para luego volver a activarlo para que pueda calcular el siguiente intervalo
             end = clock();
             cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
             timesBtree4096[index]=cpu_time_used;
@@ -492,6 +539,8 @@ void ejecucion(double * times[],long long params[]){
             //printf("busque fallidamente el %lld\n",param);
         }
     }
+    //obtengo el ultimo tiempo del arbol y lo guardo para finalmente guardar en el arreglo Times este arreglo
+    //para su posterior uso
     end = clock(); //termino temporizador
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC; 
     timesBtree4096[index]=cpu_time_used;
@@ -502,6 +551,8 @@ int main(){
 
     srand(time(NULL));
     char * mode = "w";
+
+    //creo los 36 archivos necesarios para cada uno de los experimentos
     
     FILE *aleatorioAbb = fopen("Resultados/aleatorioAbb.txt", mode); 
     FILE *aleatorioAvl = fopen("Resultados/aleatorioAvl.txt", mode); 
@@ -545,10 +596,12 @@ int main(){
     FILE *sesgadolnBtree256 = fopen("Resultados/sesgadolnBtree256.txt", mode); 
     FILE *sesgadolnBtree4096 = fopen("Resultados/sesgadolnBtree4096.txt", mode);
 
+    //arreglo con los archivos precomputados
     char *arreglo_archivos[10] = {"Values/values_0.txt", 
         "Values/values_1.txt", "Values/values_2.txt", "Values/values_3.txt", 
         "Values/values_4.txt", "Values/values_5.txt", "Values/values_6.txt", 
         "Values/values_7.txt", "Values/values_8.txt", "Values/values_9.txt"};
+
 
     long long * params[6];
     double * times[6];
@@ -562,11 +615,14 @@ int main(){
 
     printf("-------------------iteracion unica-------------------------\n");
 
+    //calculo la secuencia
     initSecuencia();
+    //precalculo los paramentros
     generate_params(params,arreglo_archivos[0],&p_x,&p_sqrt,&p_ln);
         
 
     printf("--------------------Aleatorio-----------------------\n");
+    //ejecuto el experimento aleatorio para posteriormente guardar los tiempos obtenidos por cada arbol en su archivo respectivo
     ejecucion(times,params[0]); 
 
     timesAbb = times[0];
@@ -605,13 +661,15 @@ int main(){
         fprintf(aleatorioBtree4096,"%s","\n");
     }
 
+    //libero los arreglos generados
     for(int i=0;i<6;i++){
         free(times[i]);
     }
 
     printf("Se guardaron los datos del aleatorio\n");
     printf("------------------Creciente 0.1-------------------------\n");
-    ejecucion(times,params[1]); // se ejecura el creciente de 0.1;
+    //ejecuto el experimento creciente de 0.1 para posteriormente guardar los tiempos obtenidos por cada arbol en su archivo respectivo
+    ejecucion(times,params[1]);
 
     timesAbb = times[0];
     for(int i=0;i<cantIntervalos;i++){
@@ -648,7 +706,7 @@ int main(){
         fprintf(creciente0p1Btree4096,"%f",timesBtree4096[i]);
         fprintf(creciente0p1Btree4096,"%s","\n");
     }
-
+    //libero los arreglos generados
     for(int i=0;i<6;i++){
         free(times[i]);
     }
@@ -656,7 +714,8 @@ int main(){
     printf("Se guardaron los datos del crecientes 0.1\n");
 
     printf("----------------Creciente 0.5------------------------\n");
-    ejecucion(times,params[2]); // se ejecura el creciente de 0.5;
+    //ejecuto el experimento creciente de 0.5 para posteriormente guardar los tiempos obtenidos por cada arbol en su archivo respectivo
+    ejecucion(times,params[2]);
 
     timesAbb = times[0];
     for(int i=0;i<cantIntervalos;i++){
@@ -693,14 +752,15 @@ int main(){
         fprintf(creciente0p5Btree4096,"%f",timesBtree4096[i]);
         fprintf(creciente0p5Btree4096,"%s","\n");
     }
-
+    //libero los arreglos generados
     for(int i=0;i<6;i++){
         free(times[i]);
     }
 
     printf("Se guardaron los datos del crecientes 0.5\n");
     printf("--------------sesgado x-------------------------\n");
-    ejecucion(times,params[3]); // se ejecura el csesgado p(x);
+    //ejecuto el experimento sesgado p(x)=x para posteriormente guardar los tiempos obtenidos por cada arbol en su archivo respectivo
+    ejecucion(times,params[3]); 
 
     timesAbb = times[0];
     for(int i=0;i<cantIntervalos;i++){
@@ -737,7 +797,7 @@ int main(){
         fprintf(sesgadoxBtree4096,"%f",timesBtree4096[i]);
         fprintf(sesgadoxBtree4096,"%s","\n");
     }
-
+    //libero los arreglos generados
     for(int i=0;i<6;i++){
         free(times[i]);
     }
@@ -745,7 +805,8 @@ int main(){
     printf("Se guardaron los sesgados x\n");
 
     printf("----------------sesgado sqrt---------------------------\n");
-    ejecucion(times,params[4]); // se ejecura el sesgado sqrt(x);
+    //ejecuto el experimento sesgado p(x)=sqrt(x) para posteriormente guardar los tiempos obtenidos por cada arbol en su archivo respectivo
+    ejecucion(times,params[4]);
 
         timesAbb = times[0];
     for(int i=0;i<cantIntervalos;i++){
@@ -782,7 +843,7 @@ int main(){
         fprintf(sesgadosqrtBtree4096,"%f",timesBtree4096[i]);
         fprintf(sesgadosqrtBtree4096,"%s","\n");
     }
-
+    //libero los arreglos generados
     for(int i=0;i<6;i++){
         free(times[i]);
     }
@@ -790,7 +851,8 @@ int main(){
     printf("Se guardaron los sesgados sqrt\n");
 
     printf("---------------sesgado ln-------------------------\n");
-    ejecucion(times,params[5]); // se ejecura el sesgado ln(x);
+    //ejecuto el experimento sesgado p(x)=ln(x) para posteriormente guardar los tiempos obtenidos por cada arbol en su archivo respectivo
+    ejecucion(times,params[5]);
 
         timesAbb = times[0];
     for(int i=0;i<cantIntervalos;i++){
@@ -827,7 +889,7 @@ int main(){
         fprintf(sesgadolnBtree4096,"%f",timesBtree4096[i]);
         fprintf(sesgadolnBtree4096,"%s","\n");
     }
-
+    //libero los arreglos generados
     for(int i=0;i<6;i++){
         free(times[i]);
     }
@@ -840,6 +902,7 @@ int main(){
 
     printf("se terminaron :)\n");
 
+    //cierro todos los archivos
     fclose(aleatorioAbb);
     fclose(aleatorioAvl);
     fclose(aleatorioSplay);
@@ -882,27 +945,4 @@ int main(){
     fclose(sesgadolnBtree256);
     fclose(sesgadolnBtree4096);
 
-
-
-
-
-
-
-    /*
-
-
-        
-
-
-      
-
-        
-
-        
-
-        
-
-        
-        
-    */
 }
