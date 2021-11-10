@@ -27,7 +27,7 @@ Implementation and comparison of ABBs variants, Design and Analysis of Algorithm
 - Run the `values_rng.py` file to create 10 files with 1 million random numbers between 0 to 2^32
 - Run the `test.c` file.
 - You results will be in **Resultados** directory
-- If you dont have tha directory, please create one by yourself
+- If you dont have that directory, please create one by yourself
 
 ## Authors
 - **Javier Lavados Jillbert** - [JavierLavados](https://github.com/JavierLavados)
