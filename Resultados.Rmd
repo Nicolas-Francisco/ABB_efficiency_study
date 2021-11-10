@@ -72,7 +72,28 @@ Experimento_aleatorio <- rbind(Experimento_aleatorio, z)
 
 ### Estadísticas relevantes
 ```{r, eval=TRUE}
-summary(Experimento_aleatorio)
+mean.ABB <- mean(Experimento_aleatorio[Experimento_aleatorio$Estructura=="ABB",]$V1)
+mean.AVL <- mean(Experimento_aleatorio[Experimento_aleatorio$Estructura=="AVL",]$V1)
+mean.Splay <- mean(Experimento_aleatorio[Experimento_aleatorio$Estructura=="Splay",]$V1)
+mean.BTree16 <- mean(Experimento_aleatorio[Experimento_aleatorio$Estructura=="BTree16",]$V1)
+mean.BTree256 <- mean(Experimento_aleatorio[Experimento_aleatorio$Estructura=="BTree256",]$V1)
+mean.BTree4096 <- mean(Experimento_aleatorio[Experimento_aleatorio$Estructura=="BTree4096",]$V1)
+
+sd.ABB <- sd(Experimento_aleatorio[Experimento_aleatorio$Estructura=="ABB",]$V1)
+sd.AVL <- sd(Experimento_aleatorio[Experimento_aleatorio$Estructura=="AVL",]$V1)
+sd.Splay <- sd(Experimento_aleatorio[Experimento_aleatorio$Estructura=="Splay",]$V1)
+sd.BTree16 <- sd(Experimento_aleatorio[Experimento_aleatorio$Estructura=="BTree16",]$V1)
+sd.BTree256 <- sd(Experimento_aleatorio[Experimento_aleatorio$Estructura=="BTree256",]$V1)
+sd.BTree4096 <- sd(Experimento_aleatorio[Experimento_aleatorio$Estructura=="BTree4096",]$V1)
+
+
+print(paste("ABB: MEAN = ", mean.ABB, ", SD = ", sd.ABB))
+print(paste("AVL: MEAN = ", mean.AVL, ", SD = ", sd.AVL))
+print(paste("Splay: MEAN = ", mean.Splay, ", SD = ", sd.Splay))
+print(paste("BTree16: MEAN = ", mean.BTree16, ", SD = ", sd.BTree16))
+print(paste("BTree256: MEAN = ", mean.BTree256, ", SD = ", sd.BTree256))
+print(paste("BTree4096: MEAN = ", mean.BTree4096, ", SD = ", sd.BTree4096))
+
 ```
 
 ```{r, eval=TRUE}
@@ -132,12 +153,6 @@ Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
 
 ```
 
-### Estadísticas relevantes
-```{r, eval=TRUE}
-summary(Experimento_creciente0p1)
-
-```
-
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_creciente0p1, aes(x=Estructura, y=V1, color=Estructura)) + 
   geom_boxplot() +
@@ -177,6 +192,32 @@ plot
 
 ```
 
+### Estadísticas relevantes
+```{r, eval=TRUE}
+mean.ABB <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="ABB",]$V1)
+mean.AVL <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="AVL",]$V1)
+mean.Splay <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="Splay",]$V1)
+mean.BTree16 <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="BTree16",]$V1)
+mean.BTree256 <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="BTree256",]$V1)
+mean.BTree4096 <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="BTree4096",]$V1)
+
+sd.ABB <- sd(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="ABB",]$V1)
+sd.AVL <- sd(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="AVL",]$V1)
+sd.Splay <- sd(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="Splay",]$V1)
+sd.BTree16 <- sd(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="BTree16",]$V1)
+sd.BTree256 <- sd(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="BTree256",]$V1)
+sd.BTree4096 <- sd(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="BTree4096",]$V1)
+
+
+print(paste("ABB: MEAN = ", mean.ABB, ", SD = ", sd.ABB))
+print(paste("AVL: MEAN = ", mean.AVL, ", SD = ", sd.AVL))
+print(paste("Splay: MEAN = ", mean.Splay, ", SD = ", sd.Splay))
+print(paste("BTree16: MEAN = ", mean.BTree16, ", SD = ", sd.BTree16))
+print(paste("BTree256: MEAN = ", mean.BTree256, ", SD = ", sd.BTree256))
+print(paste("BTree4096: MEAN = ", mean.BTree4096, ", SD = ", sd.BTree4096))
+
+```
+
 ## Experimento Creciente 0.5
 ```{r, eval=TRUE}
 creciente05.abb = read.table("Resultados/creciente0p5Abb.txt")
@@ -210,18 +251,12 @@ Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
 
 ```
 
-### Estadísticas relevantes
-```{r, eval=TRUE}
-summary(Experimento_creciente0p5)
-
-```
-
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_creciente0p5, aes(x=Estructura, y=V1, color=Estructura)) + 
   geom_boxplot() +
   xlab("Estructuras") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Boxplot por cada estructura, sin ABB\nExperimento Creciente k=0.1") + 
+  ggtitle("Boxplot por cada estructura, sin ABB\nExperimento Creciente k=0.5") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
@@ -242,16 +277,41 @@ plot
 
 #### Segundo gráfico, incluyendo ABB
 ```{r, eval=TRUE}
-z <- data.frame(Operacion = c(1:1000), V1 = creciente01.abb, Estructura = "ABB")
-Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+z <- data.frame(Operacion = c(1:1000), V1 = creciente05.abb, Estructura = "ABB")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
 
-plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+plot <- ggplot(data = Experimento_creciente0p5, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
   geom_line(aes(colour=Estructura)) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.1") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.5") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
+
+```
+
+```{r, eval=TRUE}
+mean.ABB <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="ABB",]$V1)
+mean.AVL <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="AVL",]$V1)
+mean.Splay <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="Splay",]$V1)
+mean.BTree16 <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="BTree16",]$V1)
+mean.BTree256 <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="BTree256",]$V1)
+mean.BTree4096 <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="BTree4096",]$V1)
+
+sd.ABB <- sd(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="ABB",]$V1)
+sd.AVL <- sd(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="AVL",]$V1)
+sd.Splay <- sd(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="Splay",]$V1)
+sd.BTree16 <- sd(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="BTree16",]$V1)
+sd.BTree256 <- sd(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="BTree256",]$V1)
+sd.BTree4096 <- sd(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="BTree4096",]$V1)
+
+
+print(paste("ABB: MEAN = ", mean.ABB, ", SD = ", sd.ABB))
+print(paste("AVL: MEAN = ", mean.AVL, ", SD = ", sd.AVL))
+print(paste("Splay: MEAN = ", mean.Splay, ", SD = ", sd.Splay))
+print(paste("BTree16: MEAN = ", mean.BTree16, ", SD = ", sd.BTree16))
+print(paste("BTree256: MEAN = ", mean.BTree256, ", SD = ", sd.BTree256))
+print(paste("BTree4096: MEAN = ", mean.BTree4096, ", SD = ", sd.BTree4096))
 
 ```
 
@@ -290,10 +350,7 @@ Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
 ```
 
 ### Estadísticas relevantes
-```{r, eval=TRUE}
-summary(Experimento_sesgadox)
 
-```
 
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_sesgadox, aes(x=Estructura, y=V1, color=Estructura)) + 
@@ -330,6 +387,31 @@ plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes 
   ggtitle("Tiempo por cada segmento de operaciones, sin BTree4096\nExperimento Sesgado f(x) = x") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
+
+```
+
+```{r, eval=TRUE}
+mean.ABB <- mean(Experimento_sesgadox[Experimento_sesgadox$Estructura=="ABB",]$V1)
+mean.AVL <- mean(Experimento_sesgadox[Experimento_sesgadox$Estructura=="AVL",]$V1)
+mean.Splay <- mean(Experimento_sesgadox[Experimento_sesgadox$Estructura=="Splay",]$V1)
+mean.BTree16 <- mean(Experimento_sesgadox[Experimento_sesgadox$Estructura=="BTree16",]$V1)
+mean.BTree256 <- mean(Experimento_sesgadox[Experimento_sesgadox$Estructura=="BTree256",]$V1)
+mean.BTree4096 <- mean(Experimento_sesgadox[Experimento_sesgadox$Estructura=="BTree4096",]$V1)
+
+sd.ABB <- sd(Experimento_sesgadox[Experimento_sesgadox$Estructura=="ABB",]$V1)
+sd.AVL <- sd(Experimento_sesgadox[Experimento_sesgadox$Estructura=="AVL",]$V1)
+sd.Splay <- sd(Experimento_sesgadox[Experimento_sesgadox$Estructura=="Splay",]$V1)
+sd.BTree16 <- sd(Experimento_sesgadox[Experimento_sesgadox$Estructura=="BTree16",]$V1)
+sd.BTree256 <- sd(Experimento_sesgadox[Experimento_sesgadox$Estructura=="BTree256",]$V1)
+sd.BTree4096 <- sd(Experimento_sesgadox[Experimento_sesgadox$Estructura=="BTree4096",]$V1)
+
+
+print(paste("ABB: MEAN = ", mean.ABB, ", SD = ", sd.ABB))
+print(paste("AVL: MEAN = ", mean.AVL, ", SD = ", sd.AVL))
+print(paste("Splay: MEAN = ", mean.Splay, ", SD = ", sd.Splay))
+print(paste("BTree16: MEAN = ", mean.BTree16, ", SD = ", sd.BTree16))
+print(paste("BTree256: MEAN = ", mean.BTree256, ", SD = ", sd.BTree256))
+print(paste("BTree4096: MEAN = ", mean.BTree4096, ", SD = ", sd.BTree4096))
 
 ```
 
@@ -378,10 +460,6 @@ Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
 ```
 
 ### Estadísticas relevantes
-```{r, eval=TRUE}
-summary(Experimento_sesgadosqrt)
-
-```
 
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Estructura, y=V1, color=Estructura)) + 
@@ -411,13 +489,38 @@ plot
 z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree4096, Estructura = "BTree4096")
 Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
 
-plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
   geom_line(aes(colour=Estructura)) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
   ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x) = sqrt(x)") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
+
+```
+
+```{r, eval=TRUE}
+mean.ABB <- mean(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="ABB",]$V1)
+mean.AVL <- mean(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="AVL",]$V1)
+mean.Splay <- mean(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="Splay",]$V1)
+mean.BTree16 <- mean(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="BTree16",]$V1)
+mean.BTree256 <- mean(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="BTree256",]$V1)
+mean.BTree4096 <- mean(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="BTree4096",]$V1)
+
+sd.ABB <- sd(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="ABB",]$V1)
+sd.AVL <- sd(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="AVL",]$V1)
+sd.Splay <- sd(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="Splay",]$V1)
+sd.BTree16 <- sd(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="BTree16",]$V1)
+sd.BTree256 <- sd(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="BTree256",]$V1)
+sd.BTree4096 <- sd(Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura=="BTree4096",]$V1)
+
+
+print(paste("ABB: MEAN = ", mean.ABB, ", SD = ", sd.ABB))
+print(paste("AVL: MEAN = ", mean.AVL, ", SD = ", sd.AVL))
+print(paste("Splay: MEAN = ", mean.Splay, ", SD = ", sd.Splay))
+print(paste("BTree16: MEAN = ", mean.BTree16, ", SD = ", sd.BTree16))
+print(paste("BTree256: MEAN = ", mean.BTree256, ", SD = ", sd.BTree256))
+print(paste("BTree4096: MEAN = ", mean.BTree4096, ", SD = ", sd.BTree4096))
 
 ```
 
@@ -510,6 +613,30 @@ plot
 
 ```
 
+```{r, eval=TRUE}
+mean.ABB <- mean(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="ABB",]$V1)
+mean.AVL <- mean(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="AVL",]$V1)
+mean.Splay <- mean(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="Splay",]$V1)
+mean.BTree16 <- mean(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="BTree16",]$V1)
+mean.BTree256 <- mean(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="BTree256",]$V1)
+mean.BTree4096 <- mean(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="BTree4096",]$V1)
+
+sd.ABB <- sd(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="ABB",]$V1)
+sd.AVL <- sd(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="AVL",]$V1)
+sd.Splay <- sd(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="Splay",]$V1)
+sd.BTree16 <- sd(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="BTree16",]$V1)
+sd.BTree256 <- sd(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="BTree256",]$V1)
+sd.BTree4096 <- sd(Experimento_sesgadoln[Experimento_sesgadoln$Estructura=="BTree4096",]$V1)
+
+
+print(paste("ABB: MEAN = ", mean.ABB, ", SD = ", sd.ABB))
+print(paste("AVL: MEAN = ", mean.AVL, ", SD = ", sd.AVL))
+print(paste("Splay: MEAN = ", mean.Splay, ", SD = ", sd.Splay))
+print(paste("BTree16: MEAN = ", mean.BTree16, ", SD = ", sd.BTree16))
+print(paste("BTree256: MEAN = ", mean.BTree256, ", SD = ", sd.BTree256))
+print(paste("BTree4096: MEAN = ", mean.BTree4096, ", SD = ", sd.BTree4096))
+
+```
 
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_sesgadoln, aes(x=Estructura, y=V1, color=Estructura)) + 
