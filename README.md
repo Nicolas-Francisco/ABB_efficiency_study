@@ -3,9 +3,11 @@ Implementation and comparison of ABBs variants, Design and Analysis of Algorithm
 
 
 
-### To run any C file do: `gcc filename.c -o excname` then `./ excname`
+### To run any C file do:
+-- `gcc filename.c -o excname` then `./ excname`
 
-### To run the python file do: `Python file.c`
+### To run the python file do: 
+-- `Python file.c`
 
 
 ## About the code
