@@ -23,9 +23,11 @@ Implementation and comparison of ABBs variants, Design and Analysis of Algorithm
 
 ## HOW TO RUN
 
-- You must create a directoy called Values for storing the txt containing the random values before runing the C file.
-- Then run the `values_rng.py` file to create 10 files with 1 million random numbers between 0 to 2^32
-- Then run the `test.c` file.
+- You must create a directoy named **Values** for storing the .txt containing the random values before runing the C file.
+- Run the `values_rng.py` file to create 10 files with 1 million random numbers between 0 to 2^32
+- Run the `test.c` file.
+- You results will be in **Resultados** directory
+- If you dont have tha directory, please create one by yourself
 
 ## Authors
 - **Javier Lavados Jillbert** - [JavierLavados](https://github.com/JavierLavados)
