@@ -115,9 +115,6 @@ Experimento_creciente0p1 <-  data.frame(Operacion = integer(),
                                      V1 = double(),
                                      Estructura = factor()) 
 
-z <- data.frame(Operacion = c(1:1000), V1 = creciente01.abb, Estructura = "ABB")
-Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
-
 z <- data.frame(Operacion = c(1:1000), V1 = creciente01.avl, Estructura = "AVL")
 Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
 
@@ -141,8 +138,35 @@ summary(Experimento_creciente0p1)
 
 ```
 
-### Gráfico de Tiempos
 ```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p1, aes(x=Estructura, y=V1, color=Estructura)) + 
+  geom_boxplot() +
+  xlab("Estructuras") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Boxplot por cada estructura, sin ABB\nExperimento Creciente k=0.1") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+### Gráfico de Tiempos
+#### Primer gráfico, excluyendo ABB para mejor apreciación de los datos
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Promedios de cada segmento de iteraciones") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Tiempo por cada segmento de operaciones, sin ABB\nExperimento Creciente k=0.1") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+#### Segundo gráfico, incluyendo ABB
+```{r, eval=TRUE}
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.abb, Estructura = "ABB")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
 plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
   geom_line(aes(colour=Estructura)) +
   xlab("Promedios de cada segmento de iteraciones") +  
@@ -169,9 +193,6 @@ Experimento_creciente0p5 <-  data.frame(Operacion = integer(),
                                      V1 = double(),
                                      Estructura = factor()) 
 
-z <- data.frame(Operacion = c(1:1000), V1 = creciente05.abb, Estructura = "ABB")
-Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
-
 z <- data.frame(Operacion = c(1:1000), V1 = creciente05.avl, Estructura = "AVL")
 Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
 
@@ -195,17 +216,45 @@ summary(Experimento_creciente0p5)
 
 ```
 
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p5, aes(x=Estructura, y=V1, color=Estructura)) + 
+  geom_boxplot() +
+  xlab("Estructuras") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Boxplot por cada estructura, sin ABB\nExperimento Creciente k=0.1") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
 ### Gráfico de Tiempos
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_creciente0p5, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
   geom_line(aes(colour=Estructura)) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.5") + 
+  ggtitle("Tiempo por cada segmento de operaciones, sin ABB\nExperimento Creciente k=0.5") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
 ```
+
+
+#### Segundo gráfico, incluyendo ABB
+```{r, eval=TRUE}
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.abb, Estructura = "ABB")
+Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
+
+plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Promedios de cada segmento de iteraciones") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.1") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
 
 ## Experimento Sesgado f(x)=x
 ```{r, eval=TRUE}
@@ -238,9 +287,6 @@ Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
 z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.btree256, Estructura = "BTree256")
 Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
 
-z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.btree4096, Estructura = "BTree4096")
-Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
-
 ```
 
 ### Estadísticas relevantes
@@ -254,24 +300,49 @@ plot <- ggplot(data = Experimento_sesgadox, aes(x=Estructura, y=V1, color=Estruc
   geom_boxplot() +
   xlab("Estructuras") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Boxplot por cada estructura\nExperimento Sesgado f(x) = x") + 
+  ggtitle("Boxplot por cada estructura, sin BTree4096\nExperimento Sesgado f(x) = x") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
 ```
 
 ### Gráfico de Tiempos
+#### Gráfico sin BTree4096
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
   geom_line(aes(colour=Estructura)) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x) = x") + 
+  ggtitle("Tiempo por cada segmento de operaciones, sin BTree4096\nExperimento Sesgado f(x) = x") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+#### Gráfico con BTree4096
+```{r, eval=TRUE}
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.btree4096, Estructura = "BTree4096")
+Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
+
+plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Promedios de cada segmento de iteraciones") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Tiempo por cada segmento de operaciones, sin BTree4096\nExperimento Sesgado f(x) = x") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
 ```
 
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadox, aes(x=Estructura, y=V1, color=Estructura)) + 
+  geom_boxplot() +
+  xlab("Estructuras") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Boxplot por cada estructura, sin BTree4096\nExperimento Sesgado f(x) = x") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
 
 ## Experimento Sesgado f(x)=sqrt(x)
 ```{r, eval=TRUE}
@@ -304,9 +375,6 @@ Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
 z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree256, Estructura = "BTree256")
 Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
 
-z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree4096, Estructura = "BTree4096")
-Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
-
 ```
 
 ### Estadísticas relevantes
@@ -320,19 +388,45 @@ plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Estructura, y=V1, color=Est
   geom_boxplot() +
   xlab("Estructuras") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Boxplot por cada estructura\nExperimento Sesgado f(x)=sqrt(x)") + 
+  ggtitle("Boxplot por cada estructura, sin BTree4096\nExperimento Sesgado f(x)=sqrt(x)") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
 ```
 
 ### Gráfico de Tiempos
+#### Gráfico sin BTree4096
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
   geom_line(aes(colour=Estructura)) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x)=sqrt(x)") + 
+  ggtitle("Tiempo por cada segmento de operaciones, sin BTree4096\nExperimento Sesgado f(x)=sqrt(x)") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+#### Gráfico con BTree4096
+```{r, eval=TRUE}
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree4096, Estructura = "BTree4096")
+Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
+
+plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Promedios de cada segmento de iteraciones") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x) = sqrt(x)") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Estructura, y=V1, color=Estructura)) + 
+  geom_boxplot() +
+  xlab("Estructuras") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Boxplot por cada estructura, sin BTree4096\nExperimento Sesgado f(x)=sqrt(x)") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
@@ -369,9 +463,6 @@ Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
 z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.btree256, Estructura = "BTree256")
 Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
 
-z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.btree4096, Estructura = "BTree4096")
-Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
-
 ```
 
 ### Estadísticas relevantes
@@ -392,12 +483,40 @@ plot
 ```
 
 ### Gráfico de Tiempos
+#### Gráfico sin BTree4096
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_sesgadoln, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
   geom_line(aes(colour=Estructura)) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
   ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x)=ln(x)") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+#### Gráfico sin BTree4096
+```{r, eval=TRUE}
+z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.btree4096, Estructura = "BTree4096")
+Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
+
+plot <- ggplot(data = Experimento_sesgadoln, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
+  geom_line(aes(colour=Estructura)) +
+  xlab("Promedios de cada segmento de iteraciones") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x)=ln(x)") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadoln, aes(x=Estructura, y=V1, color=Estructura)) + 
+  geom_boxplot() +
+  xlab("Estructuras") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Boxplot por cada estructura\nExperimento Sesgado f(x)=ln(x)") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
