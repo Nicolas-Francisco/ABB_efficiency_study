@@ -108,9 +108,28 @@ plot
 ```
 
 ### Gráfico de Tiempos
+#### Cálculo de curvas para la regresión
 ```{r, eval=TRUE}
-plot <- ggplot(data = Experimento_aleatorio, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
+aleatorio.ABB <- lm(V1~log(Operacion), data= Experimento_aleatorio[Experimento_aleatorio$Estructura == "ABB",])
+aleatorio.AVL <- lm(V1~log(Operacion), data= Experimento_aleatorio[Experimento_aleatorio$Estructura == "AVL",])
+aleatorio.Splay <- lm(V1~log(Operacion), data= Experimento_aleatorio[Experimento_aleatorio$Estructura == "Splay",])
+aleatorio.BTree16 <- lm(V1~log(Operacion), data= Experimento_aleatorio[Experimento_aleatorio$Estructura == "BTree16",])
+aleatorio.BTree256 <- lm(V1~log(Operacion), data= Experimento_aleatorio[Experimento_aleatorio$Estructura == "BTree256",])
+aleatorio.BTree4096 <- lm(V1~log(Operacion), data= Experimento_aleatorio[Experimento_aleatorio$Estructura == "BTree4096",])
+```
+
+#### Gráfico en escala logarítmica
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_aleatorio, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=aleatorio.ABB, color="black", size=0.5) +
+  geom_smooth(reg=aleatorio.AVL, color="black", size=0.5) +
+  geom_smooth(reg=aleatorio.Splay, color="black", size=0.5) +
+  geom_smooth(reg=aleatorio.BTree16, color="black", size=0.5) +
+  geom_smooth(reg=aleatorio.BTree256, color="black", size=0.5) +
+  geom_smooth(reg=aleatorio.BTree4096, color="black", size=0.5) +
+  scale_x_log10() +
+  ylim(0, 0.009) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
   ggtitle("Tiempo por cada segmento de operaciones\nExperimento aleatorio") + 
@@ -165,25 +184,32 @@ plot
 ```
 
 ### Gráfico de Tiempos
-#### Primer gráfico, excluyendo ABB para mejor apreciación de los datos
+#### Cálculo de regresiones
 ```{r, eval=TRUE}
-plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
-  xlab("Promedios de cada segmento de iteraciones") +  
-  ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones, sin ABB\nExperimento Creciente k=0.1") + 
-  theme(plot.title = element_text(hjust = 0.5))
-plot
-
-```
-
-#### Segundo gráfico, incluyendo ABB
-```{r, eval=TRUE}
+# Añadimos la esructura no incluida en el boxplot
 z <- data.frame(Operacion = c(1:1000), V1 = creciente01.abb, Estructura = "ABB")
 Experimento_creciente0p1 <- rbind(Experimento_creciente0p1, z)
 
-plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
+creciente1.ABB <- lm(V1~log(Operacion), data= Experimento_creciente0p1[Experimento_creciente0p1$Estructura == "ABB",])
+creciente1.AVL <- lm(V1~log(Operacion), data= Experimento_creciente0p1[Experimento_creciente0p1$Estructura == "AVL",])
+creciente1.Splay <- lm(V1~log(Operacion), data= Experimento_creciente0p1[Experimento_creciente0p1$Estructura == "Splay",])
+creciente1.BTree16 <- lm(V1~log(Operacion), data= Experimento_creciente0p1[Experimento_creciente0p1$Estructura == "BTree16",])
+creciente1.BTree256 <- lm(V1~log(Operacion), data= Experimento_creciente0p1[Experimento_creciente0p1$Estructura == "BTree256",])
+creciente1.BTree4096 <- lm(V1~log(Operacion), data= Experimento_creciente0p1[Experimento_creciente0p1$Estructura == "BTree4096",])
+
+```
+
+#### Primer gráfico, sin zoom
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=creciente1.ABB, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.AVL, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.Splay, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.BTree16, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.BTree256, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.BTree4096, color="black", size=0.5) +
+  scale_x_log10() +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
   ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.1") + 
@@ -192,7 +218,28 @@ plot
 
 ```
 
-### Estadísticas relevantes
+#### Segundo gráfico, con zoom a 0.04
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p1, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=creciente1.ABB, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.AVL, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.Splay, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.BTree16, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.BTree256, color="black", size=0.5) +
+  geom_smooth(reg=creciente1.BTree4096, color="black", size=0.5) +
+  scale_x_log10() +
+  ylim(0, 0.04) +
+  xlab("Promedios de cada segmento de iteraciones") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.1") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+
+## Estadísticas relevantes
 ```{r, eval=TRUE}
 mean.ABB <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="ABB",]$V1)
 mean.AVL <- mean(Experimento_creciente0p1[Experimento_creciente0p1$Estructura=="AVL",]$V1)
@@ -263,25 +310,32 @@ plot
 ```
 
 ### Gráfico de Tiempos
+#### Cálculo de regresiones
 ```{r, eval=TRUE}
-plot <- ggplot(data = Experimento_creciente0p5, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
-  xlab("Promedios de cada segmento de iteraciones") +  
-  ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones, sin ABB\nExperimento Creciente k=0.5") + 
-  theme(plot.title = element_text(hjust = 0.5))
-plot
+# Añadimos la esructura no incluida en el boxplot
+z <- data.frame(Operacion = c(1:1000), V1 = creciente01.abb, Estructura = "ABB")
+Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
+
+creciente2.ABB <- lm(V1~log(Operacion), data= Experimento_creciente0p5[Experimento_creciente0p5$Estructura == "ABB",])
+creciente2.AVL <- lm(V1~log(Operacion), data= Experimento_creciente0p5[Experimento_creciente0p5$Estructura == "AVL",])
+creciente2.Splay <- lm(V1~log(Operacion), data= Experimento_creciente0p5[Experimento_creciente0p5$Estructura == "Splay",])
+creciente2.BTree16 <- lm(V1~log(Operacion), data= Experimento_creciente0p5[Experimento_creciente0p5$Estructura == "BTree16",])
+creciente2.BTree256 <- lm(V1~log(Operacion), data= Experimento_creciente0p5[Experimento_creciente0p5$Estructura == "BTree256",])
+creciente2.BTree4096 <- lm(V1~log(Operacion), data= Experimento_creciente0p5[Experimento_creciente0p5$Estructura == "BTree4096",])
 
 ```
 
-
-#### Segundo gráfico, incluyendo ABB
+#### Primer gráfico, sin zoom
 ```{r, eval=TRUE}
-z <- data.frame(Operacion = c(1:1000), V1 = creciente05.abb, Estructura = "ABB")
-Experimento_creciente0p5 <- rbind(Experimento_creciente0p5, z)
-
-plot <- ggplot(data = Experimento_creciente0p5, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
+plot <- ggplot(data = Experimento_creciente0p5, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=creciente2.ABB, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.AVL, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.Splay, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.BTree16, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.BTree256, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.BTree4096, color="black", size=0.5) +
+  scale_x_log10() +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
   ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.5") + 
@@ -290,6 +344,27 @@ plot
 
 ```
 
+#### Segundo gráfico, con zoom
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_creciente0p5, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=creciente2.ABB, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.AVL, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.Splay, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.BTree16, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.BTree256, color="black", size=0.5) +
+  geom_smooth(reg=creciente2.BTree4096, color="black", size=0.5) +
+  scale_x_log10() +
+  ylim(0,0.04) +
+  xlab("Promedios de cada segmento de iteraciones") +  
+  ylab("Tiempo [s]") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Creciente k=0.5") + 
+  theme(plot.title = element_text(hjust = 0.5))
+plot
+
+```
+
+#### Estadísticas importantes
 ```{r, eval=TRUE}
 mean.ABB <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="ABB",]$V1)
 mean.AVL <- mean(Experimento_creciente0p5[Experimento_creciente0p5$Estructura=="AVL",]$V1)
@@ -351,7 +426,6 @@ Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
 
 ### Estadísticas relevantes
 
-
 ```{r, eval=TRUE}
 plot <- ggplot(data = Experimento_sesgadox, aes(x=Estructura, y=V1, color=Estructura)) + 
   geom_boxplot() +
@@ -360,31 +434,39 @@ plot <- ggplot(data = Experimento_sesgadox, aes(x=Estructura, y=V1, color=Estruc
   ggtitle("Boxplot por cada estructura, sin BTree4096\nExperimento Sesgado f(x) = x") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
-
 ```
 
 ### Gráfico de Tiempos
-#### Gráfico sin BTree4096
+#### Cálculo de regresiones
 ```{r, eval=TRUE}
-plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
-  xlab("Promedios de cada segmento de iteraciones") +  
-  ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones, sin BTree4096\nExperimento Sesgado f(x) = x") + 
-  theme(plot.title = element_text(hjust = 0.5))
-plot
-
-```
-#### Gráfico con BTree4096
-```{r, eval=TRUE}
+# Añadimos la esructura no incluida en el boxplot
 z <- data.frame(Operacion = c(1:1000), V1 = sesgadox.btree4096, Estructura = "BTree4096")
 Experimento_sesgadox <- rbind(Experimento_sesgadox, z)
 
-plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
+sesgado1.ABB <- lm(V1~log(Operacion), data= Experimento_sesgadox[Experimento_sesgadox$Estructura == "ABB",])
+sesgado1.AVL <- lm(V1~log(Operacion), data= Experimento_sesgadox[Experimento_sesgadox$Estructura == "AVL",])
+sesgado1.Splay <- lm(V1~log(Operacion), data= Experimento_sesgadox[Experimento_sesgadox$Estructura == "Splay",])
+sesgado1.BTree16 <- lm(V1~log(Operacion), data= Experimento_sesgadox[Experimento_sesgadox$Estructura == "BTree16",])
+sesgado1.BTree256 <- lm(V1~log(Operacion), data= Experimento_sesgadox[Experimento_sesgadox$Estructura == "BTree256",])
+sesgado1.BTree4096 <- lm(V1~log(Operacion), data= Experimento_sesgadox[Experimento_sesgadox$Estructura == "BTree4096",])
+
+```
+
+#### Segundo gráfico, incluyendo ABB
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadox, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=sesgado1.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado1.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado1.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado1.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado1.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado1.ABB, color="black", size=0.5) +
+  scale_x_log10() +
+  ylim(0,0.01) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones, sin BTree4096\nExperimento Sesgado f(x) = x") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x) = x") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
@@ -473,24 +555,33 @@ plot
 ```
 
 ### Gráfico de Tiempos
-#### Gráfico sin BTree4096
+#### Cálculo de regresiones
 ```{r, eval=TRUE}
-plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
-  xlab("Promedios de cada segmento de iteraciones") +  
-  ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones, sin BTree4096\nExperimento Sesgado f(x)=sqrt(x)") + 
-  theme(plot.title = element_text(hjust = 0.5))
-plot
-
-```
-#### Gráfico con BTree4096
-```{r, eval=TRUE}
+# Añadimos la esructura no incluida en el boxplot
 z <- data.frame(Operacion = c(1:1000), V1 = sesgadosqrt.btree4096, Estructura = "BTree4096")
 Experimento_sesgadosqrt <- rbind(Experimento_sesgadosqrt, z)
 
-plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
+sesgado2.ABB <- lm(V1~log(Operacion), data= Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura == "ABB",])
+sesgado2.AVL <- lm(V1~log(Operacion), data= Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura == "AVL",])
+sesgado2.Splay <- lm(V1~log(Operacion), data= Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura == "Splay",])
+sesgado2.BTree16 <- lm(V1~log(Operacion), data= Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura == "BTree16",])
+sesgado2.BTree256 <- lm(V1~log(Operacion), data= Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura == "BTree256",])
+sesgado2.BTree4096 <- lm(V1~log(Operacion), data= Experimento_sesgadosqrt[Experimento_sesgadosqrt$Estructura == "BTree4096",])
+
+```
+
+#### Segundo gráfico, incluyendo ABB
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=sesgado2.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado2.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado2.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado2.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado2.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado2.ABB, color="black", size=0.5) +
+  scale_x_log10() +
+  ylim(0,0.01) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
   ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x) = sqrt(x)") + 
@@ -529,7 +620,7 @@ plot <- ggplot(data = Experimento_sesgadosqrt, aes(x=Estructura, y=V1, color=Est
   geom_boxplot() +
   xlab("Estructuras") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Boxplot por cada estructura, sin BTree4096\nExperimento Sesgado f(x)=sqrt(x)") + 
+  ggtitle("Boxplot por cada estructura, sin BTree4096\nExperimento Sesgado f(x) = ln(x)") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
@@ -586,28 +677,36 @@ plot
 ```
 
 ### Gráfico de Tiempos
-#### Gráfico sin BTree4096
+#### Cálculo de regresiones
 ```{r, eval=TRUE}
-plot <- ggplot(data = Experimento_sesgadoln, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
-  xlab("Promedios de cada segmento de iteraciones") +  
-  ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x)=ln(x)") + 
-  theme(plot.title = element_text(hjust = 0.5))
-plot
-
-```
-
-#### Gráfico sin BTree4096
-```{r, eval=TRUE}
+# Añadimos la esructura no incluida en el boxplot
 z <- data.frame(Operacion = c(1:1000), V1 = sesgadoln.btree4096, Estructura = "BTree4096")
 Experimento_sesgadoln <- rbind(Experimento_sesgadoln, z)
 
-plot <- ggplot(data = Experimento_sesgadoln, aes(x=Operacion, y=V1), inherit.aes = FALSE) + 
-  geom_line(aes(colour=Estructura)) +
+sesgado3.ABB <- lm(V1~log(Operacion), data= Experimento_sesgadoln[Experimento_sesgadoln$Estructura == "ABB",])
+sesgado3.AVL <- lm(V1~log(Operacion), data= Experimento_sesgadoln[Experimento_sesgadoln$Estructura == "AVL",])
+sesgado3.Splay <- lm(V1~log(Operacion), data= Experimento_sesgadoln[Experimento_sesgadoln$Estructura == "Splay",])
+sesgado3.BTree16 <- lm(V1~log(Operacion), data= Experimento_sesgadoln[Experimento_sesgadoln$Estructura == "BTree16",])
+sesgado3.BTree256 <- lm(V1~log(Operacion), data= Experimento_sesgadoln[Experimento_sesgadoln$Estructura == "BTree256",])
+sesgado3.BTree4096 <- lm(V1~log(Operacion), data= Experimento_sesgadoln[Experimento_sesgadoln$Estructura == "BTree4096",])
+
+```
+
+#### Segundo gráfico, incluyendo ABB
+```{r, eval=TRUE}
+plot <- ggplot(data = Experimento_sesgadoln, aes(x=Operacion, y=V1, fill=Estructura), inherit.aes = FALSE) + 
+  geom_point(aes(colour=Estructura), size = 0.05) +
+  geom_smooth(reg=sesgado3.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado3.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado3.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado3.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado3.ABB, color="black", size=0.5) +
+  geom_smooth(reg=sesgado3.ABB, color="black", size=0.5) +
+  scale_x_log10() +
+  ylim(0, 0.012) +
   xlab("Promedios de cada segmento de iteraciones") +  
   ylab("Tiempo [s]") + 
-  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x)=ln(x)") + 
+  ggtitle("Tiempo por cada segmento de operaciones\nExperimento Sesgado f(x) = ln(x)") + 
   theme(plot.title = element_text(hjust = 0.5))
 plot
 
